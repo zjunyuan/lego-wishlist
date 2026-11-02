@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    // Replace ADMIN_EMAIL_HERE with the Google account that runs the list.
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.get('email', '') == 'ADMIN_EMAIL_HERE'
+        && request.auth.token.get('email_verified', false) == true;
+    }
+
+    function spaceIs(key, type) {
+      return get(/databases/$(database)/documents/spaces/$(key)).data.type == type;
+    }
+
+    // Holds the secret link keys, so only the admin can read it.
+    match /admin/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Spaces are found by their secret key. Listing them is never allowed.
+    match /spaces/{key} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow write: if isAdmin();
+
+      // Kids' space: the boys' picks. Holds no claim data.
+      match /picks/{child} {
+        allow read: if signedIn() && spaceIs(key, 'kids');
+        allow create, update: if signedIn() && spaceIs(key, 'kids')
+          && request.resource.data.sets is map
+          && request.resource.data.sets.size() <= 10;
+      }
+
+      // Family space: published list, price overrides and claims.
+      match /wishlist/{num} {
+        allow read: if signedIn() && spaceIs(key, 'family');
+        allow write: if isAdmin() && spaceIs(key, 'family');
+      }
+
+      match /overrides/{num} {
+        allow read: if signedIn() && spaceIs(key, 'family');
+        allow write: if isAdmin() && spaceIs(key, 'family');
+      }
+
+      match /claims/{claimId} {
+        allow read: if signedIn() && spaceIs(key, 'family');
+
+        // Create fails if the document exists, which is what stops a double claim.
+        allow create: if signedIn() && spaceIs(key, 'family')
+          && request.resource.data.keys().hasOnly(['num', 'child', 'by', 'uid', 'status', 'at'])
+          && claimId == request.resource.data.num + '_' + request.resource.data.child
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.status == 'reserved'
+          && request.resource.data.by is string
+          && request.resource.data.by.size() > 0
+          && request.resource.data.by.size() <= 40;
+
+        allow update: if (isAdmin() || (signedIn() && resource.data.uid == request.auth.uid))
+          && spaceIs(key, 'family')
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'at'])
+          && request.resource.data.status in ['reserved', 'bought'];
+
+        allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      }
+    }
+  }
+}
