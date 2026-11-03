@@ -1,4 +1,4 @@
-import { esc, daysSince, money, photo, priceFor, priceHtml, safeUrl, toast } from './util.js';
+import { esc, daysSince, money, photo, priceFor, priceHtml, safeUrl, shortDate, toast } from './util.js';
 
 const STALE_DAYS = 7;
 
@@ -6,6 +6,11 @@ export async function render({ root, store, sets, prices, demo }) {
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
   let keys, kids, picks = {}, wishlist = {}, claims = {}, overrides = {};
   let editing = null;
+  const filters = { q: '', theme: 'all', show: 'all', sort: 'year', dir: -1 };
+  const COLUMNS = [
+    ['photo', ''], ['num', 'Set'], ['name', 'Name'], ['theme', 'Theme'], ['parts', 'Pieces'],
+    ['amount', 'Price'], ['each', 'Per piece'], ['seller', 'Retailer'], ['seen', 'Seen'], ['visible', 'Boys see it'],
+  ];
 
   const link = param => {
     const url = new URL(location.pathname, location.origin);
@@ -77,9 +82,9 @@ export async function render({ root, store, sets, prices, demo }) {
 
   function overrideForm(num, current) {
     return `<form class="override" data-num="${esc(num)}">
-      <label>Price (S$) <input name="amount" type="number" step="0.01" min="0" required value="${esc(current?.manual ? current.amount : '')}"></label>
-      <label>Seller <input name="seller" required maxlength="40" value="${esc(current?.manual ? current.seller : '')}"></label>
-      <label>Link <input name="url" type="url" placeholder="https://" value="${esc(current?.manual ? current.url ?? '' : '')}"></label>
+      <label>Price (S$) <input name="amount" type="number" step="0.01" min="0" required value="${esc(current?.amount ?? '')}"></label>
+      <label>Retailer <input name="seller" required maxlength="40" value="${esc(current?.seller ?? '')}"></label>
+      <label>Link to buy <input name="url" type="url" placeholder="https://" value="${esc(current?.url ?? '')}"></label>
       <div class="sheet-actions">
         ${current?.manual ? `<button type="button" class="quiet" data-clear="${esc(num)}">Use the daily price</button>` : ''}
         <button type="button" class="quiet" data-edit-cancel>Cancel</button>
@@ -88,8 +93,120 @@ export async function render({ root, store, sets, prices, demo }) {
     </form>`;
   }
 
+  function dbRows() {
+    const hidden = kids.hidden ?? [];
+    const q = filters.q.trim().toLowerCase();
+    const rows = sets.map(s => {
+      const price = priceFor(s.num, prices, overrides);
+      return {
+        ...s,
+        price,
+        amount: price?.amount ?? null,
+        each: price && s.parts ? price.amount / s.parts : null,
+        seller: price?.seller ?? null,
+        seen: price?.manual ? null : price?.lastSeen ?? null,
+        visible: !hidden.includes(s.num),
+      };
+    }).filter(r => (
+      (filters.theme === 'all' || r.theme === filters.theme)
+      && (!q || r.name.toLowerCase().includes(q) || r.num.includes(q) || (r.seller ?? '').toLowerCase().includes(q))
+      && (filters.show === 'all'
+        || (filters.show === 'noprice' && !r.price)
+        || (filters.show === 'old' && r.seen && daysSince(r.seen) > 30)
+        || (filters.show === 'manual' && r.price?.manual)
+        || (filters.show === 'hidden' && !r.visible)
+        || (filters.show === 'visible' && r.visible))
+    ));
+    const { sort, dir } = filters;
+    return rows.sort((a, b) => {
+      const x = a[sort], y = b[sort];
+      if (x === y) return a.num.localeCompare(b.num);
+      if (x === null) return 1;
+      if (y === null) return -1;
+      return (typeof x === 'string' ? x.localeCompare(y) : x - y) * dir;
+    });
+  }
+
+  function dbCell(key, r) {
+    switch (key) {
+      case 'photo': return photo(r);
+      case 'num': return `<b>${esc(r.num)}</b>`;
+      case 'name': return esc(r.name);
+      case 'theme': return esc(r.theme ?? '');
+      case 'parts': return esc(r.parts);
+      case 'amount': return r.price ? `<b>${money(r.amount)}</b>` : '<span class="muted">No price</span>';
+      case 'each': return r.each === null ? '' : money(r.each);
+      case 'seller': {
+        if (!r.price) return '';
+        const url = safeUrl(r.price.url);
+        const name = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(r.seller)}</a>` : esc(r.seller);
+        return r.price.trusted ? name : `${name} <span class="muted">(unchecked)</span>`;
+      }
+      case 'seen':
+        if (r.price?.manual) return 'Set by you';
+        if (!r.seen) return '';
+        return `<span class="${daysSince(r.seen) > 30 ? 'stale' : ''}">${esc(shortDate(r.seen))}</span>`;
+      case 'visible':
+        return `<label class="check"><input type="checkbox" data-visible="${esc(r.num)}" ${r.visible ? 'checked' : ''} aria-label="Show ${esc(r.name)} to the boys"> Show</label>`;
+      default: return '';
+    }
+  }
+
+  function dbTable() {
+    const rows = dbRows();
+    const arrow = key => (filters.sort === key ? (filters.dir > 0 ? ' \u2191' : ' \u2193') : '');
+    return `
+      <p class="db-count">${rows.length} of ${sets.length} sets</p>
+      ${rows.length ? `<table class="db">
+        <thead><tr>
+          ${COLUMNS.map(([k, label]) => (label
+            ? `<th scope="col"><button data-sort="${k}">${label}${arrow(k)}</button></th>`
+            : '<th scope="col"></th>')).join('')}
+          <th scope="col"></th>
+        </tr></thead>
+        <tbody>${rows.map(r => `
+          <tr>
+            ${COLUMNS.map(([k, label]) => `<td class="c-${k}" data-label="${label}">${dbCell(k, r)}</td>`).join('')}
+            <td class="c-edit"><button class="quiet" data-edit="db:${esc(r.num)}">Edit price</button></td>
+          </tr>
+          ${editing === `db:${r.num}` ? `<tr class="db-edit"><td colspan="${COLUMNS.length + 1}">${overrideForm(r.num, r.price)}</td></tr>` : ''}`).join('')}
+        </tbody>
+      </table>` : '<p class="empty">No sets match. Try another search or filter.</p>'}`;
+  }
+
+  function dbSection() {
+    const themes = [...new Set(sets.map(s => s.theme).filter(Boolean))];
+    const option = (value, label, current) => `<option value="${esc(value)}" ${value === current ? 'selected' : ''}>${esc(label)}</option>`;
+    return `
+      <section>
+        <h2>All sets</h2>
+        <p>Check prices here and choose which sets the boys can see. New sets are shown to them unless you hide them.</p>
+        <div class="db-tools">
+          <label>Search <input class="db-search" type="search" value="${esc(filters.q)}" placeholder="Name, number or retailer"></label>
+          <label>Theme <select data-filter="theme">
+            ${option('all', 'All themes', filters.theme)}${themes.map(t => option(t, t, filters.theme)).join('')}
+          </select></label>
+          <label>Show <select data-filter="show">
+            ${[['all', 'All sets'], ['visible', 'Shown to the boys'], ['hidden', 'Hidden from the boys'], ['noprice', 'No price'], ['old', 'Price over 30 days old'], ['manual', 'Prices you set']]
+              .map(([v, l]) => option(v, l, filters.show)).join('')}
+          </select></label>
+          <label class="db-sort">Sort <select data-filter="sort">
+            ${[['year', 'Newest'], ['amount', 'Price'], ['each', 'Price per piece'], ['parts', 'Pieces'], ['name', 'Name'], ['num', 'Set number']]
+              .map(([v, l]) => option(v, l, filters.sort)).join('')}
+          </select></label>
+        </div>
+        <div class="db-bulk">
+          <button class="quiet" data-bulk="show">Show these to the boys</button>
+          <button class="quiet" data-bulk="hide">Hide these from the boys</button>
+        </div>
+        <div id="db-table">${dbTable()}</div>
+      </section>`;
+  }
+
+  const redrawDb = () => { root.querySelector('#db-table').innerHTML = dbTable(); };
+
   function draw() {
-    if (root.querySelector('.override input:focus, .own-form input:focus')) return;
+    if (root.querySelector('.override input:focus, .own-form input:focus, .db-search:focus')) return;
     const want = pickedSets();
     const excluded = keys.excluded ?? [];
     const nums = [...new Set([...Object.keys(want), ...Object.keys(wishlist)])]
@@ -133,13 +250,15 @@ export async function render({ root, store, sets, prices, demo }) {
               ${priceHtml(price)}
               <div class="row-actions">
                 <label class="check"><input type="checkbox" data-exclude="${esc(num)}" ${excluded.includes(num) ? 'checked' : ''}> Leave off the family list</label>
-                <button class="quiet" data-edit="${esc(num)}">Set price</button>
+                <button class="quiet" data-edit="pick:${esc(num)}">Edit price</button>
               </div>
-              ${editing === num ? overrideForm(num, price) : ''}
+              ${editing === `pick:${num}` ? overrideForm(num, price) : ''}
             </div>
           </li>`;
         }).join('')}</ul>` : '<p class="empty">No picks yet. Send the boys their link to get started.</p>'}
       </section>
+
+      ${dbSection()}
 
       <section>
         <h2>Reserved gifts</h2>
@@ -169,20 +288,49 @@ export async function render({ root, store, sets, prices, demo }) {
       document.activeElement?.blur();
       if (!owned.includes(num)) await store.setOwned(keys.kidKey, [...owned, num]);
     };
-    root.querySelector('.override')?.addEventListener('submit', async e => {
-      e.preventDefault();
-      const f = new FormData(e.target);
-      const url = safeUrl(f.get('url')) ?? '';
-      editing = null;
-      document.activeElement?.blur();
-      await store.setOverride(keys.famKey, e.target.dataset.num, {
-        amount: Number(f.get('amount')), seller: f.get('seller').trim(), url,
-      });
-      toast(`Price saved: ${money(f.get('amount'))}`);
+  }
+
+  root.onsubmit = async e => {
+    if (!e.target.matches('.override')) return;
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const url = safeUrl(f.get('url')) ?? '';
+    editing = null;
+    document.activeElement?.blur();
+    await store.setOverride(keys.famKey, e.target.dataset.num, {
+      amount: Number(f.get('amount')), seller: f.get('seller').trim(), url,
     });
+    draw();
+    toast(`Price saved: ${money(f.get('amount'))}`);
+  };
+
+  root.oninput = e => {
+    if (e.target.matches('.db-search')) {
+      filters.q = e.target.value;
+      redrawDb();
+    }
+  };
+
+  async function saveHidden(list) {
+    kids.hidden = [...list];
+    redrawDb();
+    await store.setHidden(keys.kidKey, kids.hidden);
   }
 
   root.onchange = async e => {
+    const { filter, visible } = e.target.dataset ?? {};
+    if (filter) {
+      filters[filter] = e.target.value;
+      if (filter === 'sort') filters.dir = e.target.value === 'year' ? -1 : 1;
+      redrawDb();
+      return;
+    }
+    if (visible) {
+      const list = new Set(kids.hidden ?? []);
+      if (e.target.checked) list.delete(visible); else list.add(visible);
+      await saveHidden(list);
+      return;
+    }
     const num = e.target.dataset?.exclude;
     if (!num) return;
     const list = new Set(keys.excluded ?? []);
@@ -203,6 +351,18 @@ export async function render({ root, store, sets, prices, demo }) {
       } else if (d.copy) {
         await navigator.clipboard.writeText(d.copy);
         toast('Link copied.');
+      } else if (d.sort) {
+        filters.dir = filters.sort === d.sort ? -filters.dir : 1;
+        filters.sort = d.sort;
+        redrawDb();
+      } else if (d.bulk) {
+        const list = new Set(kids.hidden ?? []);
+        const rows = dbRows();
+        for (const r of rows) {
+          if (d.bulk === 'hide') list.add(r.num); else list.delete(r.num);
+        }
+        await saveHidden(list);
+        toast(`${rows.length} set${rows.length === 1 ? '' : 's'} ${d.bulk === 'hide' ? 'hidden from' : 'shown to'} the boys.`);
       } else if ('publish' in d) {
         const { entries, remove } = changes();
         await store.publishWishlist(keys.famKey, entries, remove);

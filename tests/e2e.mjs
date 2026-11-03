@@ -134,7 +134,7 @@ ok(!/Aunty|Reserved|Bought/.test(kidText), 'kids page shows nothing about claims
 await fam.click('[data-band="low"]');
 ok((await fam.$$('.wish')).length === 1, 'price filter works');
 await fam.click('[data-band="all"]');
-await admin.click('[data-edit="90001"]');
+await admin.click('[data-edit="pick:90001"]');
 await admin.fill('.override [name=amount]', '35');
 await admin.fill('.override [name=seller]', 'Bricks World');
 await admin.click('text=Save price');
@@ -160,6 +160,42 @@ await admin.click('[data-publish]');
 await fam.waitForTimeout(150);
 ok(await fam.$('[data-release="60414_riley"]'), 'a claimed gift stays listed after its pick is removed');
 ok(!(await fam.$('[data-claim="90004_riley"]')), 'an unclaimed gift goes when its pick is removed');
+
+// Set database
+await admin.waitForSelector('.db tbody tr');
+ok((await admin.$$('.db tbody tr')).length === 12, 'the database lists every set');
+const vanRow = await admin.textContent('tr:has([data-edit="db:60500"])');
+ok(vanRow.includes('276') && vanRow.includes('S$45.99') && vanRow.includes('S$0.17') && vanRow.includes('Toys"R"Us'), 'a row shows pieces, price, price per piece and retailer');
+await admin.selectOption('[data-filter="theme"]', 'Speed Champions');
+ok((await admin.$$('.db tbody tr')).length === 2, 'the database filters by theme');
+await admin.click('[data-bulk="hide"]');
+await admin.waitForSelector('.toast.show');
+await admin.selectOption('[data-filter="theme"]', 'all');
+await admin.selectOption('[data-filter="show"]', 'noprice');
+await admin.selectOption('[data-filter="show"]', 'all');
+await admin.fill('.db-search', 'train');
+ok((await admin.$$('.db tbody tr')).length === 1, 'the database searches by name');
+ok((await admin.getAttribute('.db-search', 'value')) !== null, 'search box survives typing');
+await admin.fill('.db-search', '');
+await admin.selectOption('[data-filter="sort"]', 'each');
+ok((await admin.$eval('.db tbody tr', r => r.textContent)).includes('S$0.12'), 'the phone sort control orders by price per piece');
+await admin.setViewportSize({ width: 1280, height: 900 });
+await admin.click('[data-sort="amount"]');
+ok((await admin.$eval('.db tbody tr', r => r.textContent)).includes('S$35.00'), 'column headers sort the table');
+await admin.uncheck('[data-visible="90003"]');
+await kids.waitForTimeout(150);
+ok(!(await kids.$('[data-set="90003"]')) || await kids.$('[data-set="90003"][aria-pressed="true"]'), 'an unticked set leaves the boys page unless already picked');
+await admin.check('[data-visible="90003"]');
+await admin.click('[data-edit="db:90009"]');
+await admin.fill('.db-edit [name=amount]', '19.9');
+await admin.fill('.db-edit [name=seller]', 'Metro');
+await admin.fill('.db-edit [name=url]', 'https://example.com/buy');
+await admin.click('.db-edit >> text=Save price');
+await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=Set by you');
+const camper = await admin.textContent('tr:has([data-edit="db:90009"])');
+ok(camper.includes('S$19.90') && camper.includes('Metro'), 'price and retailer can be set from the database');
+ok((await admin.getAttribute('tr:has([data-edit="db:90009"]) a', 'href')) === 'https://example.com/buy', 'the buy link is saved');
+await shot(admin, '7-admin-database', true);
 
 // Bad links and wide screens
 const bad = await open('?demo&family=nope');

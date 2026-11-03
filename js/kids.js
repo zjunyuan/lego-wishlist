@@ -6,6 +6,7 @@ const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6
 export function render({ root, store, sets, key, space }) {
   let children = space.children;
   let owned = space.owned ?? [];
+  let hidden = space.hidden ?? [];
   let picks = {};
   let child = null;
   let onlyPicks = false;
@@ -44,7 +45,7 @@ export function render({ root, store, sets, key, space }) {
     const picked = mine();
     const q = search.trim().toLowerCase();
     const list = sets
-      .filter(s => !owned.includes(s.num))
+      .filter(s => picked[s.num] || !(owned.includes(s.num) || hidden.includes(s.num)))
       .filter(s => !onlyPicks || picked[s.num])
       .filter(s => !theme || s.theme === theme)
       .filter(s => !q || s.name.toLowerCase().includes(q) || s.num.includes(q));
@@ -147,6 +148,7 @@ export function render({ root, store, sets, key, space }) {
     if (!s) return;
     children = s.children;
     owned = s.owned ?? [];
+    hidden = s.hidden ?? [];
     if (child) refreshGrid(); else draw();
   });
 

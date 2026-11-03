@@ -72,6 +72,7 @@ export async function createSpaces(names) {
 }
 
 export async function setOwned(key, owned) { state.spaces[key].owned = owned; save(); }
+export async function setHidden(key, hidden) { state.spaces[key].hidden = hidden; save(); }
 export async function setExcluded(excluded) { state.keys.excluded = excluded; save(); }
 
 export async function publishWishlist(key, entries, removeNums) {

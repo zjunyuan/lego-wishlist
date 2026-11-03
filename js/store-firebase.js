@@ -98,6 +98,7 @@ export async function createSpaces(names) {
 }
 
 export const setOwned = (kidKey, owned) => updateDoc(doc(db, 'spaces', kidKey), { owned });
+export const setHidden = (kidKey, hidden) => updateDoc(doc(db, 'spaces', kidKey), { hidden });
 export const setExcluded = excluded => updateDoc(doc(db, 'admin', 'keys'), { excluded });
 
 export async function publishWishlist(famKey, entries, removeNums) {
