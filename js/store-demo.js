@@ -7,7 +7,7 @@ const params = new URLSearchParams(location.search);
 const me = params.get('uid') ?? 'demo-user';
 const listeners = new Set();
 
-const blank = () => ({ spaces: {}, keys: null, picks: {}, wishlist: {}, claims: {}, overrides: {} });
+const blank = () => ({ spaces: {}, keys: null, picks: {}, wishlist: {}, claims: {}, shares: {}, overrides: {} });
 const load = () => { try { return JSON.parse(localStorage.getItem(NAME)) ?? blank(); } catch { return blank(); } };
 let state = load();
 
@@ -34,6 +34,7 @@ export const watchSpace = (key, cb) => watch(() => state.spaces[key] ?? null, cb
 export const watchPicks = (key, cb) => watch(() => state.picks, cb);
 export const watchWishlist = (key, cb) => watch(() => state.wishlist, cb);
 export const watchClaims = (key, cb) => watch(() => state.claims, cb);
+export const watchShares = (key, cb) => watch(() => state.shares, cb);
 export const watchOverrides = (key, cb) => watch(() => state.overrides, cb);
 
 export async function setPicks(key, child, sets) {
@@ -51,6 +52,18 @@ export async function claim(key, num, child, by) {
 
 export async function setClaimStatus(key, id, status) {
   Object.assign(state.claims[id], { status, at: Date.now() });
+  save();
+}
+
+export async function joinShare(key, num, child, by, amount) {
+  const entry = { num, child, by, uid: me, at: Date.now() };
+  if (amount !== null) entry.amount = amount;
+  state.shares[`${num}_${child}_${me}`] = entry;
+  save();
+}
+
+export async function leaveShare(key, id) {
+  delete state.shares[id];
   save();
 }
 
@@ -72,6 +85,20 @@ export async function createSpaces(names) {
 }
 
 export async function setOwned(key, owned) { state.spaces[key].owned = owned; save(); }
+export async function setAges(keys, ages) {
+  state.spaces[keys.kidKey].ages = ages;
+  state.spaces[keys.famKey].ages = ages;
+  save();
+}
+
+export async function importDetails(keys, nextOverrides, ages, images) {
+  Object.assign(state.overrides, nextOverrides);
+  state.spaces[keys.kidKey].ages = ages;
+  state.spaces[keys.kidKey].images = images;
+  state.spaces[keys.famKey].ages = ages;
+  save();
+}
+
 export async function setHidden(key, hidden) { state.spaces[key].hidden = hidden; save(); }
 export async function setExcluded(excluded) { state.keys.excluded = excluded; save(); }
 

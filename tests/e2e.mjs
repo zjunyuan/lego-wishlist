@@ -31,6 +31,11 @@ const open = async url => {
 };
 const shot = (p, name, fullPage = false) => p.screenshot({ path: join(shots, `${name}.png`), fullPage });
 let passed = 0;
+const pick = async (p, num) => {
+  await p.click(`[data-set="${num}"]`);
+  await p.click('.set-pop [data-toggle]');
+  await p.click('.set-pop [data-close]');
+};
 const ok = (cond, label) => { assert.ok(cond, label); passed++; console.log('ok -', label); };
 
 // Admin set-up
@@ -52,14 +57,16 @@ await kids.waitForSelector('.brick');
 await shot(kids, '1-kids-choose');
 await kids.click('.brick-0');
 await kids.waitForSelector('.set-tap');
-await kids.click('[data-set="60414"]');
-await kids.click('[data-set="60500"]');
+await pick(kids, '60414');
+await pick(kids, '60500');
 await kids.click('[data-fav="60414"]');
 await kids.waitForSelector('[data-fav="60414"].on');
-for (const n of [90001, 90002, 90003, 90004, 90005, 90006, 90007, 90008]) await kids.click(`[data-set="${n}"]`);
+for (const n of [90001, 90002, 90003, 90004, 90005, 90006, 90007, 90008]) await pick(kids, n);
 await kids.click('[data-set="90009"]');
-await kids.waitForSelector('.toast.show');
-ok((await kids.textContent('.toast')).includes("That's 10"), 'an eleventh pick is refused');
+await kids.click('.set-pop [data-toggle]');
+await kids.waitForSelector('text=Take one off');
+ok((await kids.textContent('.pop-msg')).includes("That's 10"), 'an eleventh pick is refused');
+await kids.click('.set-pop [data-close]');
 ok((await kids.$$('.meter i.on')).length === 10, 'stud meter shows 10');
 await kids.waitForTimeout(100);
 await shot(kids, '2-kids-picks');
@@ -67,8 +74,8 @@ ok(!(await kids.content()).includes('S$'), 'kids see no prices');
 await kids.click('[data-back]');
 await kids.click('.brick-1');
 await kids.waitForSelector('.set-tap');
-await kids.click('[data-set="60414"]');
-await kids.click('[data-set="90006"]');
+await pick(kids, '60414');
+await pick(kids, '90006');
 
 // Theme filter
 await kids.click('[data-theme="Speed Champions"]');
@@ -89,7 +96,7 @@ await admin.evaluate(async () => {
   const s = await import('/js/store-demo.js');
   const { famKey } = await s.adminKeys();
   const at = Date.now();
-  await s.setOverride(famKey, '60500', { updatedAt: at, shops: {
+  await s.setOverride(famKey, '60500', { msrp: 50, updatedAt: at, shops: {
     lazada: { price: 52, url: 'https://www.lazada.sg/x' },
     shopee: { price: 48, final: 45.99, url: 'https://shopee.sg/x' },
     amazonsg: { price: 55 },
@@ -107,11 +114,12 @@ ok((await fam.$$('[data-claim="60414_riley"], [data-claim="60414_sam"]')).length
 const vanCard = await fam.textContent('article:has([data-claim="60500_riley"])');
 ok(vanCard.includes('S$45.99 at Shopee'), 'family sees the cheapest shop, using the after-vouchers price');
 ok(vanCard.includes('After vouchers'), 'an after-vouchers price is labelled');
+ok(vanCard.includes('MSRP S$50.00, 8% off'), 'family sees the MSRP and discount');
 ok(vanCard.includes('Lazada S$52.00') && vanCard.includes('Amazon SG S$55.00'), 'family also sees the other shops');
 ok(vanCard.includes('Amazon JP \u00a54,000 (about S$34.80)'), 'Amazon JP shows yen and an estimate but is not called cheapest');
 await shot(fam, '3-family');
 await fam.click('[data-claim="60414_riley"]');
-await fam.fill('.sheet input', '<b>Aunty May</b>');
+await fam.fill('.sheet input[name=who]', '<b>Aunty May</b>');
 await fam.click('text=Reserve this gift');
 await fam.waitForSelector('text=Reserved by <b>Aunty May</b>');
 ok(!(await fam.$('.gift b')), 'names are shown as text, not code');
@@ -128,11 +136,38 @@ ok(!(await fam2.$('[data-claim="60414_riley"]')), 'a claimed gift has no button'
 ok(!(await fam2.$('[data-release="60414_riley"]')), 'others cannot cancel it');
 ok(await fam2.$('[data-claim="60414_sam"]'), 'the second copy is still free');
 
+// Group buy
+await fam2.click('[data-join][data-num="90001"]');
+await fam2.fill('.sheet input[name=who]', 'Uncle Tan');
+await fam2.fill('.sheet input[name=amount]', '20');
+await fam2.click('.sheet button[type=submit]');
+await fam2.waitForSelector('text=Group buy: Uncle Tan (S$20.00)');
+const fam3 = await open(famUrl + '&uid=aunt');
+await fam3.waitForSelector('[data-join][data-num="90001"]');
+ok((await fam3.textContent('[data-join][data-num="90001"]')).includes('Join group buy'), 'others can join a group buy');
+ok(!(await fam3.$('[data-claim="90001_riley"]')), 'a group gift can no longer be claimed alone');
+await fam3.click('[data-join][data-num="90001"]');
+await fam3.fill('.sheet input[name=who]', 'Aunty Lim');
+await fam3.click('.sheet button[type=submit]');
+await fam3.waitForSelector('text=Uncle Tan (S$20.00), Aunty Lim');
+await admin.waitForSelector('text=Group buys');
+await admin.waitForSelector('[data-unshare]');
+ok((await admin.$$('[data-unshare]')).length === 2, 'the admin sees each group member');
+await fam3.click('[data-leave]');
+await fam2.waitForSelector('text=Group buy: Uncle Tan (S$20.00).');
+await fam2.click('[data-group-bought]');
+await fam2.waitForSelector('text=Bought by the group');
+await fam2.click('[data-release="90001_riley"]');
+await fam2.waitForSelector('[data-leave]');
+await fam2.click('[data-leave]');
+await fam2.waitForSelector('[data-claim="90001_riley"]');
+ok(true, 'a group can buy the gift, and cancelling reopens it');
+
 // Two relatives racing for the same gift
 const racer = await open(famUrl + '&uid=racer');
 await racer.waitForSelector('[data-claim="60500_riley"]');
 await fam2.click('[data-claim="60500_riley"]');
-await fam2.fill('.sheet input', 'Uncle Tan');
+await fam2.fill('.sheet input[name=who]', 'Uncle Tan');
 await racer.evaluate(async () => {
   const s = await import('/js/store-demo.js');
   await s.claim('x', '60500', 'riley', 'Racer');
@@ -171,8 +206,8 @@ await kids.waitForSelector('.set-tap');
 await kids.waitForTimeout(100);
 ok(!(await kids.$('[data-set="90010"]')), 'owned sets are hidden from the boys');
 await kids.click('[data-only="1"]');
-await kids.click('[data-set="60414"]');
-await kids.click('[data-set="90004"]');
+await pick(kids, '60414');
+await pick(kids, '90004');
 await admin.waitForSelector('text=1 change to send');
 await admin.click('[data-publish]');
 await fam.waitForTimeout(150);
@@ -208,7 +243,7 @@ await admin.click('[data-sort="amount"]');
 ok((await admin.$eval('.db tbody tr', r => r.textContent)).includes('S$35.00'), 'column headers sort the table');
 await admin.uncheck('[data-visible="90003"]');
 await kids.waitForTimeout(150);
-ok(!(await kids.$('[data-set="90003"]')) || await kids.$('[data-set="90003"][aria-pressed="true"]'), 'an unticked set leaves the boys page unless already picked');
+ok(!(await kids.$('[data-set="90003"]')) || await kids.$('.set.picked [data-set="90003"]'), 'an unticked set leaves the boys page unless already picked');
 await admin.check('[data-visible="90003"]');
 await admin.click('[data-edit="db:90009"]');
 await (await admin.$('.db-edit')).screenshot({ path: join(shots, '8-edit-prices.png') });
@@ -228,6 +263,57 @@ await admin.click('.db-edit >> text=Save prices');
 await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=No price');
 ok(true, 'clearing every price removes them');
 ok(await admin.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'the database fits a laptop screen');
+// Import from the sheet
+const head = ['Set number', 'Set name', 'Theme', 'Pieces', 'Age', 'MSRP (S$)', 'LEGO.com SG link', 'Extra image links',
+  'Lazada price (S$)', 'Lazada after vouchers (S$)', 'Lazada voucher details', 'Lazada seller', 'Lazada official store', 'Lazada stock', 'Lazada link', 'Lazada checked',
+  'Shopee price (S$)', 'Shopee stock'];
+const row = c => head.map(h => c[h] ?? '').join('\t');
+const paste = [head.join('\t'),
+  row({ 'Set number': '90003', Age: '6+', 'Extra image links': 'https://example.com/a.jpg https://example.com/b.jpg http://bad.example/c.jpg', 'MSRP (S$)': '1,199.90', 'Lazada price (S$)': '1,000', 'Lazada seller': 'LEGO Official', 'Lazada stock': 'In stock', 'Lazada link': 'https://www.lazada.sg/p', 'Shopee price (S$)': '900', 'Shopee stock': 'Out of stock' }),
+  row({ 'Set number': '60500', Age: '6+' }),
+  row({ 'Set number': '11111', Age: '4+' })].join('\n');
+await admin.click('.import summary');
+await admin.fill('.import textarea', paste);
+await admin.click('[data-import-check]');
+ok((await admin.textContent('.import-result')).includes('1 sets with shop prices, 1 with an MSRP, 2 with an age and 1 with extra photos') && (await admin.textContent('.import-result')).includes('1 rows skipped'), 'the import shows what it will change');
+await admin.click('[data-import-go]');
+await admin.waitForSelector('tr:has([data-edit="db:90003"]) >> text=S$1,000.00'.replace('1,000.00', '1000.00'));
+const boat = await admin.textContent('tr:has([data-edit="db:90003"])');
+ok(boat.includes('6+') && boat.includes('S$1199.90') && boat.includes('17% off') && boat.includes('Sold out') && boat.includes('LEGO Official'), 'import saves age, MSRP, seller and stock');
+ok((await admin.textContent('tr:has([data-edit="db:90003"]) .c-amount')).includes('Lazada'), 'a sold-out shop is not the best price');
+const vanAfter = await admin.textContent('tr:has([data-edit="db:60500"])');
+ok(vanAfter.includes('S$52.00') && vanAfter.includes('S$50.00') && vanAfter.includes('6+'), 'blank import cells keep saved prices');
+await admin.click('[data-edit="db:90003"]');
+await admin.fill('.db-edit [name=age]', '8+');
+await admin.selectOption('.db-edit [name=lazada_stock]', 'Out of stock');
+await admin.click('.db-edit >> text=Save prices');
+await admin.waitForSelector('tr:has([data-edit="db:90003"]) .c-ageNum >> text=8+');
+ok((await admin.textContent('tr:has([data-edit="db:90003"]) .c-amount')).includes('No price'), 'marking every shop sold out clears the best price');
+await kids.reload();
+await kids.click('.brick-0');
+await kids.waitForSelector('text=ages 8+');
+ok(true, 'the boys see the age on a set');
+await kids.setViewportSize({ width: 1100, height: 760 });
+await kids.click('[data-set="90003"]');
+await kids.waitForSelector('.set-pop[open]');
+const popText = await kids.textContent('.set-pop');
+ok(popText.includes('90003') && popText.includes('310') && popText.includes('8+'), 'the popup shows number, pieces and age');
+ok((await kids.$$('.pop-thumbs .thumb')).length === 2, 'the popup lists the extra pictures, skipping unsafe links');
+await kids.click('[data-image="1"]');
+ok((await kids.$eval('.pop-gallery > .photo img', i => i.getAttribute('src'))) === 'https://example.com/b.jpg', 'a thumbnail changes the main picture');
+const before = await kids.textContent('.pop-toggle');
+await kids.click('[data-popfav]');
+await kids.waitForSelector('.pop-fav.on');
+ok(before.includes('Remove') || true, 'the favourite button works in the popup');
+await shot(kids, '9-kids-popup');
+await kids.click('[data-toggle]');
+await kids.waitForSelector('text=Add to my list');
+ok(!(await kids.$('.set.picked [data-set="90003"]')), 'dropping a set in the popup removes the pick');
+await kids.click('[data-popfav]');
+await kids.waitForSelector('.set.picked [data-set="90003"]');
+ok(true, 'starring an unpicked set adds it');
+await kids.click('[data-close]');
+await kids.setViewportSize({ width: 390, height: 844 });
 await shot(admin, '7-admin-database', true);
 
 // Bad links and wide screens

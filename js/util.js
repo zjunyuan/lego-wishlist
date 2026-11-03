@@ -66,29 +66,31 @@ export function offersFor(num, overrides, fx) {
   return SHOPS.filter(s => shops[s.id]).map(s => {
     const e = shops[s.id];
     const name = s.custom ? e.seller || s.name : s.name;
+    const stock = e.stock ?? null;
+    const available = !stock || stock === 'In stock';
     if (s.yen) {
       const about = e.price && fx?.sgdPerJpy ? e.price * fx.sgdPerJpy : null;
       return {
-        id: s.id, name, url: e.url, listed: e.price ?? null, about,
-        amount: e.final ?? about, counts: e.final != null, afterVouchers: false, delivered: e.final != null, yen: true,
+        id: s.id, name, url: e.url, listed: e.price ?? null, about, stock, available, seller: e.seller, voucher: e.voucher,
+        amount: e.final ?? about, counts: available && e.final != null, afterVouchers: false, delivered: e.final != null, yen: true,
       };
     }
     return {
-      id: s.id, name, url: e.url, listed: e.price ?? null,
-      amount: e.final ?? e.price ?? null, counts: true, afterVouchers: e.final != null,
+      id: s.id, name, url: e.url, listed: e.price ?? null, stock, available, seller: e.seller, voucher: e.voucher,
+      amount: e.final ?? e.price ?? null, counts: available && (e.final ?? e.price) != null, afterVouchers: e.final != null,
     };
-  }).filter(o => o.amount != null || o.listed != null);
+  }).filter(o => o.amount != null || o.listed != null || o.stock);
 }
 
 export function priceFor(num, overrides, fx) {
   const offers = offersFor(num, overrides, fx);
   const counted = offers.filter(o => o.counts).sort((a, b) => a.amount - b.amount);
-  const best = counted[0] ?? offers.filter(o => o.amount != null)[0];
+  const best = counted[0] ?? offers.filter(o => o.available && o.amount != null)[0];
   if (!best) return null;
   return {
     ...best,
     seller: best.name,
-    others: offers.filter(o => o !== best),
+    others: offers.filter(o => o !== best && o.available && (o.amount != null || o.listed != null)),
     checked: overrides[num]?.updatedAt ?? null,
   };
 }
@@ -109,12 +111,25 @@ export function priceHtml(p) {
   const url = safeUrl(p.url);
   const seller = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(p.seller)}</a>` : esc(p.seller);
   let note = '';
-  if (p.afterVouchers) note = 'After vouchers, so yours may differ';
+  if (p.afterVouchers) note = p.voucher ? `After vouchers (${p.voucher}), so yours may differ` : 'After vouchers, so yours may differ';
   else if (p.delivered) note = 'Delivered';
   else if (p.yen) note = `Approximate, from ${yen(p.listed)}, before shipping`;
   return `<p class="price"><b>${p.yen && !p.delivered ? 'About ' : ''}${money(p.amount)}</b> at ${seller}</p>${
     note ? `<p class="price-note">${esc(note)}</p>` : ''}${
     p.others.length ? `<p class="also">Also: ${p.others.map(offerLink).join(', ')}</p>` : ''}`;
+}
+
+export function msrpHtml(msrp, price) {
+  if (msrp == null) return '';
+  const off = offLabel(msrp, price?.amount);
+  return `<p class="price-note">MSRP ${money(msrp)}${off ? `, ${off}` : ''}</p>`;
+}
+
+export function offLabel(msrp, amount) {
+  if (msrp == null || amount == null || msrp === 0) return '';
+  const pct = Math.round((1 - amount / msrp) * 100);
+  if (pct > 0) return `${pct}% off`;
+  return pct < 0 ? `${-pct}% above` : 'same as MSRP';
 }
 
 let toastTimer;

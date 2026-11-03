@@ -18,7 +18,7 @@ The links are created when the admin first signs in. Their keys are never stored
 - `data/sets.json`: recent sets in those themes from Rebrickable's public downloads.
 - `data/fx.json`: the yen to Singapore dollar rate, for Amazon JP estimates.
 
-Prices are entered on the admin page for Lazada, Shopee, Amazon SG, Amazon JP and one other shop. Each has a search link for the exact set number.
+Prices, MSRP and age are entered on the admin page, or imported by pasting the Prices tab of the price-check sheet. Ages and extra photos come from there too, because the catalogue has neither.
 
 ## Set-up
 

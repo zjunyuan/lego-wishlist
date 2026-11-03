@@ -45,6 +45,20 @@ service cloud.firestore {
         allow write: if isAdmin() && spaceIs(key, 'family');
       }
 
+      // Group buys: one document per person joining a gift.
+      match /shares/{shareId} {
+        allow read: if signedIn() && spaceIs(key, 'family');
+        allow create: if signedIn() && spaceIs(key, 'family')
+          && request.resource.data.keys().hasOnly(['num', 'child', 'by', 'uid', 'at', 'amount'])
+          && shareId == request.resource.data.num + '_' + request.resource.data.child + '_' + request.auth.uid
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.by is string
+          && request.resource.data.by.size() > 0
+          && request.resource.data.by.size() <= 40
+          && (!('amount' in request.resource.data) || request.resource.data.amount is number);
+        allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      }
+
       match /claims/{claimId} {
         allow read: if signedIn() && spaceIs(key, 'family');
 

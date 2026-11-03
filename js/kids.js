@@ -1,4 +1,4 @@
-import { esc, photo, toast } from './util.js';
+import { esc, photo, safeUrl, toast } from './util.js';
 
 const MAX_PICKS = 10;
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.3 6.7L12 17.5l-6 3.3 1.3-6.7-5-4.6 6.8-.8z"/></svg>';
@@ -7,6 +7,10 @@ export function render({ root, store, sets, key, space }) {
   let children = space.children;
   let owned = space.owned ?? [];
   let hidden = space.hidden ?? [];
+  let ages = space.ages ?? {};
+  let images = space.images ?? {};
+  let shown = null;
+  let shownImage = 0;
   let picks = {};
   let child = null;
   let onlyPicks = false;
@@ -57,10 +61,10 @@ export function render({ root, store, sets, key, space }) {
       const p = picked[s.num];
       return `
         <article class="set ${p ? 'picked' : ''}">
-          <button class="set-tap" data-set="${esc(s.num)}" aria-pressed="${Boolean(p)}" aria-label="${p ? 'Remove' : 'Pick'} ${esc(s.name)}">
+          <button class="set-tap" data-set="${esc(s.num)}" aria-haspopup="dialog" aria-label="See ${esc(s.name)}">
             ${photo(s)}
             <span class="set-name">${esc(s.name)}</span>
-            <span class="set-meta">Set ${esc(s.num)}, ${esc(s.parts)} pieces</span>
+            <span class="set-meta">Set ${esc(s.num)}, ${esc(s.parts)} pieces${ages[s.num] ? `, ages ${esc(ages[s.num])}` : ''}</span>
           </button>
           ${p ? `<button class="fav ${p.fav ? 'on' : ''}" data-fav="${esc(s.num)}" aria-pressed="${Boolean(p.fav)}" aria-label="Favourite ${esc(s.name)}">${STAR}</button>` : ''}
         </article>`;
@@ -103,6 +107,69 @@ export function render({ root, store, sets, key, space }) {
     }
   }
 
+  const pop = document.createElement('dialog');
+  pop.className = 'set-pop';
+  document.body.append(pop);
+
+  const pictures = set => [set.img, ...(images[set.num] ?? [])].filter(safeUrl);
+
+  function drawPop(message = '') {
+    if (!shown) return;
+    const set = shown;
+    const pics = pictures(set);
+    const p = mine()[set.num];
+    const main = pics[shownImage] ?? pics[0];
+    pop.innerHTML = `
+      <button class="pop-close" data-close aria-label="Close">×</button>
+      <div class="pop-gallery">
+        ${photo({ num: set.num, img: main })}
+        ${pics.length > 1 ? `<div class="pop-thumbs">${pics.map((src, i) => `
+          <button class="thumb" data-image="${i}" aria-label="Picture ${i + 1}" aria-pressed="${i === shownImage}">${photo({ num: set.num, img: src })}</button>`).join('')}</div>` : ''}
+      </div>
+      <div class="pop-info">
+        <h2>${esc(set.name)}</h2>
+        <dl>
+          <dt>Set number</dt><dd>${esc(set.num)}</dd>
+          <dt>Pieces</dt><dd>${esc(set.parts)}</dd>
+          ${ages[set.num] ? `<dt>Age</dt><dd>${esc(ages[set.num])}</dd>` : ''}
+          ${set.theme ? `<dt>Theme</dt><dd>${esc(set.theme)}</dd>` : ''}
+        </dl>
+        <p class="pop-msg" role="status">${esc(message)}</p>
+        <button class="pop-toggle ${p ? 'remove' : ''}" data-toggle>${p ? 'Remove from my list' : 'Add to my list'}</button>
+        <button class="pop-fav ${p?.fav ? 'on' : ''}" data-popfav aria-pressed="${Boolean(p?.fav)}">${STAR}<span>${p?.fav ? 'My favourite' : 'Make it a favourite'}</span></button>
+      </div>`;
+  }
+
+  function openPop(num) {
+    shown = sets.find(s => s.num === num);
+    shownImage = 0;
+    drawPop();
+    pop.showModal();
+  }
+
+  pop.onclick = e => {
+    if (e.target === pop) return pop.close();
+    const el = e.target.closest('button');
+    if (!el) return undefined;
+    const num = shown.num;
+    if ('close' in el.dataset) return pop.close();
+    if (el.dataset.image) {
+      shownImage = Number(el.dataset.image);
+      return drawPop();
+    }
+    const next = { ...mine() };
+    if ('toggle' in el.dataset) {
+      if (next[num]) delete next[num];
+      else if (Object.keys(next).length >= MAX_PICKS) return drawPop(`That's ${MAX_PICKS}! Take one off to pick another.`);
+      else next[num] = { fav: false };
+    } else if ('popfav' in el.dataset) {
+      if (!next[num] && Object.keys(next).length >= MAX_PICKS) return drawPop(`That's ${MAX_PICKS}! Take one off to pick another.`);
+      next[num] = { fav: !next[num]?.fav };
+    }
+    save(next);
+    return drawPop();
+  };
+
   root.onclick = e => {
     const el = e.target.closest('button');
     if (!el) return;
@@ -125,12 +192,7 @@ export function render({ root, store, sets, key, space }) {
       onlyPicks = false;
       draw();
     } else if (el.dataset.set) {
-      const next = { ...mine() };
-      const num = el.dataset.set;
-      if (next[num]) delete next[num];
-      else if (Object.keys(next).length >= MAX_PICKS) return toast(`That's ${MAX_PICKS}! Take one off to pick another.`);
-      else next[num] = { fav: false };
-      save(next);
+      openPop(el.dataset.set);
     } else if (el.dataset.fav) {
       const num = el.dataset.fav;
       save({ ...mine(), [num]: { fav: !mine()[num].fav } });
@@ -149,6 +211,8 @@ export function render({ root, store, sets, key, space }) {
     children = s.children;
     owned = s.owned ?? [];
     hidden = s.hidden ?? [];
+    ages = s.ages ?? {};
+    images = s.images ?? {};
     if (child) refreshGrid(); else draw();
   });
 

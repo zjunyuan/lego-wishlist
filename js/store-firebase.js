@@ -52,6 +52,7 @@ export const watchSpace = (key, cb) => onSnapshot(doc(db, 'spaces', key), s => c
 export const watchPicks = (kidKey, cb) => onSnapshot(collection(db, 'spaces', kidKey, 'picks'), s => cb(toMap(s)));
 export const watchWishlist = (famKey, cb) => onSnapshot(collection(db, 'spaces', famKey, 'wishlist'), s => cb(toMap(s)));
 export const watchClaims = (famKey, cb) => onSnapshot(collection(db, 'spaces', famKey, 'claims'), s => cb(toMap(s)));
+export const watchShares = (famKey, cb) => onSnapshot(collection(db, 'spaces', famKey, 'shares'), s => cb(toMap(s)), () => cb({}));
 export const watchOverrides = (famKey, cb) => onSnapshot(collection(db, 'spaces', famKey, 'overrides'), s => cb(toMap(s)));
 
 export const setPicks = (kidKey, child, sets) =>
@@ -77,6 +78,14 @@ export async function claim(famKey, num, child, by) {
 export const setClaimStatus = (famKey, id, status) =>
   updateDoc(doc(db, 'spaces', famKey, 'claims', id), { status, at: Date.now() });
 
+export function joinShare(famKey, num, child, by, amount) {
+  const entry = { num, child, by, uid: uid(), at: Date.now() };
+  if (amount !== null) entry.amount = amount;
+  return setDoc(doc(db, 'spaces', famKey, 'shares', `${num}_${child}_${uid()}`), entry);
+}
+
+export const leaveShare = (famKey, id) => deleteDoc(doc(db, 'spaces', famKey, 'shares', id));
+
 export const release = (famKey, id) => deleteDoc(doc(db, 'spaces', famKey, 'claims', id));
 
 // Admin only from here down. The security rules enforce this.
@@ -98,6 +107,23 @@ export async function createSpaces(names) {
 }
 
 export const setOwned = (kidKey, owned) => updateDoc(doc(db, 'spaces', kidKey), { owned });
+export function setAges(keys, ages) {
+  const batch = writeBatch(db);
+  batch.update(doc(db, 'spaces', keys.kidKey), { ages });
+  batch.update(doc(db, 'spaces', keys.famKey), { ages });
+  return batch.commit();
+}
+
+export async function importDetails(keys, nextOverrides, ages, images) {
+  const batch = writeBatch(db);
+  for (const [num, entry] of Object.entries(nextOverrides)) {
+    batch.set(doc(db, 'spaces', keys.famKey, 'overrides', num), entry);
+  }
+  batch.update(doc(db, 'spaces', keys.kidKey), { ages, images });
+  batch.update(doc(db, 'spaces', keys.famKey), { ages });
+  await batch.commit();
+}
+
 export const setHidden = (kidKey, hidden) => updateDoc(doc(db, 'spaces', kidKey), { hidden });
 export const setExcluded = excluded => updateDoc(doc(db, 'admin', 'keys'), { excluded });
 

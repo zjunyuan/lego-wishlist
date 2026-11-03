@@ -1,17 +1,19 @@
-import { esc, daysSince, money, offersFor, photo, priceFor, priceHtml, safeUrl, shopsFor, shortDate, SHOPS, toast, yen } from './util.js';
+import { esc, daysSince, money, msrpHtml, offersFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shortDate, SHOPS, toast, yen } from './util.js';
+import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
 const STALE_PRICE_DAYS = 14;
 
 export async function render({ root, store, sets, fx, demo }) {
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
-  let keys, kids, picks = {}, wishlist = {}, claims = {}, overrides = {};
+  let keys, kids, picks = {}, wishlist = {}, claims = {}, shares = {}, overrides = {};
+  let pendingImport = null;
   let editing = null;
   const filters = { q: '', theme: 'all', show: 'all', sort: 'year', dir: -1 };
   const COLUMNS = [
-    ['photo', ''], ['num', 'Set'], ['name', 'Name'], ['parts', 'Pieces'],
+    ['photo', ''], ['num', 'Set'], ['name', 'Name'], ['ageNum', 'Age'], ['parts', 'Pieces'], ['msrp', 'MSRP'],
     ['lazada', 'Lazada'], ['shopee', 'Shopee'], ['amazonsg', 'Amazon SG'], ['amazonjp', 'Amazon JP'],
-    ['amount', 'Best'], ['each', 'Per piece'], ['checked', 'Checked'], ['visible', 'Boys see it'],
+    ['amount', 'Best'], ['off', 'Off MSRP'], ['each', 'Per piece'], ['checked', 'Checked'], ['visible', 'Boys see it'],
   ];
 
   const link = param => {
@@ -87,6 +89,11 @@ export async function render({ root, store, sets, fx, demo }) {
     const field = (name, label, value, attrs) => `<label>${label} <input name="${name}" value="${esc(value ?? '')}" ${attrs}></label>`;
     const money2 = 'type="number" step="0.01" min="0"';
     return `<form class="override" data-num="${esc(num)}">
+      <div class="shop-row">
+        <div class="shop-name"><b>Set details</b><a href="https://www.lego.com/en-sg/search?q=${esc(num)}" target="_blank" rel="noopener">LEGO.com</a></div>
+        ${field('age', 'Age', (kids.ages ?? {})[num], 'maxlength="6" placeholder="6+"')}
+        ${field('msrp', 'MSRP (S$)', overrides[num]?.msrp, money2)}
+      </div>
       ${SHOPS.map(s => {
         const e = shops[s.id] ?? {};
         return `<div class="shop-row">
@@ -97,6 +104,9 @@ export async function render({ root, store, sets, fx, demo }) {
             : field(`${s.id}_price`, 'Price (S$)', e.price, money2)}
           ${s.custom ? '' : field(`${s.id}_final`, s.yen ? 'Delivered (S$)' : 'After vouchers (S$)', e.final, money2)}
           ${field(`${s.id}_url`, 'Link to buy', e.url, 'type="url" placeholder="https://"')}
+          <label>Stock <select name="${s.id}_stock">
+            ${['', 'In stock', 'Out of stock', 'Not listed'].map(v => `<option value="${v}" ${v === (e.stock ?? '') ? 'selected' : ''}>${v || 'Not checked'}</option>`).join('')}
+          </select></label>
         </div>`;
       }).join('')}
       <div class="sheet-actions">
@@ -109,6 +119,7 @@ export async function render({ root, store, sets, fx, demo }) {
   function dbRows() {
     const hidden = kids.hidden ?? [];
     const wanted = pickedSets();
+    const ages = kids.ages ?? {};
     const q = filters.q.trim().toLowerCase();
     const rows = sets.map(s => {
       const price = priceFor(s.num, overrides, fx);
@@ -123,12 +134,16 @@ export async function render({ root, store, sets, fx, demo }) {
         each: price && s.parts ? price.amount / s.parts : null,
         seller: price?.seller ?? null,
         checked: overrides[s.num]?.updatedAt ?? null,
+        msrp: overrides[s.num]?.msrp ?? null,
+        off: overrides[s.num]?.msrp && price ? 1 - price.amount / overrides[s.num].msrp : null,
+        age: ages[s.num] ?? null,
+        ageNum: parseInt(ages[s.num], 10) || null,
         visible: !hidden.includes(s.num),
         picked: Boolean(wanted[s.num]),
       };
     }).filter(r => (
       (filters.theme === 'all' || r.theme === filters.theme)
-      && (!q || r.name.toLowerCase().includes(q) || r.num.includes(q) || (r.seller ?? '').toLowerCase().includes(q))
+      && (!q || r.name.toLowerCase().includes(q) || r.num.includes(q) || (r.seller ?? '').toLowerCase().includes(q) || (r.age ?? '').includes(q))
       && (filters.show === 'all'
         || (filters.show === 'noprice' && !r.price)
         || (filters.show === 'picked' && r.picked)
@@ -152,14 +167,17 @@ export async function render({ root, store, sets, fx, demo }) {
     const search = `<a class="find" href="${esc(shop.search(r.num))}" target="_blank" rel="noopener">Search</a>`;
     if (!o) return search;
     const url = safeUrl(o.url);
-    let text = o.yen ? yen(o.listed ?? 0) : money(o.listed ?? o.amount);
-    if (o.yen && o.listed == null) text = money(o.amount);
-    const main = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
+    let text = '';
+    if (o.yen && o.listed != null) text = yen(o.listed);
+    else if (o.listed != null || o.amount != null) text = money(o.listed ?? o.amount);
+    const main = url && text ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
     let note = '';
     if (o.afterVouchers) note = `${money(o.amount)} after vouchers`;
     else if (o.delivered) note = `${money(o.amount)} delivered`;
     else if (o.about) note = `About ${money(o.about)}`;
-    return `<span class="${r.price?.id === id ? 'cheapest' : ''}">${main}</span>${note ? `<span class="muted block">${esc(note)}</span>` : ''}${search}`;
+    const stock = o.available ? '' : `<span class="stale block">${esc(o.stock === 'Out of stock' ? 'Sold out' : o.stock)}</span>`;
+    const seller = o.seller && !shop.custom ? `<span class="muted block">${esc(o.seller)}</span>` : '';
+    return `<span class="${r.price?.id === id ? 'cheapest' : ''}">${main}</span>${note ? `<span class="muted block">${esc(note)}</span>` : ''}${seller}${stock}${search}`;
   }
 
   function dbCell(key, r) {
@@ -167,7 +185,10 @@ export async function render({ root, store, sets, fx, demo }) {
       case 'photo': return photo(r);
       case 'num': return `<b>${esc(r.num)}</b>`;
       case 'name': return `${esc(r.name)}<span class="muted block">${esc(r.theme ?? '')}</span>`;
+      case 'ageNum': return r.age ? esc(r.age) : '<span class="muted">Not set</span>';
       case 'parts': return esc(r.parts);
+      case 'msrp': return r.msrp === null ? '<span class="muted">Not set</span>' : money(r.msrp);
+      case 'off': return esc(offLabel(r.msrp, r.amount));
       case 'lazada': case 'shopee': case 'amazonsg': case 'amazonjp': return shopCell(key, r);
       case 'amount': {
         if (!r.price) return '<span class="muted">No price</span>';
@@ -207,6 +228,14 @@ export async function render({ root, store, sets, fx, demo }) {
       </table>` : '<p class="empty">No sets match. Try another search or filter.</p>'}`;
   }
 
+  function importResult() {
+    if (!pendingImport) return '';
+    if (pendingImport.error) return `<p class="alert">${esc(pendingImport.error)}</p>`;
+    const { prices, msrps, ages, images, unknown } = pendingImport.result.summary;
+    return `<p>Ready to import: ${prices} sets with shop prices, ${msrps} with an MSRP, ${ages} with an age and ${images} with extra photos.${unknown ? ` ${unknown} rows skipped because the set isn't in the catalogue.` : ''}</p>
+      <button class="claim" data-import-go>Import now</button>`;
+  }
+
   function dbSection() {
     const themes = [...new Set(sets.map(s => s.theme).filter(Boolean))];
     const option = (value, label, current) => `<option value="${esc(value)}" ${value === current ? 'selected' : ''}>${esc(label)}</option>`;
@@ -225,7 +254,7 @@ export async function render({ root, store, sets, fx, demo }) {
               .map(([v, l]) => option(v, l, filters.show)).join('')}
           </select></label>
           <label class="db-sort">Sort <select data-filter="sort">
-            ${[['year', 'Newest'], ['amount', 'Best price'], ['each', 'Price per piece'], ['parts', 'Pieces'], ['name', 'Name'], ['num', 'Set number']]
+            ${[['year', 'Newest'], ['amount', 'Best price'], ['ageNum', 'Age'], ['off', 'Off MSRP'], ['each', 'Price per piece'], ['parts', 'Pieces'], ['name', 'Name'], ['num', 'Set number']]
               .map(([v, l]) => option(v, l, filters.sort)).join('')}
           </select></label>
         </div>
@@ -234,13 +263,20 @@ export async function render({ root, store, sets, fx, demo }) {
           <button class="quiet" data-bulk="hide">Hide these from the boys</button>
         </div>
         <div id="db-table">${dbTable()}</div>
+        <details class="import" ${pendingImport ? 'open' : ''}>
+          <summary>Import from Google Sheet</summary>
+          <p>In the sheet, open the Prices tab, click the empty box above row 1 to select everything, and copy. Paste it below. Blank cells keep what's already saved here.</p>
+          <textarea rows="4" aria-label="Pasted sheet">${esc(pendingImport?.text ?? '')}</textarea>
+          <div class="sheet-actions"><button class="quiet" data-import-check>Check import</button></div>
+          <div class="import-result">${importResult()}</div>
+        </details>
       </section>`;
   }
 
   const redrawDb = () => { root.querySelector('#db-table').innerHTML = dbTable(); };
 
   function draw() {
-    if (root.querySelector('.override input:focus, .own-form input:focus, .db-search:focus')) return;
+    if (root.querySelector('.override input:focus, .override select:focus, .own-form input:focus, .db-search:focus, .import textarea:focus')) return;
     const want = pickedSets();
     const excluded = keys.excluded ?? [];
     const nums = [...new Set([...Object.keys(want), ...Object.keys(wishlist)])]
@@ -282,6 +318,7 @@ export async function render({ root, store, sets, fx, demo }) {
               <p class="set-meta">Set ${esc(num)}</p>
               <p class="who">${Object.entries(who).map(([c, w]) => esc(nameOf(c)) + (w.fav ? ' (favourite)' : '')).join(', ')}</p>
               ${priceHtml(price)}
+              ${msrpHtml(overrides[num]?.msrp, price)}
               <div class="row-actions">
                 <label class="check"><input type="checkbox" data-exclude="${esc(num)}" ${excluded.includes(num) ? 'checked' : ''}> Leave off the family list</label>
                 <button class="quiet" data-edit="pick:${esc(num)}">Edit prices</button>
@@ -293,6 +330,16 @@ export async function render({ root, store, sets, fx, demo }) {
       </section>
 
       ${dbSection()}
+
+      <section>
+        <h2>Group buys</h2>
+        ${Object.keys(shares).length ? `<ul class="rows">${Object.entries(shares).sort((a, b) => a[1].at - b[1].at).map(([id, x]) => `
+          <li class="claim-row">
+            <div><b>${esc(byNum[x.num]?.name ?? `Set ${x.num}`)}</b> for ${esc(nameOf(x.child))}
+              <p class="set-meta">${esc(x.by)}${x.amount ? `, ${money(x.amount)}` : ''}</p></div>
+            <button class="quiet" data-unshare="${esc(id)}">Remove</button>
+          </li>`).join('')}</ul>` : '<p class="empty">No group buys yet.</p>'}
+      </section>
 
       <section>
         <h2>Reserved gifts</h2>
@@ -332,20 +379,35 @@ export async function render({ root, store, sets, fx, demo }) {
       const value = f.get(name);
       return value === null || value === '' ? null : Number(value);
     };
+    const num = e.target.dataset.num;
+    const saved = shopsFor(overrides[num]);
     const shops = {};
     for (const shop of SHOPS) {
-      const entry = { price: number(`${shop.id}_price`), final: number(`${shop.id}_final`) };
+      const entry = { ...saved[shop.id], price: number(`${shop.id}_price`), final: number(`${shop.id}_final`) };
       const url = safeUrl(f.get(`${shop.id}_url`));
+      const stock = f.get(`${shop.id}_stock`);
+      delete entry.url;
+      delete entry.stock;
       if (url) entry.url = url;
+      if (stock) entry.stock = stock;
       if (shop.custom) entry.seller = f.get('other_seller').trim() || shop.name;
       if (entry.price === null) delete entry.price;
       if (entry.final === null) delete entry.final;
-      if (entry.price !== undefined || entry.final !== undefined) shops[shop.id] = entry;
+      if (entry.price !== undefined || entry.final !== undefined || entry.stock) shops[shop.id] = entry;
     }
+    const msrp = number('msrp');
+    const age = f.get('age').trim();
+    const ages = { ...kids.ages };
+    if (age) ages[num] = age; else delete ages[num];
+    const next = Object.keys(shops).length || msrp !== null ? { shops, updatedAt: Date.now() } : null;
+    if (next && msrp !== null) next.msrp = msrp;
     editing = null;
     document.activeElement?.blur();
-    await store.setOverride(keys.famKey, e.target.dataset.num,
-      Object.keys(shops).length ? { shops, updatedAt: Date.now() } : null);
+    await store.setOverride(keys.famKey, num, next);
+    if ((kids.ages ?? {})[num] !== ages[num]) {
+      kids.ages = ages;
+      await store.setAges(keys, ages);
+    }
     draw();
     toast('Prices saved.');
   };
@@ -367,7 +429,7 @@ export async function render({ root, store, sets, fx, demo }) {
     const { filter, visible } = e.target.dataset ?? {};
     if (filter) {
       filters[filter] = e.target.value;
-      if (filter === 'sort') filters.dir = e.target.value === 'year' ? -1 : 1;
+      if (filter === 'sort') filters.dir = ['year', 'off'].includes(e.target.value) ? -1 : 1;
       redrawDb();
       return;
     }
@@ -409,6 +471,26 @@ export async function render({ root, store, sets, fx, demo }) {
         }
         await saveHidden(list);
         toast(`${rows.length} set${rows.length === 1 ? '' : 's'} ${d.bulk === 'hide' ? 'hidden from' : 'shown to'} the boys.`);
+      } else if ('importCheck' in d) {
+        const text = root.querySelector('.import textarea').value;
+        try {
+          const result = mergeImport(parseSheet(text), sets, overrides, kids.ages ?? {}, kids.images ?? {}, shopsFor);
+          pendingImport = { text, result };
+        } catch (err) {
+          pendingImport = { text, error: err.message };
+        }
+        root.querySelector('.import-result').innerHTML = importResult();
+      } else if ('importGo' in d) {
+        const { overrides: next, ages, images } = pendingImport.result;
+        await store.importDetails(keys, next, ages, images);
+        kids.ages = ages;
+        kids.images = images;
+        pendingImport = null;
+        draw();
+        toast('Import finished.');
+      } else if (d.unshare) {
+        await store.leaveShare(keys.famKey, d.unshare);
+        toast('Removed from the group buy.');
       } else if ('publish' in d) {
         const { entries, remove } = changes();
         await store.publishWishlist(keys.famKey, entries, remove);
@@ -451,6 +533,7 @@ export async function render({ root, store, sets, fx, demo }) {
     store.watchWishlist(keys.famKey, w => { wishlist = w; draw(); });
     store.watchClaims(keys.famKey, c => { claims = c; draw(); });
     store.watchOverrides(keys.famKey, o => { overrides = o; draw(); });
+    store.watchShares(keys.famKey, x => { shares = x; draw(); });
   }
 
   begin();
