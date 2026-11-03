@@ -2,6 +2,7 @@
  {
   "num": "60508",
   "name": "Police Train Heist",
+  "theme": "City",
   "year": 2026,
   "parts": 1313,
   "img": "https://cdn.rebrickable.com/media/sets/60508-1.jpg"
@@ -9,6 +10,7 @@
  {
   "num": "60501",
   "name": "Lava Land Roller Coaster Park",
+  "theme": "City",
   "year": 2026,
   "parts": 1165,
   "img": "https://cdn.rebrickable.com/media/sets/60501-1.jpg"
@@ -16,6 +18,7 @@
  {
   "num": "60494",
   "name": "Dump Truck & Front End Loader",
+  "theme": "City",
   "year": 2026,
   "parts": 1132,
   "img": "https://cdn.rebrickable.com/media/sets/60494-1.jpg"
@@ -23,6 +26,7 @@
  {
   "num": "60505",
   "name": "Airplane, Service Truck & Hovercraft Remix",
+  "theme": "City",
   "year": 2026,
   "parts": 991,
   "img": "https://cdn.rebrickable.com/media/sets/60505-1.jpg"
@@ -30,6 +34,7 @@
  {
   "num": "60502",
   "name": "Airport with Airplane",
+  "theme": "City",
   "year": 2026,
   "parts": 887,
   "img": "https://cdn.rebrickable.com/media/sets/60502-1.jpg"
@@ -37,13 +42,23 @@
  {
   "num": "60509",
   "name": "Harbor Freight Train with Crane & Truck",
+  "theme": "City",
   "year": 2026,
   "parts": 803,
   "img": "https://cdn.rebrickable.com/media/sets/60509-1.jpg"
  },
  {
+  "num": "77264",
+  "name": "Jaguar Project 7 & Land Rover Defender",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 747,
+  "img": "https://cdn.rebrickable.com/media/sets/77264-1.jpg"
+ },
+ {
   "num": "60504",
   "name": "Coast Guard Rescue Boat & Helicopter",
+  "theme": "City",
   "year": 2026,
   "parts": 743,
   "img": "https://cdn.rebrickable.com/media/sets/60504-1.jpg"
@@ -51,6 +66,7 @@
  {
   "num": "60506",
   "name": "Classic Beach Tram",
+  "theme": "City",
   "year": 2026,
   "parts": 693,
   "img": "https://cdn.rebrickable.com/media/sets/60506-1.jpg"
@@ -58,6 +74,7 @@
  {
   "num": "60499",
   "name": "Airport Fire Truck",
+  "theme": "City",
   "year": 2026,
   "parts": 691,
   "img": "https://cdn.rebrickable.com/media/sets/60499-1.jpg"
@@ -65,6 +82,7 @@
  {
   "num": "60497",
   "name": "Drive-Through Car Wash",
+  "theme": "City",
   "year": 2026,
   "parts": 583,
   "img": "https://cdn.rebrickable.com/media/sets/60497-1.jpg"
@@ -72,6 +90,7 @@
  {
   "num": "60511",
   "name": "Vintage Steam Train",
+  "theme": "City",
   "year": 2026,
   "parts": 579,
   "img": "https://cdn.rebrickable.com/media/sets/60511-1.jpg"
@@ -79,6 +98,7 @@
  {
   "num": "60503",
   "name": "Coast Guard Helicopter",
+  "theme": "City",
   "year": 2026,
   "parts": 551,
   "img": "https://cdn.rebrickable.com/media/sets/60503-1.jpg"
@@ -86,6 +106,7 @@
  {
   "num": "60493",
   "name": "F1 Display Truck with Audi F1 Race Car",
+  "theme": "City",
   "year": 2026,
   "parts": 508,
   "img": "https://cdn.rebrickable.com/media/sets/60493-1.jpg"
@@ -93,6 +114,7 @@
  {
   "num": "60496",
   "name": "Pizza Delivery Experience with Vehicles",
+  "theme": "City",
   "year": 2026,
   "parts": 494,
   "img": "https://cdn.rebrickable.com/media/sets/60496-1.jpg"
@@ -100,6 +122,7 @@
  {
   "num": "60495",
   "name": "Recycling Truck",
+  "theme": "City",
   "year": 2026,
   "parts": 434,
   "img": "https://cdn.rebrickable.com/media/sets/60495-1.jpg"
@@ -107,27 +130,111 @@
  {
   "num": "60478",
   "name": "Cement Mixer",
+  "theme": "City",
   "year": 2026,
   "parts": 371,
   "img": "https://cdn.rebrickable.com/media/sets/60478-1.jpg"
  },
  {
+  "num": "77263",
+  "name": "BMW M3 (E30)",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 358,
+  "img": "https://cdn.rebrickable.com/media/sets/77263-1.jpg"
+ },
+ {
+  "num": "77256",
+  "name": "Time Machine from Back to the Future",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 357,
+  "img": "https://cdn.rebrickable.com/media/sets/77256-1.jpg"
+ },
+ {
+  "num": "77262",
+  "name": "Ken Block's '65 Ford Mustang Hoonicorn V1",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 345,
+  "img": "https://cdn.rebrickable.com/media/sets/77262-1.jpg"
+ },
+ {
+  "num": "77254",
+  "name": "Ferrari SF90 XX Stradale Sports Car",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 339,
+  "img": "https://cdn.rebrickable.com/media/sets/77254-1.jpg"
+ },
+ {
+  "num": "77261",
+  "name": "Ferrari 499P",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 329,
+  "img": "https://cdn.rebrickable.com/media/sets/77261-1.jpg"
+ },
+ {
   "num": "60480",
   "name": "Yellow Backhoe Loader",
+  "theme": "City",
   "year": 2026,
   "parts": 301,
   "img": "https://cdn.rebrickable.com/media/sets/60480-1.jpg"
  },
  {
+  "num": "77257",
+  "name": "McLaren W1",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 294,
+  "img": "https://cdn.rebrickable.com/media/sets/77257-1.jpg"
+ },
+ {
+  "num": "77260",
+  "name": "The Fast and The Furious Toyota Supra MK4",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 292,
+  "img": "https://cdn.rebrickable.com/media/sets/77260-1.jpg"
+ },
+ {
+  "num": "77253",
+  "name": "Bugatti Vision GT Hyper Sports Car",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 284,
+  "img": "https://cdn.rebrickable.com/media/sets/77253-1.jpg"
+ },
+ {
   "num": "60500",
   "name": "The LEGO Van",
+  "theme": "City",
   "year": 2026,
   "parts": 276,
   "img": "https://cdn.rebrickable.com/media/sets/60500-1.jpg"
  },
  {
+  "num": "77255",
+  "name": "Lightning McQueen",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 270,
+  "img": "https://cdn.rebrickable.com/media/sets/77255-1.jpg"
+ },
+ {
+  "num": "77252",
+  "name": "APXGP Team Race Car from F1 The Movie",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 268,
+  "img": "https://cdn.rebrickable.com/media/sets/77252-1.jpg"
+ },
+ {
   "num": "60490",
   "name": "Snowplow",
+  "theme": "City",
   "year": 2026,
   "parts": 263,
   "img": "https://cdn.rebrickable.com/media/sets/60490-1.jpg"
@@ -135,6 +242,7 @@
  {
   "num": "60512",
   "name": "Mountain Bike Adventure Van",
+  "theme": "City",
   "year": 2026,
   "parts": 260,
   "img": "https://cdn.rebrickable.com/media/sets/60512-1.jpg"
@@ -142,6 +250,7 @@
  {
   "num": "60489",
   "name": "Jet vs. Car",
+  "theme": "City",
   "year": 2026,
   "parts": 259,
   "img": "https://cdn.rebrickable.com/media/sets/60489-1.jpg"
@@ -149,20 +258,39 @@
  {
   "num": "60488",
   "name": "Fries Food Truck",
+  "theme": "City",
   "year": 2026,
   "parts": 216,
   "img": "https://cdn.rebrickable.com/media/sets/60488-1.jpg"
  },
  {
+  "num": "77259",
+  "name": "Audi Revolut F1 Team R26 Race Car",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 216,
+  "img": "https://cdn.rebrickable.com/media/sets/77259-1.jpg"
+ },
+ {
   "num": "60498",
   "name": "Tractor",
+  "theme": "City",
   "year": 2026,
   "parts": 204,
   "img": "https://cdn.rebrickable.com/media/sets/60498-1.jpg"
  },
  {
+  "num": "77258",
+  "name": "F1 ACADEMY LEGO Race Car",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 201,
+  "img": "https://cdn.rebrickable.com/media/sets/77258-1.jpg"
+ },
+ {
   "num": "60479",
   "name": "Police Prisoner Transport Van",
+  "theme": "City",
   "year": 2026,
   "parts": 198,
   "img": "https://cdn.rebrickable.com/media/sets/60479-1.jpg"
@@ -170,6 +298,7 @@
  {
   "num": "60487",
   "name": "Yellow Taxi",
+  "theme": "City",
   "year": 2026,
   "parts": 122,
   "img": "https://cdn.rebrickable.com/media/sets/60487-1.jpg"
@@ -177,6 +306,7 @@
  {
   "num": "60492",
   "name": "Passenger Jet",
+  "theme": "City",
   "year": 2026,
   "parts": 118,
   "img": "https://cdn.rebrickable.com/media/sets/60492-1.jpg"
@@ -184,6 +314,7 @@
  {
   "num": "60486",
   "name": "EV Supercar",
+  "theme": "City",
   "year": 2026,
   "parts": 109,
   "img": "https://cdn.rebrickable.com/media/sets/60486-1.jpg"
@@ -191,6 +322,7 @@
  {
   "num": "60491",
   "name": "Motorcycle Transporter",
+  "theme": "City",
   "year": 2026,
   "parts": 88,
   "img": "https://cdn.rebrickable.com/media/sets/60491-1.jpg"
@@ -198,6 +330,7 @@
  {
   "num": "60485",
   "name": "Hot Rod",
+  "theme": "City",
   "year": 2026,
   "parts": 81,
   "img": "https://cdn.rebrickable.com/media/sets/60485-1.jpg"
@@ -205,6 +338,7 @@
  {
   "num": "60481",
   "name": "Rides – Police Truck",
+  "theme": "City",
   "year": 2026,
   "parts": 78,
   "img": "https://cdn.rebrickable.com/media/sets/60481-1.jpg"
@@ -212,6 +346,7 @@
  {
   "num": "60482",
   "name": "Rides – Fire Truck",
+  "theme": "City",
   "year": 2026,
   "parts": 67,
   "img": "https://cdn.rebrickable.com/media/sets/60482-1.jpg"
@@ -219,6 +354,7 @@
  {
   "num": "60484",
   "name": "Rides – Gaming Race Car",
+  "theme": "City",
   "year": 2026,
   "parts": 64,
   "img": "https://cdn.rebrickable.com/media/sets/60484-1.jpg"
@@ -226,13 +362,23 @@
  {
   "num": "60483",
   "name": "Rides – Construction Loader",
+  "theme": "City",
   "year": 2026,
   "parts": 61,
   "img": "https://cdn.rebrickable.com/media/sets/60483-1.jpg"
  },
  {
+  "num": "30734",
+  "name": "Mini F1 ACADEMY Car",
+  "theme": "Speed Champions",
+  "year": 2026,
+  "parts": 58,
+  "img": "https://cdn.rebrickable.com/media/sets/30734-1.jpg"
+ },
+ {
   "num": "30719",
   "name": "Go-Kart Racer",
+  "theme": "City",
   "year": 2026,
   "parts": 48,
   "img": "https://cdn.rebrickable.com/media/sets/30719-1.jpg"
@@ -240,6 +386,7 @@
  {
   "num": "60473",
   "name": "The City Tower",
+  "theme": "City",
   "year": 2025,
   "parts": 1943,
   "img": "https://cdn.rebrickable.com/media/sets/60473-1.jpg"
@@ -247,6 +394,7 @@
  {
   "num": "60470",
   "name": "Explorer Train",
+  "theme": "City",
   "year": 2025,
   "parts": 1525,
   "img": "https://cdn.rebrickable.com/media/sets/60470-1.jpg"
@@ -254,6 +402,7 @@
  {
   "num": "60445",
   "name": "F1 Truck with RB20 & AMR24 F1 Cars",
+  "theme": "City",
   "year": 2025,
   "parts": 1086,
   "img": "https://cdn.rebrickable.com/media/sets/60445-1.jpg"
@@ -261,6 +410,7 @@
  {
   "num": "60471",
   "name": "Arctic Explorer Science Lab Truck",
+  "theme": "City",
   "year": 2025,
   "parts": 1064,
   "img": "https://cdn.rebrickable.com/media/sets/60471-1.jpg"
@@ -268,6 +418,7 @@
  {
   "num": "60472",
   "name": "Scrapyard with Cars",
+  "theme": "City",
   "year": 2025,
   "parts": 877,
   "img": "https://cdn.rebrickable.com/media/sets/60472-1.jpg"
@@ -275,6 +426,7 @@
  {
   "num": "60462",
   "name": "Helicopter, Fire Truck & Submarine Remix",
+  "theme": "City",
   "year": 2025,
   "parts": 876,
   "img": "https://cdn.rebrickable.com/media/sets/60462-1.jpg"
@@ -282,6 +434,7 @@
  {
   "num": "60467",
   "name": "Heavy-Duty Recovery Tow Truck with Crane",
+  "theme": "City",
   "year": 2025,
   "parts": 793,
   "img": "https://cdn.rebrickable.com/media/sets/60467-1.jpg"
@@ -289,6 +442,7 @@
  {
   "num": "60469",
   "name": "Central Train Station",
+  "theme": "City",
   "year": 2025,
   "parts": 752,
   "img": "https://cdn.rebrickable.com/media/sets/60469-1.jpg"
@@ -296,6 +450,7 @@
  {
   "num": "60446",
   "name": "Modular Galactic Spaceship",
+  "theme": "City",
   "year": 2025,
   "parts": 717,
   "img": "https://cdn.rebrickable.com/media/sets/60446-1.jpg"
@@ -303,6 +458,7 @@
  {
   "num": "60444",
   "name": "F1 Garage & Mercedes-AMG & Alpine Cars",
+  "theme": "City",
   "year": 2025,
   "parts": 686,
   "img": "https://cdn.rebrickable.com/media/sets/60444-1.jpg"
@@ -310,13 +466,23 @@
  {
   "num": "60466",
   "name": "Yellow Bulldozer",
+  "theme": "City",
   "year": 2025,
   "parts": 682,
   "img": "https://cdn.rebrickable.com/media/sets/60466-1.jpg"
  },
  {
+  "num": "77238",
+  "name": "Lamborghini Revuelto & Huracán STO",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 614,
+  "img": "https://cdn.rebrickable.com/media/sets/77238-1.jpg"
+ },
+ {
   "num": "60457",
   "name": "Custom Police Car Garage",
+  "theme": "City",
   "year": 2025,
   "parts": 489,
   "img": "https://cdn.rebrickable.com/media/sets/60457-1.jpg"
@@ -324,6 +490,7 @@
  {
   "num": "60449",
   "name": "Off-Road Police Car Chase",
+  "theme": "City",
   "year": 2025,
   "parts": 467,
   "img": "https://cdn.rebrickable.com/media/sets/60449-1.jpg"
@@ -331,6 +498,7 @@
  {
   "num": "60460",
   "name": "No Limits: Race Car Ramp Track",
+  "theme": "City",
   "year": 2025,
   "parts": 436,
   "img": "https://cdn.rebrickable.com/media/sets/60460-1.jpg"
@@ -338,20 +506,39 @@
  {
   "num": "60465",
   "name": "Emergency Air Ambulance Airplane",
+  "theme": "City",
   "year": 2025,
   "parts": 403,
   "img": "https://cdn.rebrickable.com/media/sets/60465-1.jpg"
  },
  {
+  "num": "77237",
+  "name": "Dodge Challenger SRT Hellcat Sports Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 390,
+  "img": "https://cdn.rebrickable.com/media/sets/77237-1.jpg"
+ },
+ {
   "num": "60454",
   "name": "Holiday Adventure Camper Van",
+  "theme": "City",
   "year": 2025,
   "parts": 385,
   "img": "https://cdn.rebrickable.com/media/sets/60454-1.jpg"
  },
  {
+  "num": "77239",
+  "name": "Porsche 911 GT3 RS Super Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 351,
+  "img": "https://cdn.rebrickable.com/media/sets/77239-1.jpg"
+ },
+ {
   "num": "60443",
   "name": "F1 Pit Stop & Pit Crew with Ferrari Car",
+  "theme": "City",
   "year": 2025,
   "parts": 322,
   "img": "https://cdn.rebrickable.com/media/sets/60443-1.jpg"
@@ -359,20 +546,119 @@
  {
   "num": "60474",
   "name": "F1 Grid with VCARB & Sauber Race Cars",
+  "theme": "City",
   "year": 2025,
   "parts": 313,
   "img": "https://cdn.rebrickable.com/media/sets/60474-1.jpg"
  },
  {
+  "num": "77241",
+  "name": "2 Fast 2 Furious Honda S2000",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 307,
+  "img": "https://cdn.rebrickable.com/media/sets/77241-1.jpg"
+ },
+ {
+  "num": "77240",
+  "name": "Bugatti Centodieci Hyper Sports Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 294,
+  "img": "https://cdn.rebrickable.com/media/sets/77240-1.jpg"
+ },
+ {
+  "num": "77242",
+  "name": "Ferrari SF-24 F1 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 275,
+  "img": "https://cdn.rebrickable.com/media/sets/77242-1.jpg"
+ },
+ {
+  "num": "77245",
+  "name": "Aston Martin Aramco F1 AMR24 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 269,
+  "img": "https://cdn.rebrickable.com/media/sets/77245-1.jpg"
+ },
+ {
+  "num": "77251",
+  "name": "McLaren F1 Team MCL38 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 269,
+  "img": "https://cdn.rebrickable.com/media/sets/77251-1.jpg"
+ },
+ {
+  "num": "77244",
+  "name": "Mercedes-AMG F1 W15 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 267,
+  "img": "https://cdn.rebrickable.com/media/sets/77244-1.jpg"
+ },
+ {
   "num": "60456",
   "name": "Police Boat Chase",
+  "theme": "City",
   "year": 2025,
   "parts": 264,
   "img": "https://cdn.rebrickable.com/media/sets/60456-1.jpg"
  },
  {
+  "num": "77249",
+  "name": "Williams Racing FW46 F1 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 263,
+  "img": "https://cdn.rebrickable.com/media/sets/77249-1.jpg"
+ },
+ {
+  "num": "77247",
+  "name": "KICK Sauber F1 Team C44 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 259,
+  "img": "https://cdn.rebrickable.com/media/sets/77247-1.jpg"
+ },
+ {
+  "num": "77248",
+  "name": "BWT Alpine F1 Team A524 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 258,
+  "img": "https://cdn.rebrickable.com/media/sets/77248-1.jpg"
+ },
+ {
+  "num": "77243",
+  "name": "Oracle Red Bull Racing RB20 F1 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 251,
+  "img": "https://cdn.rebrickable.com/media/sets/77243-1.jpg"
+ },
+ {
+  "num": "77246",
+  "name": "Visa Cash App RB VCARB 01 F1 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 248,
+  "img": "https://cdn.rebrickable.com/media/sets/77246-1.jpg"
+ },
+ {
+  "num": "77250",
+  "name": "MoneyGram Haas F1 Team VF-24 Race Car",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 242,
+  "img": "https://cdn.rebrickable.com/media/sets/77250-1.jpg"
+ },
+ {
   "num": "60447",
   "name": "Off-Road 4x4 Mountain Truck",
+  "theme": "City",
   "year": 2025,
   "parts": 221,
   "img": "https://cdn.rebrickable.com/media/sets/60447-1.jpg"
@@ -380,6 +666,7 @@
  {
   "num": "60453",
   "name": "Lifeguard Beach Rescue Truck",
+  "theme": "City",
   "year": 2025,
   "parts": 214,
   "img": "https://cdn.rebrickable.com/media/sets/60453-1.jpg"
@@ -387,6 +674,7 @@
  {
   "num": "60452",
   "name": "Donut Truck",
+  "theme": "City",
   "year": 2025,
   "parts": 196,
   "img": "https://cdn.rebrickable.com/media/sets/60452-1.jpg"
@@ -394,6 +682,7 @@
  {
   "num": "60451",
   "name": "Emergency Ambulance",
+  "theme": "City",
   "year": 2025,
   "parts": 184,
   "img": "https://cdn.rebrickable.com/media/sets/60451-1.jpg"
@@ -401,6 +690,7 @@
  {
   "num": "60461",
   "name": "Red Farm Tractor with Trailer & Sheep",
+  "theme": "City",
   "year": 2025,
   "parts": 116,
   "img": "https://cdn.rebrickable.com/media/sets/60461-1.jpg"
@@ -408,6 +698,7 @@
  {
   "num": "60448",
   "name": "Red Sports Car",
+  "theme": "City",
   "year": 2025,
   "parts": 109,
   "img": "https://cdn.rebrickable.com/media/sets/60448-1.jpg"
@@ -415,6 +706,7 @@
  {
   "num": "60464",
   "name": "F1 Williams Racing & Haas F1 Race Cars",
+  "theme": "City",
   "year": 2025,
   "parts": 92,
   "img": "https://cdn.rebrickable.com/media/sets/60464-1.jpg"
@@ -422,6 +714,7 @@
  {
   "num": "60442",
   "name": "F1 Driver with McLaren Race Car",
+  "theme": "City",
   "year": 2025,
   "parts": 86,
   "img": "https://cdn.rebrickable.com/media/sets/60442-1.jpg"
@@ -429,6 +722,7 @@
  {
   "num": "60463",
   "name": "Fire Ladder Truck",
+  "theme": "City",
   "year": 2025,
   "parts": 82,
   "img": "https://cdn.rebrickable.com/media/sets/60463-1.jpg"
@@ -436,6 +730,7 @@
  {
   "num": "60450",
   "name": "Yellow Construction Wheel Loader",
+  "theme": "City",
   "year": 2025,
   "parts": 81,
   "img": "https://cdn.rebrickable.com/media/sets/60450-1.jpg"
@@ -443,6 +738,7 @@
  {
   "num": "60458",
   "name": "Pizza vs. Fire Truck Race Car Pack",
+  "theme": "City",
   "year": 2025,
   "parts": 70,
   "img": "https://cdn.rebrickable.com/media/sets/60458-1.jpg"
@@ -450,6 +746,7 @@
  {
   "num": "60459",
   "name": "Airplane vs. Hospital Bed Race Car Pack",
+  "theme": "City",
   "year": 2025,
   "parts": 70,
   "img": "https://cdn.rebrickable.com/media/sets/60459-1.jpg"
@@ -457,13 +754,23 @@
  {
   "num": "60455",
   "name": "Police Motorcycle Chase",
+  "theme": "City",
   "year": 2025,
   "parts": 65,
   "img": "https://cdn.rebrickable.com/media/sets/60455-1.jpg"
  },
  {
+  "num": "30709",
+  "name": "Ferrari 499P - Hypercar",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 62,
+  "img": "https://cdn.rebrickable.com/media/sets/30709-1.jpg"
+ },
+ {
   "num": "30694",
   "name": "Space Science Mech",
+  "theme": "City",
   "year": 2025,
   "parts": 49,
   "img": "https://cdn.rebrickable.com/media/sets/30694-1.jpg"
@@ -471,6 +778,7 @@
  {
   "num": "952504",
   "name": "Astronaut and Spaceship",
+  "theme": "City",
   "year": 2025,
   "parts": 32,
   "img": "https://cdn.rebrickable.com/media/sets/952504-1.jpg"
@@ -478,6 +786,7 @@
  {
   "num": "952506",
   "name": "Firefighter with Bulldozer",
+  "theme": "City",
   "year": 2025,
   "parts": 32,
   "img": "https://cdn.rebrickable.com/media/sets/952506-1.jpg"
@@ -485,6 +794,7 @@
  {
   "num": "952509",
   "name": "Tractor",
+  "theme": "City",
   "year": 2025,
   "parts": 30,
   "img": "https://cdn.rebrickable.com/media/sets/952509-1.jpg"

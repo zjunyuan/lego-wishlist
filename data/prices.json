@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-03T01:48:02.749Z",
+ "generatedAt": "2026-11-03T01:55:40.647Z",
  "prices": {
   "60444": {
    "amount": 116.9,
@@ -319,6 +319,78 @@
    "seller": "Metro",
    "trusted": true,
    "url": "https://metro.com.sg/products/police-train-heist",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "77237": {
+   "amount": 39.5,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77237-dodge-challenger-srt-hellcat-sports-car",
+   "lastSeen": "2026-04-27T14:33:14.051Z"
+  },
+  "77239": {
+   "amount": 43.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-porsche-911-gt3-rs-super-car-77239",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "77240": {
+   "amount": 39.5,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77240-bugatti-centodieci-hyper-sports-car",
+   "lastSeen": "2026-04-27T14:33:14.052Z"
+  },
+  "77241": {
+   "amount": 39.5,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77241-speed-champions-2-fast-2-furious-honda-s2000",
+   "lastSeen": "2026-04-27T14:33:14.052Z"
+  },
+  "77243": {
+   "amount": 39.5,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77243-speed-champions-oracle-red-bull-racing-rb20-f1",
+   "lastSeen": "2026-04-27T14:33:14.053Z"
+  },
+  "77246": {
+   "amount": 39.5,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77246-visa-cash-app-rb-vcarb-01-f1-race-car",
+   "lastSeen": "2026-04-27T14:33:14.053Z"
+  },
+  "77250": {
+   "amount": 39.5,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77250-speed-champions-moneygram-haas-f1-team-vf-24",
+   "lastSeen": "2026-04-27T14:33:14.052Z"
+  },
+  "77253": {
+   "amount": 35.9,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77253-bugatti-vision-gran-turismo-hyper-sports-car",
+   "lastSeen": "2026-04-27T14:33:13.702Z"
+  },
+  "77257": {
+   "amount": 39.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-mclaren-w1",
    "lastSeen": "2026-05-05T23:19:25.952Z"
   }
  }
