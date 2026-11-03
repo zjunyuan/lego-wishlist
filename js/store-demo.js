@@ -73,6 +73,8 @@ export async function release(key, id) {
 }
 
 export const adminKeys = async () => state.keys;
+export const getAlerts = async () => state.alerts ?? null;
+export async function setAlerts(topic) { state.alerts = topic; save(); }
 
 export async function createSpaces(names) {
   const children = names.map(name => ({ id: slug(name), name }));

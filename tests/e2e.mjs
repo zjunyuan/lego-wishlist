@@ -224,6 +224,23 @@ ok((await fam.textContent('.taken-group summary')).includes('Already taken (1)')
 ok(!(await fam.isVisible('.taken-group article')), 'the taken section starts collapsed');
 await fam.click('.taken-group summary');
 await fam.waitForSelector('.taken-group article:has-text("The LEGO Van")');
+// Phone alerts
+let alertBody = null;
+await admin.route('https://ntfy.sh/', r => { alertBody = r.request().postData(); return r.fulfill({ status: 200, headers: { 'Access-Control-Allow-Origin': '*' }, body: '{}' }); });
+await admin.click('[data-alerts-on]');
+await admin.waitForSelector('.alert-topic');
+const alertTopic = await admin.textContent('.alert-topic');
+ok(/^lego-[\w-]{16,58}$/.test(alertTopic), 'setting up alerts makes a private topic');
+await admin.click('[data-alerts-test]');
+await admin.waitForFunction(() => document.body.textContent.includes('Test sent'));
+ok(JSON.parse(alertBody).topic === alertTopic, 'the test goes to that topic');
+await admin.reload();
+await admin.waitForSelector('.alert-topic');
+ok((await admin.textContent('.alert-topic')) === alertTopic, 'the topic is still there after a reload');
+await admin.click('[data-alerts-off]');
+await admin.waitForSelector('[data-alerts-on]');
+ok(true, 'alerts can be turned off');
+
 await admin.fill('.note-box', 'Please bring gifts by 20 Dec.');
 await admin.click('[data-save-note]');
 await fam.waitForSelector('text=Please bring gifts by 20 Dec.');

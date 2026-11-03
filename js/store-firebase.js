@@ -95,6 +95,15 @@ export async function adminKeys() {
   return snap.exists() ? snap.data() : null;
 }
 
+export async function getAlerts() {
+  const snap = await getDoc(doc(db, 'admin', 'notify'));
+  return snap.data()?.topic ?? null;
+}
+
+export const setAlerts = topic => (topic
+  ? setDoc(doc(db, 'admin', 'notify'), { topic })
+  : deleteDoc(doc(db, 'admin', 'notify')));
+
 export async function createSpaces(names) {
   const children = names.map(name => ({ id: slug(name), name }));
   const keys = { kidKey: newKey(), famKey: newKey(), excluded: [] };

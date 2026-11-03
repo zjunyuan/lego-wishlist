@@ -301,3 +301,6 @@ label input:not([type=checkbox]) { display: block; width: 100%; min-height: 46px
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+.alert-steps { margin: 0 0 12px; padding-left: 20px; }
+.alert-topic { display: block; margin-top: 6px; overflow-wrap: anywhere; }

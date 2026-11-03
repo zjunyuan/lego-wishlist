@@ -1,4 +1,4 @@
-import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
+import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -10,6 +10,7 @@ export async function render({ root, store, sets, demo }) {
   let keys, kids, picks = {}, wishlist = {}, claims = {}, shares = {}, overrides = {};
   let pendingImport = null;
   let familySpace = {};
+  let alertTopic = null;
   let editing = null;
   const filters = { q: '', theme: 'all', show: 'picked', sort: 'year', dir: -1 };
   const COLUMNS = [
@@ -369,6 +370,8 @@ export async function render({ root, store, sets, demo }) {
         </div>
       </section>
 
+      ${alertsSection()}
+
       <section>
         <h2>Photos of the boys</h2>
         <p>These show on the boys' page, this page and the family page. Anyone with those links can see them. Use a JPG or PNG with the face near the top or middle.</p>
@@ -598,12 +601,27 @@ export async function render({ root, store, sets, demo }) {
     if (!el) return;
     const d = el.dataset;
     try {
-      if ('signin' in d) {
+      if ('alertsOn' in d) {
+        alertTopic = `lego-${newKey()}`;
+        await store.setAlerts(alertTopic);
+        draw();
+      } else if ('alertsOff' in d) {
+        alertTopic = null;
+        await store.setAlerts(null);
+        draw();
+        toast('Phone alerts are off.');
+      } else if ('alertsTest' in d) {
+        const res = await fetch('https://ntfy.sh/', {
+          method: 'POST',
+          body: JSON.stringify({ topic: alertTopic, title: 'LEGO list', message: 'Phone alerts are working.', tags: ['gift'] }),
+        });
+        toast(res.ok ? 'Test sent. Check your phone.' : 'The test didn\'t send. Try again.');
+      } else if ('signin' in d) {
         await store.signInAdmin();
         begin();
       } else if (d.copy) {
         await navigator.clipboard.writeText(d.copy);
-        toast('Link copied.');
+        toast('Copied.');
       } else if (d.photoRemove) {
         const { [d.photoRemove]: removed, ...rest } = kids.photos ?? {};
         await savePhotos(rest);
@@ -675,6 +693,29 @@ export async function render({ root, store, sets, demo }) {
     }
   };
 
+  function alertsSection() {
+    if (!alertTopic) {
+      return `<section>
+        <h2>Phone alerts</h2>
+        <p>Get a notification when someone reserves a gift, starts a group buy, or a group buy reaches the price.</p>
+        <button class="claim" data-alerts-on>Set up phone alerts</button>
+      </section>`;
+    }
+    return `<section>
+      <h2>Phone alerts</h2>
+      <ol class="alert-steps">
+        <li>Install the ntfy app on your phone.</li>
+        <li>Tap + and subscribe to this topic. Keep it private: anyone who has it can read your alerts.
+          <code class="alert-topic">${esc(alertTopic)}</code></li>
+      </ol>
+      <div class="share-actions">
+        <button class="quiet" data-copy="${esc(alertTopic)}">Copy topic</button>
+        <button class="quiet" data-alerts-test>Send a test</button>
+        <button class="quiet" data-alerts-off>Turn off</button>
+      </div>
+    </section>`;
+  }
+
   async function begin() {
     const email = await store.currentAdmin() ?? (demo ? await store.signInAdmin() : null);
     if (!email) return signInScreen();
@@ -686,6 +727,7 @@ export async function render({ root, store, sets, demo }) {
     }
     if (!keys) return setupScreen();
 
+    alertTopic = await store.getAlerts();
     kids = await store.getSpace(keys.kidKey);
     familySpace = await store.getSpace(keys.famKey) ?? {};
     draw();

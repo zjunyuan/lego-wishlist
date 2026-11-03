@@ -30,6 +30,10 @@ Prices, MSRP and age are entered on the admin page, or imported by pasting the P
 4. Put your web app settings in `js/firebase-config.js`.
 5. In GitHub, set Settings > Pages > Source to GitHub Actions.
 
+## Phone alerts
+
+Reservations and group buys send an ntfy notification through the Firebase function in `functions/`. It needs the Blaze plan. Deploy it from Google Cloud Shell with `git clone` of this repo, `npm install` in `functions/`, then `npx firebase-tools deploy --only functions --force`. Then use Phone alerts on the admin page. The topic is stored in `admin/notify`, never in this repo.
+
 ## Tests
 
 ```
