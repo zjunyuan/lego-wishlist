@@ -224,7 +224,8 @@ export async function render({ root, store, sets, prices, demo }) {
       }
     } catch (err) {
       console.error(err);
-      toast(err.code === 'auth/popup-closed-by-user' ? 'Sign-in was closed.' : 'That didn\'t work. Try again.');
+      if (err.code?.startsWith('auth/')) signInScreen(`Sign-in failed: ${err.code}`);
+      else toast('That didn\'t work. Try again.');
     }
   };
 
