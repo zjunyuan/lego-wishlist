@@ -22,6 +22,15 @@ test('prefers a trusted seller over a cheaper unknown one', () => {
   assert.equal(pickPrice([local, tru], '60500').seller, 'Toys"R"Us');
 });
 
+test('recognises major Singapore shops', () => {
+  const shop = merchant_name => ({ ...local, merchant_name, title: 'LEGO 60500' });
+  assert.equal(pickPrice([shop('fairprice_sg')], '60500').seller, 'FairPrice');
+  assert.equal(pickPrice([shop('Metro.com.sg')], '60500').seller, 'Metro');
+  assert.equal(pickPrice([shop('OG')], '60500').seller, 'OG');
+  assert.equal(pickPrice([shop('Metropolis Toys')], '60500').trusted, false);
+  assert.equal(pickPrice([shop('Vlog Shop')], '60500').trusted, false);
+});
+
 test('falls back to an unknown Singapore seller, flagged as unchecked', () => {
   const p = pickPrice([local], '60500');
   assert.equal(p.trusted, false);

@@ -14,6 +14,9 @@ const DELAY_MS = 1200;
 const TRUSTED = [
   { test: /toysrus/i, name: 'Toys"R"Us' },
   { test: /bricks?\s*_?-?world/i, name: 'Bricks World' },
+  { test: /fairprice/i, name: 'FairPrice' },
+  { test: /(^|\s)metro[\s_.-]/i, name: 'Metro' },
+  { test: /(^|[\s_-])og([\s_.-]|$)/i, name: 'OG' },
   { test: /(shopee|lazada)[^a-z]*(sg[^a-z]*)?lego[^a-z]*official|lego[^a-z]*official/i, name: 'LEGO official store' },
 ];
 
