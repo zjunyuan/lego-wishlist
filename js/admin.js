@@ -9,7 +9,7 @@ export async function render({ root, store, sets, fx, demo }) {
   let keys, kids, picks = {}, wishlist = {}, claims = {}, shares = {}, overrides = {};
   let pendingImport = null;
   let editing = null;
-  const filters = { q: '', theme: 'all', show: 'all', sort: 'year', dir: -1 };
+  const filters = { q: '', theme: 'all', show: 'picked', sort: 'year', dir: -1 };
   const COLUMNS = [
     ['photo', ''], ['num', 'Set'], ['name', 'Name'], ['ageNum', 'Age'], ['parts', 'Pieces'], ['msrp', 'MSRP'],
     ['lazada', 'Lazada'], ['shopee', 'Shopee'], ['amazonsg', 'Amazon SG'], ['amazonjp', 'Amazon JP'],
@@ -235,7 +235,7 @@ export async function render({ root, store, sets, fx, demo }) {
           </tr>
           ${editing === `db:${r.num}` ? `<tr class="db-edit"><td colspan="${COLUMNS.length + 1}">${overrideForm(r.num)}</td></tr>` : ''}`).join('')}
         </tbody>
-      </table>` : '<p class="empty">No sets match. Try another search or filter.</p>'}`;
+      </table>` : `<p class="empty">${filters.show === 'picked' && !filters.q ? 'No picks yet. Send the boys their link to get started.' : 'No sets match. Try another search or filter.'}</p>`}`;
   }
 
   function importResult() {
@@ -251,7 +251,11 @@ export async function render({ root, store, sets, fx, demo }) {
     const option = (value, label, current) => `<option value="${esc(value)}" ${value === current ? 'selected' : ''}>${esc(label)}</option>`;
     return `
       <section>
-        <h2>All sets</h2>
+        <h2>Sets</h2>
+        <div class="db-views">
+          <button class="tab" data-view="picked" aria-pressed="${filters.show === 'picked'}">Picked by the boys (${Object.keys(pickedSets()).length})</button>
+          <button class="tab" data-view="all" aria-pressed="${filters.show === 'all'}">All sets (${sets.length})</button>
+        </div>
         <p>Use Search to find a set at each shop, then add the price with Edit prices. Choose which sets the boys can see here too. New sets are shown unless you hide them.</p>
         <p class="muted">MSRP, age, photos and stock were read from LEGO.com Singapore on 3 Nov 2026. LEGO.com counts as a shop for the best price when a set can be bought there.</p>
         ${fx?.sgdPerJpy ? `<p class="muted">Amazon JP estimates use \u00a5100 = ${money(fx.sgdPerJpy * 100)} (${esc(fx.date ?? '')}). They leave out shipping and import charges, so they only count as the best price once you enter a delivered cost.</p>` : ''}
@@ -314,6 +318,14 @@ export async function render({ root, store, sets, fx, demo }) {
 
       <section>
         <h2>Picks</h2>
+        <ul class="pick-status">
+          ${kids.children.map(c => {
+            const n = Object.keys(picks[c.id]?.sets ?? {}).length;
+            const done = Boolean(picks[c.id]?.finished);
+            return `<li><b>${esc(c.name)}:</b> ${n} pick${n === 1 ? '' : 's'}, ${done ? 'finished' : 'still choosing'}
+              ${done ? `<button class="quiet" data-reopen="${esc(c.id)}">Let ${esc(c.name)} change the list</button>` : ''}</li>`;
+          }).join('')}
+        </ul>
         <div class="publish">
           <p>${pending ? `${pending} change${pending > 1 ? 's' : ''} to send to the family list.` : 'The family list is up to date.'}</p>
           <button class="claim" data-publish ${pending ? '' : 'disabled'}>Update family list</button>
@@ -471,6 +483,12 @@ export async function render({ root, store, sets, fx, demo }) {
       } else if (d.copy) {
         await navigator.clipboard.writeText(d.copy);
         toast('Link copied.');
+      } else if (d.view) {
+        filters.show = d.view;
+        draw();
+      } else if (d.reopen) {
+        await store.setPicks(keys.kidKey, d.reopen, picks[d.reopen]?.sets ?? {}, false);
+        toast('The list can be changed again.');
       } else if (d.sort) {
         filters.dir = filters.sort === d.sort ? -filters.dir : 1;
         filters.sort = d.sort;

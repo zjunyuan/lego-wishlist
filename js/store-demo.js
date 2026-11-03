@@ -37,8 +37,8 @@ export const watchClaims = (key, cb) => watch(() => state.claims, cb);
 export const watchShares = (key, cb) => watch(() => state.shares, cb);
 export const watchOverrides = (key, cb) => watch(() => state.overrides, cb);
 
-export async function setPicks(key, child, sets) {
-  state.picks[child] = { sets, updatedAt: Date.now() };
+export async function setPicks(key, child, sets, finished = false) {
+  state.picks[child] = { sets, finished, updatedAt: Date.now() };
   save();
 }
 

@@ -57,7 +57,7 @@ await kids.waitForSelector('.brick');
 await shot(kids, '1-kids-choose');
 await kids.click('.brick-0');
 await kids.waitForSelector('.set-tap');
-ok((await kids.textContent('.set:has([data-set="60414"])')).includes('ages 6+'), 'LEGO.com ages show on the boys page');
+ok((await kids.textContent('.set:has([data-set="60414"])')).includes('Ages 6+'), 'LEGO.com ages show on the boys page');
 await kids.click('[data-set="60414"]');
 ok((await kids.$$('.pop-thumbs .thumb')).length === 2 || (await kids.$$('.pop-thumbs .thumb')).length === 3, 'LEGO.com photos show in the popup');
 await kids.click('.set-pop [data-close]');
@@ -220,6 +220,9 @@ ok(!(await fam.$('[data-claim="90004_riley"]')), 'an unclaimed gift goes when it
 
 // Set database
 await admin.waitForSelector('.db tbody tr');
+ok((await admin.$$('.db tbody tr')).length < 12, 'the database opens on the picked sets');
+await admin.click('[data-view="all"]');
+await admin.waitForSelector('[data-edit="db:90010"]');
 ok((await admin.$$('.db tbody tr')).length === 12, 'the database lists every set');
 const vanRow = await admin.textContent('tr:has([data-edit="db:60500"])');
 ok((await admin.textContent('tr:has([data-edit="db:60414"]) .c-msrp')).includes('S$129.90'), 'LEGO.com price fills the MSRP');
@@ -321,6 +324,29 @@ await kids.waitForSelector('.set.picked [data-set="90003"]');
 ok(true, 'starring an unpicked set adds it');
 await kids.click('[data-close]');
 await kids.setViewportSize({ width: 390, height: 844 });
+
+// Finishing a list
+await kids.click('[data-finish]');
+await kids.click('[data-finish-no]');
+ok(await kids.$('[data-finish]'), 'a boy can keep choosing');
+await kids.click('[data-finish]');
+await kids.click('[data-finish-yes]');
+await kids.waitForSelector('text=Your list is finished');
+await shot(kids, '10-kids-finished');
+await kids.click('[data-set="90003"]');
+await kids.waitForSelector('.set-pop[open]');
+ok(!(await kids.$('.set-pop [data-toggle]')) && !(await kids.$('.set-pop [data-popfav]')), 'a finished list cannot be changed');
+await kids.click('.set-pop [data-close]');
+ok(!(await kids.$('button[data-fav]')), 'stars are locked on a finished list');
+await admin.waitForSelector('[data-reopen="riley"]');
+ok((await admin.textContent('.pick-status')).includes('finished'), 'the admin sees who has finished');
+await kids.reload();
+await kids.waitForSelector('text=List finished');
+await kids.click('.brick-0');
+await kids.waitForSelector('text=Your list is finished');
+await admin.click('[data-reopen="riley"]');
+await kids.waitForSelector('[data-finish]');
+ok(await kids.$('button[data-fav]'), 'the admin can reopen a list');
 await shot(admin, '7-admin-database', true);
 
 // Bad links and wide screens

@@ -55,8 +55,8 @@ export const watchClaims = (famKey, cb) => onSnapshot(collection(db, 'spaces', f
 export const watchShares = (famKey, cb) => onSnapshot(collection(db, 'spaces', famKey, 'shares'), s => cb(toMap(s)), () => cb({}));
 export const watchOverrides = (famKey, cb) => onSnapshot(collection(db, 'spaces', famKey, 'overrides'), s => cb(toMap(s)));
 
-export const setPicks = (kidKey, child, sets) =>
-  setDoc(doc(db, 'spaces', kidKey, 'picks', child), { sets, updatedAt: Date.now() });
+export const setPicks = (kidKey, child, sets, finished = false) =>
+  setDoc(doc(db, 'spaces', kidKey, 'picks', child), { sets, finished, updatedAt: Date.now() });
 
 export async function claim(famKey, num, child, by) {
   const ref = doc(db, 'spaces', famKey, 'claims', `${num}_${child}`);

@@ -20,6 +20,7 @@ export function render({ root, store, sets, key, space }) {
 
   const mine = () => picks[child?.id]?.sets ?? {};
   const count = id => Object.keys(picks[id]?.sets ?? {}).length;
+  const finished = id => Boolean(picks[id]?.finished);
 
   function chooser() {
     root.innerHTML = `
@@ -31,7 +32,7 @@ export function render({ root, store, sets, key, space }) {
               <span class="studs" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
               <span class="brick-face">
                 <span class="brick-name">${esc(c.name)}</span>
-                <span class="brick-count">${count(c.id)} of ${MAX_PICKS} picked</span>
+                <span class="brick-count">${finished(c.id) ? 'List finished' : `${count(c.id)} of ${MAX_PICKS} picked`}</span>
               </span>
             </button>`).join('')}
         </div>
@@ -43,6 +44,17 @@ export function render({ root, store, sets, key, space }) {
     return `<div class="meter" role="img" aria-label="${n} of ${MAX_PICKS} picked">
       ${Array.from({ length: MAX_PICKS }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}
     </div>`;
+  }
+
+  function favMark(s, p) {
+    if (!p) return '';
+    if (finished(child.id)) return p.fav ? `<span class="fav on" role="img" aria-label="Favourite">${STAR}</span>` : '';
+    return `<button class="fav ${p.fav ? 'on' : ''}" data-fav="${esc(s.num)}" aria-pressed="${Boolean(p.fav)}" aria-label="Favourite ${esc(s.name)}">${STAR}</button>`;
+  }
+
+  function finishSlot() {
+    if (finished(child.id)) return '<p class="finished-note">Your list is finished. Ask a grown-up if you want to change it.</p>';
+    return count(child.id) ? '<button class="finish" data-finish>I\'ve finished choosing</button>' : '';
   }
 
   function cards() {
@@ -63,10 +75,10 @@ export function render({ root, store, sets, key, space }) {
         <article class="set ${p ? 'picked' : ''}">
           <button class="set-tap" data-set="${esc(s.num)}" aria-haspopup="dialog" aria-label="See ${esc(s.name)}">
             ${photo(s)}
+            ${ageFor(s.num, ages) ? `<span class="age-tag">Ages ${esc(ageFor(s.num, ages))}</span>` : ''}
             <span class="set-name">${esc(s.name)}</span>
-            <span class="set-meta">Set ${esc(s.num)}, ${esc(partsFor(s))} pieces${ageFor(s.num, ages) ? `, ages ${esc(ageFor(s.num, ages))}` : ''}</span>
           </button>
-          ${p ? `<button class="fav ${p.fav ? 'on' : ''}" data-fav="${esc(s.num)}" aria-pressed="${Boolean(p.fav)}" aria-label="Favourite ${esc(s.name)}">${STAR}</button>` : ''}
+          ${favMark(s, p)}
         </article>`;
     }).join('');
   }
@@ -79,6 +91,7 @@ export function render({ root, store, sets, key, space }) {
         <div class="meter-slot">${meter()}</div>
       </div>
       <main class="kid-page">
+        <div class="finish-slot">${finishSlot()}</div>
         <div class="kid-tools">
           <button class="tab" data-only="0" aria-pressed="${!onlyPicks && !theme}">All sets</button>
           ${themes.map(t => `<button class="tab" data-theme="${esc(t)}" aria-pressed="${t === theme}">${esc(t)}</button>`).join('')}
@@ -94,9 +107,11 @@ export function render({ root, store, sets, key, space }) {
   function refreshGrid() {
     root.querySelector('.set-grid').innerHTML = cards();
     root.querySelector('.meter-slot').innerHTML = meter();
+    root.querySelector('.finish-slot').innerHTML = finishSlot();
   }
 
   async function save(next) {
+    if (finished(child.id)) return;
     picks[child.id] = { sets: next };
     refreshGrid();
     try {
@@ -110,6 +125,37 @@ export function render({ root, store, sets, key, space }) {
   const pop = document.createElement('dialog');
   pop.className = 'set-pop';
   document.body.append(pop);
+
+  const confirmFinish = document.createElement('dialog');
+  confirmFinish.className = 'sheet';
+  confirmFinish.innerHTML = `
+    <h2>Have you finished choosing?</h2>
+    <p>You won't be able to change your list after this.</p>
+    <div class="sheet-actions">
+      <button class="quiet" data-finish-no>Keep choosing</button>
+      <button class="claim" data-finish-yes>Yes, I've finished</button>
+    </div>`;
+  document.body.append(confirmFinish);
+
+  confirmFinish.onclick = async e => {
+    const el = e.target.closest('button');
+    if (!el) return;
+    confirmFinish.close();
+    if (!('finishYes' in el.dataset)) return;
+    const id = child.id;
+    picks[id] = { ...picks[id], finished: true };
+    onlyPicks = true;
+    theme = null;
+    draw();
+    try {
+      await store.setPicks(key, id, picks[id].sets, true);
+    } catch (err) {
+      console.error(err);
+      picks[id].finished = false;
+      draw();
+      toast('That didn\'t save. Check the internet and try again.');
+    }
+  };
 
   const pictures = set => [set.img, ...imagesFor(set.num, images)].filter(safeUrl);
 
@@ -135,8 +181,9 @@ export function render({ root, store, sets, key, space }) {
           ${set.theme ? `<dt>Theme</dt><dd>${esc(set.theme)}</dd>` : ''}
         </dl>
         <p class="pop-msg" role="status">${esc(message)}</p>
-        <button class="pop-toggle ${p ? 'remove' : ''}" data-toggle>${p ? 'Remove from my list' : 'Add to my list'}</button>
-        <button class="pop-fav ${p?.fav ? 'on' : ''}" data-popfav aria-pressed="${Boolean(p?.fav)}">${STAR}<span>${p?.fav ? 'My favourite' : 'Make it a favourite'}</span></button>
+        ${finished(child.id) ? '' : `
+          <button class="pop-toggle ${p ? 'remove' : ''}" data-toggle>${p ? 'Remove from my list' : 'Add to my list'}</button>
+          <button class="pop-fav ${p?.fav ? 'on' : ''}" data-popfav aria-pressed="${Boolean(p?.fav)}">${STAR}<span>${p?.fav ? 'My favourite' : 'Make it a favourite'}</span></button>`}
       </div>`;
   }
 
@@ -157,6 +204,7 @@ export function render({ root, store, sets, key, space }) {
       shownImage = Number(el.dataset.image);
       return drawPop();
     }
+    if (finished(child.id)) return undefined;
     const next = { ...mine() };
     if ('toggle' in el.dataset) {
       if (next[num]) delete next[num];
@@ -175,7 +223,7 @@ export function render({ root, store, sets, key, space }) {
     if (!el) return;
     if (el.dataset.child) {
       child = children.find(c => c.id === el.dataset.child);
-      onlyPicks = false;
+      onlyPicks = finished(child.id);
       theme = null;
       search = '';
       scrollTo(0, 0);
@@ -193,6 +241,8 @@ export function render({ root, store, sets, key, space }) {
       draw();
     } else if (el.dataset.set) {
       openPop(el.dataset.set);
+    } else if ('finish' in el.dataset) {
+      confirmFinish.showModal();
     } else if (el.dataset.fav) {
       const num = el.dataset.fav;
       save({ ...mine(), [num]: { fav: !mine()[num].fav } });
@@ -219,6 +269,7 @@ export function render({ root, store, sets, key, space }) {
   store.watchPicks(key, p => {
     picks = p;
     if (child) refreshGrid(); else draw();
+    if (pop.open) drawPop();
   });
 
   draw();
