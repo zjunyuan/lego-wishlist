@@ -1,8 +1,7 @@
-// Paste the web app config from Firebase console > Project settings > Your apps.
-// These values are safe to publish: access is controlled by firestore.rules.
+// Firebase web app settings. These are safe to publish: access is controlled by firestore.rules.
 export const firebaseConfig = {
-  apiKey: 'PASTE_API_KEY',
-  authDomain: 'PASTE_PROJECT.firebaseapp.com',
-  projectId: 'PASTE_PROJECT',
-  appId: 'PASTE_APP_ID',
+  apiKey: 'AIzaSyAPECbMVoaMMk25t-ETAdhTMa1NwSSjTxw',
+  authDomain: 'lego-wishlist-7ea87.firebaseapp.com',
+  projectId: 'lego-wishlist-7ea87',
+  appId: '1:392583862031:web:4266fd78100bca8881507a',
 };
