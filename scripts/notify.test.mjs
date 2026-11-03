@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { bestPrice, claimAlert, completeAlert, isComplete, pledged, startedAlert } from '../functions/notify.js';
+import {
+  bestPrice, boughtAlert, cancelAlert, claimAlert, completeAlert, finishedAlert, isComplete, isFirst, joinedAlert, leftAlert, newlyBought, pledged, startedAlert,
+} from '../functions/notify.js';
 
 // util.js listens for broken images on load, which needs a page.
 globalThis.document ??= { addEventListener() {} };
@@ -33,6 +35,23 @@ test('a group buy is complete once pledges reach the price', () => {
   assert.equal(isComplete([{}, {}], 100), false);
   assert.equal(isComplete([{ amount: 40 }], null), false);
   assert.equal(pledged([{ amount: 5 }, {}]), 5);
+});
+
+test('alerts cover cancelling, buying, joining and leaving', () => {
+  assert.equal(cancelAlert({ by: 'May' }, 'Tram', 'Sam').message, "May's reservation of Tram for Sam was cancelled.");
+  assert.equal(cancelAlert({ by: 'the group' }, 'Tram', 'Sam').message, "The group's purchase of Tram for Sam was cancelled.");
+  assert.equal(boughtAlert({ by: 'May' }, 'Tram', 'Sam').message, 'May marked Tram for Sam as bought.');
+  assert.equal(newlyBought({ status: 'reserved', by: 'May' }, { status: 'bought', by: 'May' }), true);
+  assert.equal(newlyBought({ status: 'reserved', by: 'the group' }, { status: 'bought', by: 'the group' }), false);
+  assert.equal(newlyBought({ status: 'bought', by: 'May' }, { status: 'wrapped', by: 'May' }), false);
+  const may = { by: 'May', uid: 'a', at: 1, amount: 40 };
+  const ben = { by: 'Ben', uid: 'b', at: 2, amount: 20 };
+  assert.equal(isFirst(may, [ben, may]), true);
+  assert.equal(isFirst(ben, [ben, may]), false);
+  assert.equal(joinedAlert(ben, [may, ben], 100, 'Tram', 'Sam').message, 'Ben joined the group buy with S$20.00 for Tram for Sam. S$60.00 pledged of S$100.00.');
+  assert.equal(joinedAlert({ by: 'Ben' }, [{ by: 'Ben' }], 100, 'Tram', 'Sam').message, 'Ben joined the group buy for Tram for Sam.');
+  assert.equal(leftAlert(ben, 'Tram', 'Sam').message, 'Ben left the group buy for Tram for Sam.');
+  assert.equal(finishedAlert('Sam').message, 'Sam has finished choosing.');
 });
 
 test('alerts say what happened', () => {

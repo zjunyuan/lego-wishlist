@@ -697,7 +697,7 @@ export async function render({ root, store, sets, demo }) {
     if (!alertTopic) {
       return `<section>
         <h2>Phone alerts</h2>
-        <p>Get a notification when someone reserves a gift, starts a group buy, or a group buy reaches the price.</p>
+        <p>Get a notification when relatives reserve, cancel or buy a gift, join or leave a group buy, or when a group buy reaches the price. You'll also hear when a boy finishes choosing.</p>
         <button class="claim" data-alerts-on>Set up phone alerts</button>
       </section>`;
     }
