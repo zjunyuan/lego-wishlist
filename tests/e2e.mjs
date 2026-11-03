@@ -123,6 +123,7 @@ ok(vanCard.includes('Lazada S$52.00') && vanCard.includes('Amazon SG S$55.00'), 
 ok(vanCard.includes('Amazon JP \u00a54,000 (about S$34.80)'), 'Amazon JP shows yen and an estimate but is not called cheapest');
 await shot(fam, '3-family');
 await fam.click('[data-claim="60414_riley"]');
+ok(!(await fam.isVisible('.sheet input[name=amount]')), 'reserving a gift does not ask for an amount');
 await fam.fill('.sheet input[name=who]', '<b>Aunty May</b>');
 await fam.click('text=Reserve this gift');
 await fam.waitForSelector('text=Reserved by <b>Aunty May</b>');
@@ -143,6 +144,7 @@ ok(await fam2.$('[data-claim="60414_sam"]'), 'the second copy is still free');
 // Group buy
 await fam2.click('[data-join][data-num="90001"]');
 await fam2.fill('.sheet input[name=who]', 'Uncle Tan');
+ok(await fam2.isVisible('.sheet input[name=amount]'), 'a group buy asks for an amount');
 await fam2.fill('.sheet input[name=amount]', '20');
 await fam2.click('.sheet button[type=submit]');
 await fam2.waitForSelector('text=Group buy: Uncle Tan (S$20.00)');

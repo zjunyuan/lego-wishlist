@@ -14,6 +14,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--sky); color: var(--ink); font: 400 17px/1.5 var(--body); }
 h1, h2, h3, p, ul { margin: 0; padding: 0; }
