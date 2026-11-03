@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-03T01:55:40.647Z",
+ "generatedAt": "2026-11-03T02:05:09.237Z",
  "prices": {
   "60444": {
    "amount": 116.9,
@@ -361,6 +361,14 @@
    "url": "https://www.fairprice.com.sg/product/lego-77243-speed-champions-oracle-red-bull-racing-rb20-f1",
    "lastSeen": "2026-04-27T14:33:14.053Z"
   },
+  "77244": {
+   "amount": 43.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-77244-mercedes-amg-f1-r-w15-race-car",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
   "77246": {
    "amount": 39.5,
    "currency": "SGD",
@@ -376,6 +384,14 @@
    "trusted": true,
    "url": "https://www.fairprice.com.sg/product/lego-77250-speed-champions-moneygram-haas-f1-team-vf-24",
    "lastSeen": "2026-04-27T14:33:14.052Z"
+  },
+  "77252": {
+   "amount": 35.9,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-77252-speed-champions-apxgp-team-race-car",
+   "lastSeen": "2026-04-27T14:33:14.056Z"
   },
   "77253": {
    "amount": 35.9,
