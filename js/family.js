@@ -26,7 +26,16 @@ export function render({ root, store, sets, key, space }) {
   let note = space.note ?? '';
   let photos = space.photos ?? {};
   let takenOpen = false;
-  const shownPhoto = {};
+  let shownSet = null;
+  let shownImage = 0;
+  let byEntry = {};
+  const inView = e => Object.keys(e.for).filter(c => who === 'all' || c === who);
+  const pictures = e => [e.set.img, ...imagesFor(e.num)].filter(Boolean);
+
+  const pop = document.createElement('dialog');
+  pop.className = 'set-pop family-pop';
+  document.body.append(pop);
+  pop.addEventListener('close', () => { pop.textContent = ''; });
   const children = space.children;
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
   const nameOf = id => children.find(c => c.id === id)?.name ?? id;
@@ -75,7 +84,7 @@ export function render({ root, store, sets, key, space }) {
       .map(w => ({ ...w, set: byNum[w.num] ?? { num: w.num, name: `Set ${w.num}` }, price: priceFor(w.num, overrides) }))
       .sort((a, b) => (a.price?.amount ?? 1e9) - (b.price?.amount ?? 1e9));
     const test = BANDS.find(b => b.id === band).test;
-    const inView = e => Object.keys(e.for).filter(c => who === 'all' || c === who);
+    byEntry = Object.fromEntries(entries.map(e => [e.num, e]));
     const shown = entries.filter(e => test(e.price) && inView(e).length);
     const gifts = entries.flatMap(e => inView(e).map(c => [e.num, c]));
     const total = entries.reduce((n, e) => n + Object.keys(e.for).length, 0);
@@ -87,20 +96,14 @@ export function render({ root, store, sets, key, space }) {
     });
     const openList = shown.filter(e => !isTaken(e));
     const takenList = shown.filter(isTaken);
-    const gallery = e => {
-      const pics = [e.set.img, ...imagesFor(e.num)].filter(Boolean).slice(0, 5);
-      const main = pics[shownPhoto[e.num] ?? 0] ?? pics[0];
-      return `<div class="wish-gallery">
-        ${photo({ num: e.num, img: main })}
-        ${pics.length > 1 ? `<div class="wish-thumbs">${pics.map((src, i) => `
-          <button class="thumb" data-gallery="${esc(e.num)}" data-index="${i}" aria-label="Picture ${i + 1}" aria-pressed="${i === (shownPhoto[e.num] ?? 0)}">${photo({ num: e.num, img: src })}</button>`).join('')}</div>` : ''}
-      </div>`;
-    };
     const card = e => `
       <article class="wish">
-        ${gallery(e)}
+        <button class="wish-open" data-open="${esc(e.num)}" aria-label="See photos of ${esc(e.set.name)}">
+          ${photo(e.set)}
+          ${pictures(e).length > 1 ? `<span class="photo-count">${pictures(e).length} photos</span>` : ''}
+        </button>
         <div class="wish-body">
-          <h2>${esc(e.set.name)}</h2>
+          <h2><button class="wish-title" data-open="${esc(e.num)}">${esc(e.set.name)}</button></h2>
           <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
           ${priceHtml(e.price)}
           ${amazonCheckHtml(e.num, overrides)}
@@ -192,15 +195,60 @@ export function render({ root, store, sets, key, space }) {
     };
   }
 
-  root.onclick = async e => {
-    const el = e.target.closest('button');
-    if (!el) return;
-    const { gallery, index } = el.dataset;
-    if (gallery) {
-      shownPhoto[gallery] = Number(index);
-      draw();
+  function drawPop() {
+    const e = byEntry[shownSet];
+    if (!e) {
+      if (pop.open) pop.close();
       return;
     }
+    const pics = pictures(e);
+    const main = pics[shownImage] ?? pics[0];
+    pop.innerHTML = `
+      <button class="pop-close" data-close aria-label="Close">\u00d7</button>
+      <div class="pop-gallery">
+        ${photo({ num: e.num, img: main })}
+        ${pics.length > 1 ? `<div class="pop-thumbs">${pics.map((src, i) => `
+          <button class="thumb" data-image="${i}" aria-label="Picture ${i + 1}" aria-pressed="${i === shownImage}">${photo({ num: e.num, img: src })}</button>`).join('')}</div>` : ''}
+      </div>
+      <div class="pop-info">
+        <h2>${esc(e.set.name)}</h2>
+        <dl>
+          <dt>Set number</dt><dd>${esc(e.num)}</dd>
+          ${e.set.parts ? `<dt>Pieces</dt><dd>${esc(partsFor(e.set))}</dd>` : ''}
+          ${ageFor(e.num, ages) ? `<dt>Age</dt><dd>${esc(ageFor(e.num, ages))}</dd>` : ''}
+        </dl>
+        <div class="pop-price">
+          ${priceHtml(e.price)}
+          ${amazonCheckHtml(e.num, overrides)}
+          ${msrpHtml(msrpFor(e.num, overrides), e.price)}
+        </div>
+        <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
+      </div>`;
+  }
+
+  function openPop(num) {
+    shownSet = num;
+    shownImage = 0;
+    drawPop();
+    pop.showModal();
+    pop.scrollTop = 0;
+  }
+
+  pop.onclick = e => {
+    if (e.target === pop) return pop.close();
+    const el = e.target.closest('button');
+    if (!el) return undefined;
+    if ('close' in el.dataset) return pop.close();
+    if (el.dataset.image) {
+      shownImage = Number(el.dataset.image);
+      return drawPop();
+    }
+    // Closing first keeps the name box on top, and shows the result on the page.
+    pop.close();
+    return act(el);
+  };
+
+  async function act(el) {
     const { band: b, who: person, claim, num, child, bought, release, join, leave, groupBought } = el.dataset;
     try {
       if (b) { band = b; draw(); }
@@ -219,10 +267,21 @@ export function render({ root, store, sets, key, space }) {
       console.error(err);
       toast('That didn\'t save. Check your connection and try again.');
     }
+  }
+
+  root.onclick = e => {
+    const el = e.target.closest('button');
+    if (!el) return;
+    if (el.dataset.open) openPop(el.dataset.open);
+    else act(el);
   };
 
   // Don't redraw under an open name box.
-  const update = () => { if (!root.querySelector('.sheet[open]')) draw(); };
+  const update = () => {
+    if (root.querySelector('.sheet[open]')) return;
+    draw();
+    if (pop.open) drawPop();
+  };
   store.watchWishlist(key, w => { wishlist = w; update(); });
   store.watchClaims(key, c => { claims = c; update(); });
   store.watchOverrides(key, o => { overrides = o; update(); });

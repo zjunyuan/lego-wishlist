@@ -123,13 +123,26 @@ ok(!vanCard.includes('Check Amazon SG'), 'no search link when Amazon SG has a pr
 ok((await fam.getAttribute('article:has([data-claim="90002_riley"]) .also a[href*="amazon.sg"]', 'href')) === 'https://www.amazon.sg/s?k=LEGO%2090002', 'relatives get an Amazon SG search link when there is no price');
 await shot(fam, '3-family');
 
-// More photos on the family page
-ok((await fam.$$('article:has([data-claim="60414_riley"]) .thumb')).length === 3, 'relatives see the extra photos');
-await fam.click('article:has([data-claim="60414_riley"]) [data-gallery][data-index="2"]');
-await fam.waitForFunction(() => document.querySelector('article:has([data-claim="60414_riley"]) .wish-gallery > .photo img')?.src.includes('b/two.jpg'));
+// The family photo popup
+ok((await fam.textContent('.wish-open[data-open="60414"] .photo-count')).includes('3 photos'), 'cards say how many photos a set has');
+await fam.click('.wish-open[data-open="60414"]');
+await fam.waitForSelector('.family-pop[open]');
+ok((await fam.$$('.family-pop .thumb')).length === 3, 'relatives see the extra photos in the popup');
+await fam.click('.family-pop [data-image="2"]');
+await fam.waitForFunction(() => document.querySelector('.family-pop .pop-gallery > .photo img')?.src.includes('b/two.jpg'));
 ok(true, 'tapping a small photo changes the main photo');
-ok(!(await fam.$('article:has([data-claim="90002_riley"]) .thumb')), 'a set with one photo shows no small photos');
-await fam.click('article:has([data-claim="60414_riley"]) [data-gallery][data-index="0"]');
+const popBody = await fam.textContent('.family-pop');
+ok(popBody.includes('60414') && popBody.includes('843') && popBody.includes('6+') && popBody.includes('S$129.90'), 'the popup shows the set details and price');
+ok((await fam.evaluate(() => document.querySelector('.family-pop .pop-gallery').getBoundingClientRect().width)) > 300, 'photos are large in the popup');
+await shot(fam, '13-family-popup');
+await fam.click('.family-pop [data-close]');
+ok(!(await fam.$('.family-pop[open]')), 'the popup closes');
+await fam.click('.wish-title[data-open="60414"]');
+await fam.click('.family-pop [data-claim="60414_sam"]');
+await fam.waitForSelector('.sheet[open]');
+ok(!(await fam.$('.family-pop[open]')), 'reserving from the popup moves to the name box');
+await fam.click('.sheet [data-cancel]');
+ok(!(await fam.$('.wish-open[data-open="90002"] .photo-count')), 'a set with one photo shows no count');
 await fam.click('[data-claim="60414_riley"]');
 ok(!(await fam.isVisible('.sheet input[name=amount]')), 'reserving a gift does not ask for an amount');
 await fam.fill('.sheet input[name=who]', '<b>Aunty May</b>');
