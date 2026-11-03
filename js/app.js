@@ -19,6 +19,10 @@ async function start() {
   }
 
   const sets = await loadJson(demo ? 'data/demo-sets.json' : 'data/sets.json', []);
+  if (!sets.length) {
+    message('The list didn\'t load', 'Refresh the page to try again.');
+    return;
+  }
   const fx = await loadJson(demo ? 'data/demo-fx.json' : 'data/fx.json', {});
   const details = await loadJson(demo ? 'data/demo-details.json' : 'data/details.json', {});
   setDetails(details.sets);

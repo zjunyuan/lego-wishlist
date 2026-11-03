@@ -366,6 +366,21 @@ await kids.waitForSelector('[data-finish]');
 ok(await kids.$('button[data-fav]'), 'the admin can reopen a list');
 await shot(admin, '7-admin-database', true);
 
+// A set file that fails at first, then one that never loads
+let failures = 2;
+const flaky = await ctx.newPage();
+await flaky.route('**/data/demo-sets.json', r => (failures-- > 0 ? r.fulfill({ status: 503, body: '' }) : r.fallback()));
+await flaky.goto(base + famUrl);
+await flaky.waitForSelector('.wish', { timeout: 6000 });
+ok(!(await flaky.textContent('.wish h2')).startsWith('Set '), 'a brief load failure is retried');
+await flaky.close();
+const broken = await ctx.newPage();
+await broken.route('**/data/demo-sets.json', r => r.fulfill({ status: 503, body: '' }));
+await broken.goto(base + famUrl);
+await broken.waitForSelector('text=Refresh the page to try again', { timeout: 9000 });
+ok(true, 'a set file that keeps failing shows a clear message');
+await broken.close();
+
 // Bad links and wide screens
 const bad = await open('?demo&family=nope');
 await bad.waitForSelector('text=This link doesn\'t work');

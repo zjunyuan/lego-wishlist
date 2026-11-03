@@ -31,13 +31,18 @@ document.addEventListener('error', e => {
   if (e.target.tagName === 'IMG') e.target.closest('.photo')?.classList.add('no-image');
 }, true);
 
+// A deploy can briefly make a file unavailable, so try a few times.
 export async function loadJson(path, fallback) {
-  try {
-    const res = await fetch(path, { cache: 'no-cache' });
-    return res.ok ? await res.json() : fallback;
-  } catch {
-    return fallback;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const res = await fetch(path, { cache: 'no-cache' });
+      if (res.ok) return await res.json();
+    } catch {
+      // Try again below.
+    }
+    if (attempt < 3) await new Promise(r => setTimeout(r, 800 * (attempt + 1)));
   }
+  return fallback;
 }
 
 const query = num => encodeURIComponent(`LEGO ${num}`);
