@@ -281,6 +281,8 @@ ok((await admin.$$('.db tbody tr')).length < 12, 'the database opens on the pick
 await admin.click('[data-view="all"]');
 await admin.waitForSelector('[data-edit="db:90010"]');
 ok((await admin.$$('.db tbody tr')).length === 12, 'the database lists every set');
+const shopCell = await admin.textContent('tr:has([data-edit="db:90007"]) .c-shopee');
+ok(shopCell.includes('S$120.00') && shopCell.includes('Sample Store'), 'marketplace prices from the file show on the admin page');
 const vanRow = await admin.textContent('tr:has([data-edit="db:60500"])');
 ok((await admin.textContent('tr:has([data-edit="db:60414"]) .c-msrp')).includes('S$129.90'), 'LEGO.com price fills the MSRP');
 ok((await admin.textContent('tr:has([data-edit="db:60414"]) .c-amount')).includes('LEGO.com'), 'LEGO.com counts as a shop for best price');

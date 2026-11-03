@@ -1,4 +1,4 @@
-import { ageFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shortDate, SHOPS, toast, yen } from './util.js';
+import { ageFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast, yen } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -87,7 +87,7 @@ export async function render({ root, store, sets, fx, demo }) {
   }
 
   function overrideForm(num) {
-    const shops = shopsFor(overrides[num]);
+    const shops = shopsForSet(num, overrides);
     const field = (name, label, value, attrs) => `<label>${label} <input name="${name}" value="${esc(value ?? '')}" ${attrs}></label>`;
     const money2 = 'type="number" step="0.01" min="0"';
     return `<form class="override" data-num="${esc(num)}">
@@ -135,7 +135,7 @@ export async function render({ root, store, sets, fx, demo }) {
         amount: price?.amount ?? null,
         each: price && s.parts ? price.amount / s.parts : null,
         seller: price?.seller ?? null,
-        checked: overrides[s.num]?.updatedAt ?? null,
+        checked: checkedFor(s.num, overrides),
         msrp: msrpFor(s.num, overrides),
         off: msrpFor(s.num, overrides) && price ? 1 - price.amount / msrpFor(s.num, overrides) : null,
         age: ageFor(s.num, ages),
@@ -479,7 +479,7 @@ export async function render({ root, store, sets, fx, demo }) {
       return value === null || value === '' ? null : Number(value);
     };
     const num = e.target.dataset.num;
-    const saved = shopsFor(overrides[num]);
+    const saved = shopsForSet(num, overrides);
     const shops = {};
     for (const shop of SHOPS) {
       const entry = { ...saved[shop.id], price: number(`${shop.id}_price`), final: number(`${shop.id}_final`) };

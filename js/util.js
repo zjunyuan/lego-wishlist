@@ -50,6 +50,14 @@ const query = num => encodeURIComponent(`LEGO ${num}`);
 // LEGO.com Singapore details: [age, price, availability, pieces, page, photos].
 let details = {};
 export function setDetails(sets) { details = sets ?? {}; }
+
+// Marketplace prices collected in the price-check sheet. Prices set on the admin page win, shop by shop.
+let shopData = {};
+let shopDataChecked = null;
+export function setShopData(file) {
+  shopData = file?.sets ?? {};
+  shopDataChecked = file?.checked ?? null;
+}
 const ASSETS = 'https://www.lego.com/cdn/cs/set/assets/';
 
 export const legoFor = num => {
@@ -86,10 +94,14 @@ export function shopsFor(entry) {
   return entry.amount ? { other: { price: entry.amount, seller: entry.seller, url: entry.url } } : {};
 }
 
+export const shopsForSet = (num, overrides) => ({ ...shopData[num], ...shopsFor(overrides[num]) });
+
+export const checkedFor = (num, overrides) => overrides[num]?.updatedAt ?? (shopData[num] ? shopDataChecked : null);
+
 // Amazon JP only counts towards the best price once its delivered cost in S$ is
 // entered, because yen list prices leave out shipping and import charges.
 export function offersFor(num, overrides, fx) {
-  const shops = shopsFor(overrides[num]);
+  const shops = shopsForSet(num, overrides);
   const lego = legoFor(num);
   const fromLego = lego ? [{
     id: 'lego', name: 'LEGO.com', url: lego.url, listed: lego.price, amount: lego.price,
@@ -123,7 +135,7 @@ export function priceFor(num, overrides, fx) {
     ...best,
     seller: best.name,
     others: offers.filter(o => o !== best && o.available && (o.amount != null || o.listed != null)),
-    checked: overrides[num]?.updatedAt ?? null,
+    checked: checkedFor(num, overrides),
   };
 }
 
