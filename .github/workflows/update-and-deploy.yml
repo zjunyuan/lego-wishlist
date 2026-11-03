@@ -42,6 +42,9 @@ jobs:
         run: |
           mkdir _site
           cp -r index.html css js data _site/
+          # Tie each deploy's files together so browsers never mix old and new code.
+          sed -i -E "s#(['\"])\./([a-z-]+\.js)\1#\1./\2?v=${GITHUB_SHA}\1#g" _site/js/*.js
+          sed -i -E "s#(css/style\.css|js/app\.js)#\1?v=${GITHUB_SHA}#g" _site/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
