@@ -235,6 +235,21 @@ await fam.waitForTimeout(150);
 ok(await fam.$('[data-release="60414_riley"]'), 'a claimed gift stays listed after its pick is removed');
 ok(!(await fam.$('[data-claim="90004_riley"]')), 'an unclaimed gift goes when its pick is removed');
 
+// A picked set that has left the catalogue
+await admin.evaluate(async () => {
+  const s = await import('/js/store-demo.js');
+  const { kidKey, famKey } = await s.adminKeys();
+  const riley = JSON.parse(localStorage.getItem('lego-wishlist-demo')).picks.riley;
+  await s.setPicks(kidKey, 'riley', { ...riley.sets, 99999: { fav: false } });
+  await s.publishWishlist(famKey, [{ num: '99999', for: { riley: { fav: false } } }], []);
+});
+await admin.waitForSelector('text=No longer on the list');
+ok((await admin.textContent('.pick-status')).includes('Riley:') && !(await admin.textContent('.pick-status')).includes('10 picks'), 'a removed set does not count as a pick');
+await admin.click('[data-publish]');
+await admin.waitForSelector('text=The family list is up to date');
+await fam.waitForTimeout(150);
+ok(!(await admin.$('text=No longer on the list')), 'updating the family list clears a removed set');
+
 // Set database
 await admin.waitForSelector('.db tbody tr');
 ok((await admin.$$('.db tbody tr')).length < 12, 'the database opens on the picked sets');

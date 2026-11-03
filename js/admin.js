@@ -50,7 +50,7 @@ export async function render({ root, store, sets, fx, demo }) {
     const out = {};
     for (const c of kids.children) {
       for (const [num, p] of Object.entries(picks[c.id]?.sets ?? {})) {
-        (out[num] ??= {})[c.id] = { fav: Boolean(p.fav) };
+        if (byNum[num]) (out[num] ??= {})[c.id] = { fav: Boolean(p.fav) };
       }
     }
     return out;
@@ -321,7 +321,7 @@ export async function render({ root, store, sets, fx, demo }) {
         <h2>Picks</h2>
         <ul class="pick-status">
           ${kids.children.map(c => {
-            const n = Object.keys(picks[c.id]?.sets ?? {}).length;
+            const n = Object.keys(picks[c.id]?.sets ?? {}).filter(num => byNum[num]).length;
             const done = Boolean(picks[c.id]?.finished);
             return `<li><b>${esc(c.name)}:</b> ${n} pick${n === 1 ? '' : 's'}, ${done ? 'finished' : 'still choosing'}
               ${done ? `<button class="quiet" data-reopen="${esc(c.id)}">Let ${esc(c.name)} change the list</button>` : ''}</li>`;
@@ -340,6 +340,7 @@ export async function render({ root, store, sets, fx, demo }) {
             <div class="row-body">
               <h3>${esc(set.name)}</h3>
               <p class="set-meta">Set ${esc(num)}</p>
+              ${byNum[num] ? '' : '<p class="stale">No longer on the list. Click Update family list to take it off.</p>'}
               <p class="who">${Object.entries(who).map(([c, w]) => esc(nameOf(c)) + (w.fav ? ' (favourite)' : '')).join(', ')}</p>
               ${priceHtml(price)}
               ${msrpHtml(msrpFor(num, overrides), price)}

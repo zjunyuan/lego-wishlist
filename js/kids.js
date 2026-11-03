@@ -18,8 +18,11 @@ export function render({ root, store, sets, key, space }) {
   let search = '';
   const themes = [...new Set(sets.map(s => s.theme).filter(Boolean))];
 
-  const mine = () => picks[child?.id]?.sets ?? {};
-  const count = id => Object.keys(picks[id]?.sets ?? {}).length;
+  // Sets removed from the catalogue no longer count as picks.
+  const known = new Set(sets.map(s => s.num));
+  const picksOf = id => Object.fromEntries(Object.entries(picks[id]?.sets ?? {}).filter(([num]) => known.has(num)));
+  const mine = () => picksOf(child?.id);
+  const count = id => Object.keys(picksOf(id)).length;
   const finished = id => Boolean(picks[id]?.finished);
 
   function chooser() {
