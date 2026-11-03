@@ -48,7 +48,7 @@ export function render({ root, store, sets, fx, key, space }) {
     const ids = `data-num="${esc(num)}" data-child="${esc(childId)}"`;
     if (c) {
       const mine = c.uid === store.uid();
-      const state = c.status === 'bought' ? 'Bought' : 'Reserved';
+      const state = c.status === 'reserved' ? 'Reserved' : 'Bought';
       return `<li class="gift taken"><span>${label}<small>${state} by ${esc(c.by)}</small>${
         group.length ? `<small class="group">${esc(groupText(group, price))}</small>` : ''}</span>${
         mine ? `<span class="mine">

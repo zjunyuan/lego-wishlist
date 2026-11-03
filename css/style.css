@@ -188,6 +188,14 @@ label input:not([type=checkbox]) { display: block; width: 100%; min-height: 46px
 .check { display: flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 400; font-size: .94rem; }
 .check input { width: 20px; height: 20px; }
 .override { display: grid; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.balance { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.balance > div { padding: 14px; border-radius: 10px; background: #fff; }
+.balance-total { font-size: 1.5rem; font-weight: 700; }
+.balance-gap { margin-top: 10px; font-weight: 500; }
+.tracker-count { margin-bottom: 8px; color: var(--muted); }
+.tracker-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 14px; }
+.tracker-actions select { min-height: 40px; padding: 6px; border: 2px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); font: inherit; }
+.sr-label { font-size: .85rem; font-weight: 400; }
 .claim-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; background: #fff; }
 .own-form { display: flex; align-items: flex-end; gap: 14px; margin-top: 10px; }
 .own-form label { flex: 0 1 12rem; }

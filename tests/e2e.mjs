@@ -235,6 +235,31 @@ await fam.waitForTimeout(150);
 ok(await fam.$('[data-release="60414_riley"]'), 'a claimed gift stays listed after its pick is removed');
 ok(!(await fam.$('[data-claim="90004_riley"]')), 'an unclaimed gift goes when its pick is removed');
 
+// Spend balance, favourites and the tracker
+await admin.waitForSelector('text=Spend balance');
+await admin.waitForSelector('[data-status="60414_riley"]');
+const balance = await admin.textContent('.balance');
+ok(balance.includes('S$129.90') && balance.includes('Riley') && balance.includes('Sam'), 'the balance totals each boy');
+ok((await admin.textContent('.balance-gap')).includes('Sam is S$129.90 behind Riley'), 'the balance shows the gap');
+ok(!(await admin.textContent('section:has(h2:text("Favourites nobody"))')).includes('Fire Station'), 'a starred set that is taken is not listed as unclaimed');
+await admin.evaluate(async () => {
+  const s = await import('/js/store-demo.js');
+  const { kidKey } = await s.adminKeys();
+  const sam = JSON.parse(localStorage.getItem('lego-wishlist-demo')).picks.sam;
+  await s.setPicks(kidKey, 'sam', { ...sam.sets, 60414: { fav: true } });
+});
+await admin.waitForSelector('section:has(h2:text("Favourites nobody")) >> text=Fire Station');
+ok((await admin.textContent('section:has(h2:text("Favourites nobody"))')).includes('for Sam'), 'an untaken star is listed for the right boy');
+await admin.selectOption('[data-status="60414_riley"]', 'received');
+await admin.waitForSelector('text=Received: 1');
+await fam.waitForSelector('text=Bought by <b>Aunty May</b>');
+ok(await fam.$('[data-release="60414_riley"]') && !(await fam.$('[data-bought="60414_riley"]')), 'a received gift still reads as bought for the family');
+await admin.selectOption('[data-status="60414_riley"]', 'wrapped');
+await admin.waitForSelector('text=Wrapped: 1');
+await shot(admin, '11-admin-tracking', true);
+await admin.selectOption('[data-status="60414_riley"]', 'bought');
+await admin.waitForSelector('text=Bought: 1');
+
 // A picked set that has left the catalogue
 await admin.evaluate(async () => {
   const s = await import('/js/store-demo.js');

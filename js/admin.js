@@ -2,6 +2,7 @@ import { ageFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, p
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
+const STAGES = [['reserved', 'Reserved'], ['bought', 'Bought'], ['received', 'Received'], ['wrapped', 'Wrapped']];
 const STALE_PRICE_DAYS = 14;
 
 export async function render({ root, store, sets, fx, demo }) {
@@ -247,6 +248,63 @@ export async function render({ root, store, sets, fx, demo }) {
       <button class="claim" data-import-go>Import now</button>`;
   }
 
+  // What each boy is getting, using today's best price for each gift.
+  function balanceFor(child) {
+    const mine = Object.values(claims).filter(c => c.child === child.id);
+    const gifts = mine.map(c => ({ c, amount: priceFor(c.num, overrides, fx)?.amount ?? null }));
+    const sum = list => list.reduce((n, g) => n + (g.amount ?? 0), 0);
+    const reserved = gifts.filter(g => g.c.status === 'reserved');
+    const bought = gifts.filter(g => g.c.status !== 'reserved');
+    const claimed = new Set(mine.map(c => c.num));
+    const groups = new Set(Object.values(shares).filter(x => x.child === child.id && !claimed.has(x.num)).map(x => x.num));
+    const pledged = Object.values(shares).filter(x => x.child === child.id && !claimed.has(x.num)).reduce((n, x) => n + (x.amount ?? 0), 0);
+    return {
+      child, count: gifts.length, total: sum(gifts), reserved: sum(reserved), bought: sum(bought),
+      unpriced: gifts.filter(g => g.amount === null).length, groups: groups.size, pledged,
+    };
+  }
+
+  function unclaimedFavourites() {
+    const excluded = keys.excluded ?? [];
+    return Object.entries(pickedSets()).flatMap(([num, who]) => Object.entries(who)
+      .filter(([child, w]) => w.fav && !claims[`${num}_${child}`] && !excluded.includes(num)
+        && !Object.values(shares).some(x => x.num === num && x.child === child))
+      .map(([child]) => ({ num, child, price: priceFor(num, overrides, fx) })));
+  }
+
+  function balanceSection() {
+    const rows = kids.children.map(balanceFor);
+    const sorted = [...rows].sort((a, b) => b.total - a.total);
+    const gap = rows.length > 1 ? sorted[0].total - sorted[sorted.length - 1].total : 0;
+    const favourites = unclaimedFavourites();
+    return `
+      <section>
+        <h2>Spend balance</h2>
+        <div class="balance">
+          ${rows.map(r => `<div>
+            <b>${esc(r.child.name)}</b>
+            <p class="balance-total">${money(r.total)}</p>
+            <p class="set-meta">${r.count} gift${r.count === 1 ? '' : 's'}: ${money(r.bought)} bought, ${money(r.reserved)} reserved</p>
+            ${r.groups ? `<p class="set-meta">${r.groups} open group buy${r.groups === 1 ? '' : 's'}${r.pledged ? `, ${money(r.pledged)} pledged` : ''}</p>` : ''}
+            ${r.unpriced ? `<p class="set-meta stale">${r.unpriced} gift${r.unpriced === 1 ? ' has' : 's have'} no price yet</p>` : ''}
+          </div>`).join('')}
+        </div>
+        ${gap > 0 ? `<p class="balance-gap">${esc(sorted[sorted.length - 1].child.name)} is ${money(gap)} behind ${esc(sorted[0].child.name)}.</p>` : ''}
+      </section>
+
+      <section>
+        <h2>Favourites nobody has taken</h2>
+        ${favourites.length ? `<ul class="rows">${favourites.map(f => {
+          const url = safeUrl(f.price?.url);
+          const label = f.price ? `${money(f.price.amount)} at ${esc(f.price.seller)}` : 'Price to be confirmed';
+          return `<li class="claim-row">
+            <div><b>${esc(byNum[f.num].name)}</b> for ${esc(nameOf(f.child))}
+              <p class="set-meta">${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${label}</a>` : label}</p></div>
+          </li>`;
+        }).join('')}</ul>` : '<p class="empty">Every starred set has been taken, or none have been starred yet.</p>'}
+      </section>`;
+  }
+
   function dbSection() {
     const themes = [...new Set(sets.map(s => s.theme).filter(Boolean))];
     const option = (value, label, current) => `<option value="${esc(value)}" ${value === current ? 'selected' : ''}>${esc(label)}</option>`;
@@ -317,6 +375,8 @@ export async function render({ root, store, sets, fx, demo }) {
         </div>
       </section>
 
+      ${balanceSection()}
+
       <section>
         <h2>Picks</h2>
         <ul class="pick-status">
@@ -367,13 +427,20 @@ export async function render({ root, store, sets, fx, demo }) {
       </section>
 
       <section>
-        <h2>Reserved gifts</h2>
-        ${claimList.length ? `<ul class="rows">${claimList.map(([id, c]) => {
+        <h2>Gift tracker</h2>
+        ${claimList.length ? `<p class="tracker-count">${STAGES.map(([v, l]) => `${l}: ${claimList.filter(([, c]) => c.status === v).length}`).join(', ')}</p>
+        <ul class="rows">${claimList.map(([id, c]) => {
           const old = c.status === 'reserved' && daysSince(c.at) >= STALE_DAYS;
+          const price = priceFor(c.num, overrides, fx);
           return `<li class="claim-row">
             <div><b>${esc(byNum[c.num]?.name ?? `Set ${c.num}`)}</b> for ${esc(nameOf(c.child))}
-              <p class="set-meta">${c.status === 'bought' ? 'Bought' : 'Reserved'} by ${esc(c.by)}${old ? `, not bought after ${daysSince(c.at)} days` : ''}</p></div>
-            <button class="quiet" data-release="${esc(id)}">Release</button>
+              <p class="set-meta">From ${esc(c.by)}${price ? `, ${money(price.amount)}` : ''}${old ? `, <span class="stale">not bought after ${daysSince(c.at)} days</span>` : ''}</p></div>
+            <div class="tracker-actions">
+              <label class="sr-label">Status <select data-status="${esc(id)}">
+                ${STAGES.map(([v, l]) => `<option value="${v}" ${v === c.status ? 'selected' : ''}>${l}</option>`).join('')}
+              </select></label>
+              <button class="quiet" data-release="${esc(id)}">Release</button>
+            </div>
           </li>`;
         }).join('')}</ul>` : '<p class="empty">Nothing reserved yet.</p>'}
       </section>
@@ -459,7 +526,17 @@ export async function render({ root, store, sets, fx, demo }) {
   }
 
   root.onchange = async e => {
-    const { filter, visible } = e.target.dataset ?? {};
+    const { filter, visible, status } = e.target.dataset ?? {};
+    if (status) {
+      try {
+        await store.setClaimStatus(keys.famKey, status, e.target.value);
+      } catch (err) {
+        console.error(err);
+        toast('That didn\'t save. Check the security rules are up to date.');
+        draw();
+      }
+      return;
+    }
     if (filter) {
       filters[filter] = e.target.value;
       if (filter === 'sort') filters.dir = ['year', 'off'].includes(e.target.value) ? -1 : 1;

@@ -31,7 +31,8 @@ service cloud.firestore {
         allow read: if signedIn() && spaceIs(key, 'kids');
         allow create, update: if signedIn() && spaceIs(key, 'kids')
           && request.resource.data.sets is map
-          && request.resource.data.sets.size() <= 10;
+          && request.resource.data.sets.size() <= 10
+          && (isAdmin() || resource == null || resource.data.get('finished', false) == false);
       }
 
       // Family space: published list, price overrides and claims.
@@ -75,7 +76,7 @@ service cloud.firestore {
         allow update: if (isAdmin() || (signedIn() && resource.data.uid == request.auth.uid))
           && spaceIs(key, 'family')
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'at'])
-          && request.resource.data.status in ['reserved', 'bought'];
+          && request.resource.data.status in ['reserved', 'bought', 'received', 'wrapped'];
 
         allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
       }
