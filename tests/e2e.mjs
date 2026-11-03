@@ -191,6 +191,21 @@ ok(!/Aunty|Reserved|Bought/.test(kidText), 'kids page shows nothing about claims
 await fam.click('[data-band="low"]');
 ok((await fam.$$('.wish')).length === 1, 'price filter works');
 await fam.click('[data-band="all"]');
+
+// Family filters, taken gifts and the note
+await fam.click('[data-who="sam"]');
+ok((await fam.$$('.gift')).length === 2 && !(await fam.$('[data-claim="90001_riley"]')), 'the family can filter by child');
+await fam.click('[data-who="all"]');
+ok(await fam.$('.taken-group article:has-text("The LEGO Van")'), 'a gift someone else took moves to the taken section');
+ok((await fam.textContent('.taken-group summary')).includes('Already taken (1)'), 'the taken section shows its count');
+ok(!(await fam.isVisible('.taken-group article')), 'the taken section starts collapsed');
+await fam.click('.taken-group summary');
+await fam.waitForSelector('.taken-group article:has-text("The LEGO Van")');
+await admin.fill('.note-box', 'Please bring gifts by 20 Dec.');
+await admin.click('[data-save-note]');
+await fam.waitForSelector('text=Please bring gifts by 20 Dec.');
+ok(await fam.isVisible('.taken-group article'), 'the taken section stays open when the page updates');
+await shot(fam, '3-family-note', true);
 await admin.click('[data-edit="pick:90001"]');
 await admin.fill('.override [name=other_price]', '35');
 await admin.fill('.override [name=other_seller]', 'Bricks World');

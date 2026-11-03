@@ -22,6 +22,9 @@ export function render({ root, store, sets, fx, key, space }) {
   let shares = {};
   let ages = space.ages ?? {};
   let band = 'all';
+  let who = 'all';
+  let note = space.note ?? '';
+  let takenOpen = false;
   const children = space.children;
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
   const nameOf = id => children.find(c => c.id === id)?.name ?? id;
@@ -70,32 +73,55 @@ export function render({ root, store, sets, fx, key, space }) {
       .map(w => ({ ...w, set: byNum[w.num] ?? { num: w.num, name: `Set ${w.num}` }, price: priceFor(w.num, overrides, fx) }))
       .sort((a, b) => (a.price?.amount ?? 1e9) - (b.price?.amount ?? 1e9));
     const test = BANDS.find(b => b.id === band).test;
-    const shown = entries.filter(e => test(e.price));
+    const inView = e => Object.keys(e.for).filter(c => who === 'all' || c === who);
+    const shown = entries.filter(e => test(e.price) && inView(e).length);
+    const gifts = entries.flatMap(e => inView(e).map(c => [e.num, c]));
     const total = entries.reduce((n, e) => n + Object.keys(e.for).length, 0);
-    const open = entries.reduce((n, e) => n + Object.keys(e.for).filter(c => !claims[`${e.num}_${c}`] && !sharesFor(e.num, c).length).length, 0);
+    const need = gifts.filter(([num, c]) => !claims[`${num}_${c}`] && !sharesFor(num, c).length).length;
+    // A gift you claimed stays up top so you can mark it bought or cancel it.
+    const isTaken = e => inView(e).every(c => {
+      const claim = claims[`${e.num}_${c}`];
+      return claim && claim.uid !== store.uid();
+    });
+    const openList = shown.filter(e => !isTaken(e));
+    const takenList = shown.filter(isTaken);
+    const card = e => `
+      <article class="wish">
+        ${photo(e.set)}
+        <div class="wish-body">
+          <h2>${esc(e.set.name)}</h2>
+          <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
+          ${priceHtml(e.price)}
+          ${msrpHtml(msrpFor(e.num, overrides), e.price)}
+          <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
+        </div>
+      </article>`;
 
     root.innerHTML = `
       <main class="family">
         <header class="family-head">
           <h1>${esc(children.map(c => c.name).join(' and '))}'s Christmas LEGO</h1>
-          <p>${total ? `${open} of ${total} gifts still need someone. Choose one and everyone will see it's taken.` : 'The list isn\'t ready yet. Check back soon.'}</p>
-          ${total ? `<div class="bands" role="group" aria-label="Filter by price">
+          <p>${total ? `${need} of ${gifts.length} gifts still need someone. Choose one and everyone will see it's taken.` : 'The list isn\'t ready yet. Check back soon.'}</p>
+          ${total ? `<div class="family-note">
+            ${note ? `<p class="note-text">${esc(note)}</p>` : ''}
+            <p>Changed your mind? Use Cancel on the device you reserved with. If you can't, message the boys' parents.</p>
+          </div>
+          <div class="bands" role="group" aria-label="Filter by child">
+            <button class="tab" data-who="all" aria-pressed="${who === 'all'}">All gifts</button>
+            ${children.map(c => `<button class="tab" data-who="${esc(c.id)}" aria-pressed="${c.id === who}">For ${esc(c.name)}</button>`).join('')}
+          </div>
+          <div class="bands" role="group" aria-label="Filter by price">
             ${BANDS.map(b => `<button class="tab" data-band="${b.id}" aria-pressed="${b.id === band}">${b.label}</button>`).join('')}
           </div>` : ''}
         </header>
         <div class="family-list">
-          ${shown.map(e => `
-            <article class="wish">
-              ${photo(e.set)}
-              <div class="wish-body">
-                <h2>${esc(e.set.name)}</h2>
-                <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
-                ${priceHtml(e.price)}
-                ${msrpHtml(msrpFor(e.num, overrides), e.price)}
-                <ul class="gifts">${Object.entries(e.for).map(([c, w]) => giftRow(e.num, c, w, e.price)).join('')}</ul>
-              </div>
-            </article>`).join('')}
-          ${total && !shown.length ? '<p class="empty">Nothing in this price range. Try another one.</p>' : ''}
+          ${openList.map(card).join('')}
+          ${total && !shown.length ? '<p class="empty">Nothing matches these filters. Try another one.</p>' : ''}
+          ${total && shown.length && !openList.length ? '<p class="empty">Everything here has been taken. Thank you!</p>' : ''}
+          ${takenList.length ? `<details class="taken-group" ${takenOpen ? 'open' : ''}>
+            <summary>Already taken (${takenList.length})</summary>
+            <div class="family-list">${takenList.map(card).join('')}</div>
+          </details>` : ''}
         </div>
       </main>
       <dialog class="sheet">
@@ -157,9 +183,10 @@ export function render({ root, store, sets, fx, key, space }) {
   root.onclick = async e => {
     const el = e.target.closest('button');
     if (!el) return;
-    const { band: b, claim, num, child, bought, release, join, leave, groupBought } = el.dataset;
+    const { band: b, who: person, claim, num, child, bought, release, join, leave, groupBought } = el.dataset;
     try {
       if (b) { band = b; draw(); }
+      else if (person) { who = person; draw(); }
       else if (claim) askName(num, child);
       else if (join) askName(num, child, true);
       else if (leave) { await store.leaveShare(key, leave); toast('You\'ve left the group buy.'); }
@@ -182,6 +209,9 @@ export function render({ root, store, sets, fx, key, space }) {
   store.watchClaims(key, c => { claims = c; update(); });
   store.watchOverrides(key, o => { overrides = o; update(); });
   store.watchShares(key, x => { shares = x; update(); });
-  store.watchSpace(key, x => { ages = x?.ages ?? {}; update(); });
+  store.watchSpace(key, x => { ages = x?.ages ?? {}; note = x?.note ?? ''; update(); });
+  root.addEventListener('toggle', e => {
+    if (e.target.matches?.('.taken-group')) takenOpen = e.target.open;
+  }, true);
   draw();
 }

@@ -132,6 +132,13 @@ a { color: var(--blue); }
 .family-head p { margin-top: 8px; max-width: 34rem; }
 .bands { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .family-list { display: grid; gap: 14px; margin-top: 20px; }
+.family-note { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: #fff; font-size: .94rem; }
+.family-note p { margin-top: 0; color: var(--muted); }
+.family-note .note-text { margin-bottom: 8px; color: var(--ink); font-size: 1rem; font-weight: 500; white-space: pre-line; }
+.taken-group { padding: 10px 14px; border-radius: 10px; background: #ffffff99; }
+.taken-group summary { min-height: 32px; font-weight: 700; cursor: pointer; }
+.taken-group .family-list { margin-top: 10px; }
+.note-box { width: 100%; margin-top: 8px; padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: #fff; font: inherit; }
 .wish { display: grid; grid-template-columns: 190px 1fr; border-radius: 10px; background: #fff; overflow: hidden; }
 .wish .photo { aspect-ratio: auto; min-height: 150px; }
 .wish .photo img { position: absolute; inset: 0; }

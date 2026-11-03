@@ -8,6 +8,7 @@ export async function render({ root, store, sets, fx, demo }) {
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
   let keys, kids, picks = {}, wishlist = {}, claims = {}, shares = {}, overrides = {};
   let pendingImport = null;
+  let familySpace = {};
   let editing = null;
   const filters = { q: '', theme: 'all', show: 'picked', sort: 'year', dir: -1 };
   const COLUMNS = [
@@ -291,7 +292,7 @@ export async function render({ root, store, sets, fx, demo }) {
   const redrawDb = () => { root.querySelector('#db-table').innerHTML = dbTable(); };
 
   function draw() {
-    if (root.querySelector('.override input:focus, .override select:focus, .own-form input:focus, .db-search:focus, .import textarea:focus')) return;
+    if (root.querySelector('.override input:focus, .override select:focus, .own-form input:focus, .db-search:focus, .import textarea:focus, .note-box:focus')) return;
     const want = pickedSets();
     const excluded = keys.excluded ?? [];
     const nums = [...new Set([...Object.keys(want), ...Object.keys(wishlist)])]
@@ -374,6 +375,13 @@ export async function render({ root, store, sets, fx, demo }) {
             <button class="quiet" data-release="${esc(id)}">Release</button>
           </li>`;
         }).join('')}</ul>` : '<p class="empty">Nothing reserved yet.</p>'}
+      </section>
+
+      <section>
+        <h2>Note for the family</h2>
+        <p>This shows at the top of the family page, such as who to give gifts to and by when.</p>
+        <textarea class="note-box" rows="3" maxlength="400" aria-label="Note for the family">${esc(familySpace.note ?? '')}</textarea>
+        <div class="sheet-actions"><button class="claim" data-save-note>Save note</button></div>
       </section>
 
       <section>
@@ -483,6 +491,11 @@ export async function render({ root, store, sets, fx, demo }) {
       } else if (d.copy) {
         await navigator.clipboard.writeText(d.copy);
         toast('Link copied.');
+      } else if ('saveNote' in d) {
+        const note = root.querySelector('.note-box').value.trim();
+        familySpace.note = note;
+        await store.setFamilyNote(keys.famKey, note);
+        toast('Note saved.');
       } else if (d.view) {
         filters.show = d.view;
         draw();
@@ -557,6 +570,7 @@ export async function render({ root, store, sets, fx, demo }) {
     if (!keys) return setupScreen();
 
     kids = await store.getSpace(keys.kidKey);
+    familySpace = await store.getSpace(keys.famKey) ?? {};
     draw();
     store.watchSpace(keys.kidKey, s => { if (s) { kids = s; draw(); } });
     store.watchPicks(keys.kidKey, p => { picks = p; draw(); });

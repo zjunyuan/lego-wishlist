@@ -99,6 +99,7 @@ export async function importDetails(keys, nextOverrides, ages, images) {
   save();
 }
 
+export async function setFamilyNote(key, note) { state.spaces[key].note = note; save(); }
 export async function setHidden(key, hidden) { state.spaces[key].hidden = hidden; save(); }
 export async function setExcluded(excluded) { state.keys.excluded = excluded; save(); }
 
