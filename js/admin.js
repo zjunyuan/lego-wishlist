@@ -1,4 +1,4 @@
-import { ageFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast, yen } from './util.js';
+import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast, yen } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -282,7 +282,7 @@ export async function render({ root, store, sets, fx, demo }) {
         <h2>Spend balance</h2>
         <div class="balance">
           ${rows.map(r => `<div>
-            <b>${esc(r.child.name)}</b>
+            ${avatar(r.child.id, kids.photos)}<b>${esc(r.child.name)}</b>
             <p class="balance-total">${money(r.total)}</p>
             <p class="set-meta">${r.count} gift${r.count === 1 ? '' : 's'}: ${money(r.bought)} bought, ${money(r.reserved)} reserved</p>
             ${r.groups ? `<p class="set-meta">${r.groups} open group buy${r.groups === 1 ? '' : 's'}${r.pledged ? `, ${money(r.pledged)} pledged` : ''}</p>` : ''}
@@ -375,6 +375,18 @@ export async function render({ root, store, sets, fx, demo }) {
         </div>
       </section>
 
+      <section>
+        <h2>Photos of the boys</h2>
+        <p>These show on the boys' page, this page and the family page. Anyone with those links can see them. Use a JPG or PNG with the face near the top or middle.</p>
+        <div class="photo-pickers">
+          ${kids.children.map(c => `<div>
+            ${avatar(c.id, kids.photos) || '<span class="avatar empty-avatar"></span>'}
+            <label class="quiet-label">${esc(c.name)} <input type="file" accept="image/jpeg,image/png,image/webp" data-photo="${esc(c.id)}"></label>
+            ${kids.photos?.[c.id] ? `<button class="quiet" data-photo-remove="${esc(c.id)}">Remove photo</button>` : ''}
+          </div>`).join('')}
+        </div>
+      </section>
+
       ${balanceSection()}
 
       <section>
@@ -383,7 +395,7 @@ export async function render({ root, store, sets, fx, demo }) {
           ${kids.children.map(c => {
             const n = Object.keys(picks[c.id]?.sets ?? {}).filter(num => byNum[num]).length;
             const done = Boolean(picks[c.id]?.finished);
-            return `<li><b>${esc(c.name)}:</b> ${n} pick${n === 1 ? '' : 's'}, ${done ? 'finished' : 'still choosing'}
+            return `<li>${avatar(c.id, kids.photos)}<b>${esc(c.name)}:</b> ${n} pick${n === 1 ? '' : 's'}, ${done ? 'finished' : 'still choosing'}
               ${done ? `<button class="quiet" data-reopen="${esc(c.id)}">Let ${esc(c.name)} change the list</button>` : ''}</li>`;
           }).join('')}
         </ul>
@@ -470,6 +482,23 @@ export async function render({ root, store, sets, fx, demo }) {
     };
   }
 
+  async function shrinkPhoto(file) {
+    const image = await createImageBitmap(file);
+    const side = Math.min(image.width, image.height);
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    // Tall photos are cropped from nearer the top, where a face usually is.
+    canvas.getContext('2d').drawImage(image, (image.width - side) / 2, (image.height - side) * 0.25, side, side, 0, 0, 200, 200);
+    return canvas.toDataURL('image/jpeg', 0.82);
+  }
+
+  async function savePhotos(photos) {
+    kids.photos = photos;
+    await store.setPhotos(keys, photos);
+    draw();
+  }
+
   root.onsubmit = async e => {
     if (!e.target.matches('.override')) return;
     e.preventDefault();
@@ -526,7 +555,19 @@ export async function render({ root, store, sets, fx, demo }) {
   }
 
   root.onchange = async e => {
-    const { filter, visible, status } = e.target.dataset ?? {};
+    const { filter, visible, status, photo: photoFor } = e.target.dataset ?? {};
+    if (photoFor) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        await savePhotos({ ...kids.photos, [photoFor]: await shrinkPhoto(file) });
+        toast('Photo saved.');
+      } catch (err) {
+        console.error(err);
+        toast('That photo didn\'t work. Choose a JPG or PNG.');
+      }
+      return;
+    }
     if (status) {
       try {
         await store.setClaimStatus(keys.famKey, status, e.target.value);
@@ -569,6 +610,10 @@ export async function render({ root, store, sets, fx, demo }) {
       } else if (d.copy) {
         await navigator.clipboard.writeText(d.copy);
         toast('Link copied.');
+      } else if (d.photoRemove) {
+        const { [d.photoRemove]: removed, ...rest } = kids.photos ?? {};
+        await savePhotos(rest);
+        toast('Photo removed.');
       } else if ('saveNote' in d) {
         const note = root.querySelector('.note-box').value.trim();
         familySpace.note = note;

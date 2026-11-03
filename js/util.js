@@ -13,6 +13,11 @@ export function newKey() {
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
+export function avatar(id, photos) {
+  const src = photos?.[id] ?? '';
+  return /^data:image\/jpeg;base64,[a-z0-9+/=]+$/i.test(src) ? `<img class="avatar" src="${src}" alt="">` : '';
+}
+
 export const safeUrl = url => (/^https:\/\//i.test(url ?? '') ? url : null);
 
 export const money = amount => `S$${Number(amount).toFixed(2)}`;

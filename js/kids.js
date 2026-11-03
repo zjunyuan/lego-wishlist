@@ -1,4 +1,4 @@
-import { ageFor, esc, imagesFor, partsFor, photo, safeUrl, toast } from './util.js';
+import { ageFor, avatar, esc, imagesFor, partsFor, photo, safeUrl, toast } from './util.js';
 
 const MAX_PICKS = 10;
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.3 6.7L12 17.5l-6 3.3 1.3-6.7-5-4.6 6.8-.8z"/></svg>';
@@ -9,6 +9,7 @@ export function render({ root, store, sets, key, space }) {
   let hidden = space.hidden ?? [];
   let ages = space.ages ?? {};
   let images = space.images ?? {};
+  let photos = space.photos ?? {};
   let shown = null;
   let shownImage = 0;
   let picks = {};
@@ -34,6 +35,7 @@ export function render({ root, store, sets, key, space }) {
             <button class="brick brick-${i}" data-child="${esc(c.id)}">
               <span class="studs" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
               <span class="brick-face">
+                ${avatar(c.id, photos)}
                 <span class="brick-name">${esc(c.name)}</span>
                 <span class="brick-count">${finished(c.id) ? 'List finished' : `${count(c.id)} of ${MAX_PICKS} picked`}</span>
               </span>
@@ -90,7 +92,7 @@ export function render({ root, store, sets, key, space }) {
     root.innerHTML = `
       <div class="kid-bar">
         <button class="back" data-back>Change name</button>
-        <h1>${esc(child.name)}'s picks</h1>
+        <h1>${avatar(child.id, photos)}${esc(child.name)}'s picks</h1>
         <div class="meter-slot">${meter()}</div>
       </div>
       <main class="kid-page">
@@ -266,7 +268,8 @@ export function render({ root, store, sets, key, space }) {
     hidden = s.hidden ?? [];
     ages = s.ages ?? {};
     images = s.images ?? {};
-    if (child) refreshGrid(); else draw();
+    photos = s.photos ?? {};
+    draw();
   });
 
   store.watchPicks(key, p => {

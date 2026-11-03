@@ -125,6 +125,13 @@ export async function importDetails(keys, nextOverrides, ages, images) {
 }
 
 export const setFamilyNote = (famKey, note) => updateDoc(doc(db, 'spaces', famKey), { note });
+export function setPhotos(keys, photos) {
+  const batch = writeBatch(db);
+  batch.update(doc(db, 'spaces', keys.kidKey), { photos });
+  batch.update(doc(db, 'spaces', keys.famKey), { photos });
+  return batch.commit();
+}
+
 export const setHidden = (kidKey, hidden) => updateDoc(doc(db, 'spaces', kidKey), { hidden });
 export const setExcluded = excluded => updateDoc(doc(db, 'admin', 'keys'), { excluded });
 

@@ -1,4 +1,4 @@
-import { ageFor, esc, money, msrpFor, msrpHtml, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
+import { ageFor, avatar, esc, money, msrpFor, msrpHtml, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
 
 const NAME_KEY = 'lego-wishlist-name';
 const BANDS = [
@@ -24,6 +24,7 @@ export function render({ root, store, sets, fx, key, space }) {
   let band = 'all';
   let who = 'all';
   let note = space.note ?? '';
+  let photos = space.photos ?? {};
   let takenOpen = false;
   const children = space.children;
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
@@ -44,7 +45,7 @@ export function render({ root, store, sets, fx, key, space }) {
     const id = `${num}_${childId}`;
     const c = claims[id];
     const group = sharesFor(num, childId);
-    const label = `For ${esc(nameOf(childId))}${wish.fav ? ' <span class="fav-tag">Favourite</span>' : ''}`;
+    const label = `${avatar(childId, photos)}For ${esc(nameOf(childId))}${wish.fav ? ' <span class="fav-tag">Favourite</span>' : ''}`;
     const ids = `data-num="${esc(num)}" data-child="${esc(childId)}"`;
     if (c) {
       const mine = c.uid === store.uid();
@@ -108,7 +109,7 @@ export function render({ root, store, sets, fx, key, space }) {
           </div>
           <div class="bands" role="group" aria-label="Filter by child">
             <button class="tab" data-who="all" aria-pressed="${who === 'all'}">All gifts</button>
-            ${children.map(c => `<button class="tab" data-who="${esc(c.id)}" aria-pressed="${c.id === who}">For ${esc(c.name)}</button>`).join('')}
+            ${children.map(c => `<button class="tab" data-who="${esc(c.id)}" aria-pressed="${c.id === who}">${avatar(c.id, photos)}For ${esc(c.name)}</button>`).join('')}
           </div>
           <div class="bands" role="group" aria-label="Filter by price">
             ${BANDS.map(b => `<button class="tab" data-band="${b.id}" aria-pressed="${b.id === band}">${b.label}</button>`).join('')}
@@ -209,7 +210,7 @@ export function render({ root, store, sets, fx, key, space }) {
   store.watchClaims(key, c => { claims = c; update(); });
   store.watchOverrides(key, o => { overrides = o; update(); });
   store.watchShares(key, x => { shares = x; update(); });
-  store.watchSpace(key, x => { ages = x?.ages ?? {}; note = x?.note ?? ''; update(); });
+  store.watchSpace(key, x => { ages = x?.ages ?? {}; note = x?.note ?? ''; photos = x?.photos ?? {}; update(); });
   root.addEventListener('toggle', e => {
     if (e.target.matches?.('.taken-group')) takenOpen = e.target.open;
   }, true);

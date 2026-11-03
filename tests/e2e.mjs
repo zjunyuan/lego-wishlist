@@ -25,7 +25,7 @@ const errors = [];
 const open = async url => {
   const p = await ctx.newPage();
   p.on('pageerror', e => errors.push(e.message));
-  p.on('console', m => { if (m.type() === 'error' && !/ERR_FAILED|Failed to load resource/.test(m.text())) errors.push(m.text()); });
+  p.on('console', m => { if (m.type() === 'error' && !/ERR_FAILED|Failed to load resource|could not be decoded/.test(m.text())) errors.push(m.text()); });
   await p.goto(base + url);
   return p;
 };
@@ -234,6 +234,34 @@ await admin.click('[data-publish]');
 await fam.waitForTimeout(150);
 ok(await fam.$('[data-release="60414_riley"]'), 'a claimed gift stays listed after its pick is removed');
 ok(!(await fam.$('[data-claim="90004_riley"]')), 'an unclaimed gift goes when its pick is removed');
+
+// Photos of the boys
+const png = Buffer.from((await admin.evaluate(() => {
+  const c = document.createElement('canvas');
+  c.width = 300; c.height = 400;
+  const g = c.getContext('2d');
+  g.fillStyle = '#c91a09'; g.fillRect(0, 0, 300, 400);
+  return c.toDataURL('image/png');
+})).split(',')[1], 'base64');
+await admin.setInputFiles('[data-photo="riley"]', { name: 'boy.png', mimeType: 'image/png', buffer: png });
+await admin.waitForSelector('.pick-status .avatar');
+await fam.waitForSelector('[data-who="riley"] .avatar');
+ok((await fam.$$('.gift .avatar')).length > 0, 'a photo shows on the family page');
+ok((await fam.getAttribute('[data-who="riley"] .avatar', 'src')).startsWith('data:image/jpeg'), 'the photo is shrunk to a small JPEG');
+ok(!(await fam.$('[data-who="sam"] .avatar')), 'a boy with no photo shows none');
+await kids.reload();
+await kids.waitForSelector('.brick-0 .avatar');
+ok(!(await kids.$('.brick-1 .avatar')), 'the photo shows only on the right brick');
+await shot(kids, '12-kids-photo');
+await kids.click('.brick-0');
+await kids.waitForSelector('.kid-bar .avatar');
+await admin.setInputFiles('[data-photo="sam"]', { name: 'bad.png', mimeType: 'image/png', buffer: Buffer.from('not an image') });
+await admin.waitForSelector('text=That photo didn\'t work');
+await admin.click('[data-photo-remove="riley"]');
+await fam.waitForFunction(() => !document.querySelector('[data-who="riley"] .avatar'));
+ok(true, 'a photo can be removed');
+await admin.setInputFiles('[data-photo="riley"]', { name: 'boy.png', mimeType: 'image/png', buffer: png });
+await admin.waitForSelector('.pick-status .avatar');
 
 // Spend balance, favourites and the tracker
 await admin.waitForSelector('text=Spend balance');
