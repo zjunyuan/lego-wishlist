@@ -22,8 +22,8 @@ export function parseSheet(text) {
     for (const shop of SHOPS.filter(s => !s.custom)) {
       const n = shop.name;
       const entry = {
-        price: number(get(`${n} price (${shop.yen ? 'JPY' : 'S$'})`)),
-        final: number(get(shop.yen ? `${n} delivered cost (S$)` : `${n} after vouchers (S$)`)),
+        price: number(get(`${n} price (S$)`)),
+        final: number(get(`${n} after vouchers (S$)`)),
         url: get(`${n} link`),
         seller: get(`${n} seller`),
         official: get(`${n} official store`),

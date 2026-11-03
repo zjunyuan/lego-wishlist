@@ -86,11 +86,8 @@ export const SHOPS = [
   { id: 'lazada', name: 'Lazada', search: num => `https://www.lazada.sg/catalog/?q=${query(num)}` },
   { id: 'shopee', name: 'Shopee', search: num => `https://shopee.sg/search?keyword=${query(num)}` },
   { id: 'amazonsg', name: 'Amazon SG', search: num => `https://www.amazon.sg/s?k=${query(num)}` },
-  { id: 'amazonjp', name: 'Amazon JP', yen: true, search: num => `https://www.amazon.co.jp/s?k=${query(num)}` },
   { id: 'other', name: 'Other shop', custom: true },
 ];
-
-export const yen = amount => `¥${Math.round(amount).toLocaleString('en-SG')}`;
 
 // Prices saved by the first admin version were a single amount, seller and url.
 export function shopsFor(entry) {
@@ -103,9 +100,7 @@ export const shopsForSet = (num, overrides) => ({ ...shopData[num], ...shopsFor(
 
 export const checkedFor = (num, overrides) => overrides[num]?.updatedAt ?? (shopData[num] ? shopDataChecked : null);
 
-// Amazon JP only counts towards the best price once its delivered cost in S$ is
-// entered, because yen list prices leave out shipping and import charges.
-export function offersFor(num, overrides, fx) {
+export function offersFor(num, overrides) {
   const shops = shopsForSet(num, overrides);
   const lego = legoFor(num);
   const fromLego = lego ? [{
@@ -117,13 +112,6 @@ export function offersFor(num, overrides, fx) {
     const name = s.custom ? e.seller || s.name : s.name;
     const stock = e.stock ?? null;
     const available = !stock || stock === 'In stock';
-    if (s.yen) {
-      const about = e.price && fx?.sgdPerJpy ? e.price * fx.sgdPerJpy : null;
-      return {
-        id: s.id, name, url: e.url, listed: e.price ?? null, about, stock, available, seller: e.seller, voucher: e.voucher,
-        amount: e.final ?? about, counts: available && e.final != null, afterVouchers: false, delivered: e.final != null, yen: true,
-      };
-    }
     return {
       id: s.id, name, url: e.url, listed: e.price ?? null, stock, available, seller: e.seller, voucher: e.voucher,
       amount: e.final ?? e.price ?? null, counts: available && (e.final ?? e.price) != null, afterVouchers: e.final != null,
@@ -131,8 +119,8 @@ export function offersFor(num, overrides, fx) {
   })].filter(o => o.amount != null || o.listed != null || o.stock);
 }
 
-export function priceFor(num, overrides, fx) {
-  const offers = offersFor(num, overrides, fx);
+export function priceFor(num, overrides) {
+  const offers = offersFor(num, overrides);
   const counted = offers.filter(o => o.counts).sort((a, b) => a.amount - b.amount);
   const best = counted[0] ?? offers.filter(o => o.available && o.amount != null)[0];
   if (!best) return null;
@@ -144,11 +132,7 @@ export function priceFor(num, overrides, fx) {
   };
 }
 
-function offerText(o) {
-  if (!o.yen) return `${o.name} ${money(o.amount)}`;
-  const about = o.about ? ` (about ${money(o.about)})` : '';
-  return o.delivered ? `${o.name} ${money(o.amount)} delivered` : `${o.name} ${yen(o.listed)}${about}`;
-}
+const offerText = o => `${o.name} ${money(o.amount)}`;
 
 function offerLink(o) {
   const url = safeUrl(o.url);
@@ -161,11 +145,17 @@ export function priceHtml(p) {
   const seller = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(p.seller)}</a>` : esc(p.seller);
   let note = '';
   if (p.afterVouchers) note = p.voucher ? `After vouchers (${p.voucher}), so yours may differ` : 'After vouchers, so yours may differ';
-  else if (p.delivered) note = 'Delivered';
-  else if (p.yen) note = `Approximate, from ${yen(p.listed)}, before shipping`;
-  return `<p class="price"><b>${p.yen && !p.delivered ? 'About ' : ''}${money(p.amount)}</b> at ${seller}</p>${
+  return `<p class="price"><b>${money(p.amount)}</b> at ${seller}</p>${
     note ? `<p class="price-note">${esc(note)}</p>` : ''}${
     p.others.length ? `<p class="also">Also: ${p.others.map(offerLink).join(', ')}</p>` : ''}`;
+}
+
+// A search link for relatives when no Amazon SG price has been found yet.
+export function amazonCheckHtml(num, overrides) {
+  const offer = offersFor(num, overrides).find(o => o.id === 'amazonsg');
+  if (offer?.amount != null) return '';
+  const url = SHOPS.find(s => s.id === 'amazonsg').search(num);
+  return `<p class="also"><a href="${esc(url)}" target="_blank" rel="noopener">Check Amazon SG</a></p>`;
 }
 
 export function msrpHtml(msrp, price) {

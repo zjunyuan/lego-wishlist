@@ -104,7 +104,6 @@ await admin.evaluate(async () => {
     lazada: { price: 52, url: 'https://www.lazada.sg/x' },
     shopee: { price: 48, final: 45.99, url: 'https://shopee.sg/x' },
     amazonsg: { price: 55 },
-    amazonjp: { price: 4000 },
   } });
   await s.setOverride(famKey, '60414', { updatedAt: at, shops: { amazonsg: { price: 129.99 } } });
   await s.setOverride(famKey, '90002', { amount: 75.5, seller: 'Old format shop', url: 'https://example.com/old' });
@@ -120,8 +119,17 @@ ok(vanCard.includes('S$45.99 at Shopee'), 'family sees the cheapest shop, using 
 ok(vanCard.includes('After vouchers'), 'an after-vouchers price is labelled');
 ok(vanCard.includes('MSRP S$50.00, 8% off'), 'family sees the MSRP and discount');
 ok(vanCard.includes('Lazada S$52.00') && vanCard.includes('Amazon SG S$55.00'), 'family also sees the other shops');
-ok(vanCard.includes('Amazon JP \u00a54,000 (about S$34.80)'), 'Amazon JP shows yen and an estimate but is not called cheapest');
+ok(!vanCard.includes('Check Amazon SG'), 'no search link when Amazon SG has a price');
+ok((await fam.getAttribute('article:has([data-claim="90002_riley"]) .also a[href*="amazon.sg"]', 'href')) === 'https://www.amazon.sg/s?k=LEGO%2090002', 'relatives get an Amazon SG search link when there is no price');
 await shot(fam, '3-family');
+
+// More photos on the family page
+ok((await fam.$$('article:has([data-claim="60414_riley"]) .thumb')).length === 3, 'relatives see the extra photos');
+await fam.click('article:has([data-claim="60414_riley"]) [data-gallery][data-index="2"]');
+await fam.waitForFunction(() => document.querySelector('article:has([data-claim="60414_riley"]) .wish-gallery > .photo img')?.src.includes('b/two.jpg'));
+ok(true, 'tapping a small photo changes the main photo');
+ok(!(await fam.$('article:has([data-claim="90002_riley"]) .thumb')), 'a set with one photo shows no small photos');
+await fam.click('article:has([data-claim="60414_riley"]) [data-gallery][data-index="0"]');
 await fam.click('[data-claim="60414_riley"]');
 ok(!(await fam.isVisible('.sheet input[name=amount]')), 'reserving a gift does not ask for an amount');
 await fam.fill('.sheet input[name=who]', '<b>Aunty May</b>');
@@ -315,7 +323,7 @@ const vanRow = await admin.textContent('tr:has([data-edit="db:60500"])');
 ok((await admin.textContent('tr:has([data-edit="db:60414"]) .c-msrp')).includes('S$129.90'), 'LEGO.com price fills the MSRP');
 ok((await admin.textContent('tr:has([data-edit="db:60414"]) .c-amount')).includes('LEGO.com'), 'LEGO.com counts as a shop for best price');
 ok((await admin.textContent('tr:has([data-edit="db:90010"]) .c-msrp')).includes('Temporarily out of stock'), 'LEGO.com stock status shows');
-ok(vanRow.includes('276') && vanRow.includes('S$52.00') && vanRow.includes('S$48.00') && vanRow.includes('S$55.00') && vanRow.includes('¥4,000'), 'a row shows all four shops');
+ok(vanRow.includes('276') && vanRow.includes('S$52.00') && vanRow.includes('S$48.00') && vanRow.includes('S$55.00') && !vanRow.includes('JP'), 'a row shows the three shops');
 ok(vanRow.includes('S$45.99 after vouchers') && vanRow.includes('S$0.17'), 'a row shows the after-vouchers and per-piece prices');
 ok((await admin.textContent('tr:has([data-edit="db:60500"]) .cheapest')).includes('S$48.00'), 'the cheapest shop is highlighted');
 ok((await admin.getAttribute('tr:has([data-edit="db:60500"]) .c-shopee .find', 'href')) === 'https://shopee.sg/search?keyword=LEGO%2060500', 'search links use the exact set number');
@@ -346,16 +354,14 @@ await admin.click('[data-edit="db:90009"]');
 await (await admin.$('.db-edit')).screenshot({ path: join(shots, '8-edit-prices.png') });
 await admin.fill('.db-edit [name=amazonsg_price]', '19.9');
 await admin.fill('.db-edit [name=amazonsg_url]', 'https://example.com/buy');
-await admin.fill('.db-edit [name=amazonjp_price]', '2000');
-await admin.fill('.db-edit [name=amazonjp_final]', '15.5');
 await admin.click('.db-edit >> text=Save prices');
 await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=S$19.90');
 const camper = await admin.textContent('tr:has([data-edit="db:90009"]) .c-amount');
-ok(camper.includes('S$15.50') && camper.includes('Amazon JP'), 'a delivered Amazon JP cost counts as the best price');
+ok(camper.includes('S$19.90') && camper.includes('Amazon SG'), 'a saved Amazon SG price counts as the best price');
 ok((await admin.getAttribute('tr:has([data-edit="db:90009"]) .c-amazonsg a', 'href')) === 'https://example.com/buy', 'the buy link is saved');
 await admin.click('[data-edit="db:90009"]');
 ok((await admin.inputValue('.db-edit [name=amazonsg_price]')) === '19.9', 'saved prices fill the form');
-for (const f of ['amazonsg_price', 'amazonsg_url', 'amazonjp_price', 'amazonjp_final']) await admin.fill(`.db-edit [name=${f}]`, '');
+for (const f of ['amazonsg_price', 'amazonsg_url']) await admin.fill(`.db-edit [name=${f}]`, '');
 await admin.click('.db-edit >> text=Save prices');
 await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=No price');
 ok(true, 'clearing every price removes them');

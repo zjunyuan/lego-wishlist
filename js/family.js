@@ -1,4 +1,4 @@
-import { ageFor, avatar, esc, money, msrpFor, msrpHtml, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
+import { ageFor, amazonCheckHtml, avatar, esc, imagesFor, money, msrpFor, msrpHtml, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
 
 const NAME_KEY = 'lego-wishlist-name';
 const BANDS = [
@@ -15,7 +15,7 @@ function saveName(name) {
   try { localStorage.setItem(NAME_KEY, name); } catch { /* still works for this visit */ }
 }
 
-export function render({ root, store, sets, fx, key, space }) {
+export function render({ root, store, sets, key, space }) {
   let wishlist = {};
   let claims = {};
   let overrides = {};
@@ -26,6 +26,7 @@ export function render({ root, store, sets, fx, key, space }) {
   let note = space.note ?? '';
   let photos = space.photos ?? {};
   let takenOpen = false;
+  const shownPhoto = {};
   const children = space.children;
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
   const nameOf = id => children.find(c => c.id === id)?.name ?? id;
@@ -71,7 +72,7 @@ export function render({ root, store, sets, fx, key, space }) {
 
   function draw() {
     const entries = Object.values(wishlist)
-      .map(w => ({ ...w, set: byNum[w.num] ?? { num: w.num, name: `Set ${w.num}` }, price: priceFor(w.num, overrides, fx) }))
+      .map(w => ({ ...w, set: byNum[w.num] ?? { num: w.num, name: `Set ${w.num}` }, price: priceFor(w.num, overrides) }))
       .sort((a, b) => (a.price?.amount ?? 1e9) - (b.price?.amount ?? 1e9));
     const test = BANDS.find(b => b.id === band).test;
     const inView = e => Object.keys(e.for).filter(c => who === 'all' || c === who);
@@ -86,13 +87,23 @@ export function render({ root, store, sets, fx, key, space }) {
     });
     const openList = shown.filter(e => !isTaken(e));
     const takenList = shown.filter(isTaken);
+    const gallery = e => {
+      const pics = [e.set.img, ...imagesFor(e.num)].filter(Boolean).slice(0, 5);
+      const main = pics[shownPhoto[e.num] ?? 0] ?? pics[0];
+      return `<div class="wish-gallery">
+        ${photo({ num: e.num, img: main })}
+        ${pics.length > 1 ? `<div class="wish-thumbs">${pics.map((src, i) => `
+          <button class="thumb" data-gallery="${esc(e.num)}" data-index="${i}" aria-label="Picture ${i + 1}" aria-pressed="${i === (shownPhoto[e.num] ?? 0)}">${photo({ num: e.num, img: src })}</button>`).join('')}</div>` : ''}
+      </div>`;
+    };
     const card = e => `
       <article class="wish">
-        ${photo(e.set)}
+        ${gallery(e)}
         <div class="wish-body">
           <h2>${esc(e.set.name)}</h2>
           <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
           ${priceHtml(e.price)}
+          ${amazonCheckHtml(e.num, overrides)}
           ${msrpHtml(msrpFor(e.num, overrides), e.price)}
           <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
         </div>
@@ -184,6 +195,12 @@ export function render({ root, store, sets, fx, key, space }) {
   root.onclick = async e => {
     const el = e.target.closest('button');
     if (!el) return;
+    const { gallery, index } = el.dataset;
+    if (gallery) {
+      shownPhoto[gallery] = Number(index);
+      draw();
+      return;
+    }
     const { band: b, who: person, claim, num, child, bought, release, join, leave, groupBought } = el.dataset;
     try {
       if (b) { band = b; draw(); }

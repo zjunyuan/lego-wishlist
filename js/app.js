@@ -23,11 +23,10 @@ async function start() {
     message('The list didn\'t load', 'Refresh the page to try again.');
     return;
   }
-  const fx = await loadJson(demo ? 'data/demo-fx.json' : 'data/fx.json', {});
   const details = await loadJson(demo ? 'data/demo-details.json' : 'data/details.json', {});
   setDetails(details.sets);
   setShopData(await loadJson(demo ? 'data/demo-shops.json' : 'data/shops.json', {}));
-  const context = { root, store, sets, fx, demo };
+  const context = { root, store, sets, demo };
 
   if (params.has('admin')) {
     (await import('./admin.js')).render(context);

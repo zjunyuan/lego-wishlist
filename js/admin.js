@@ -1,11 +1,11 @@
-import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast, yen } from './util.js';
+import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
 const STAGES = [['reserved', 'Reserved'], ['bought', 'Bought'], ['received', 'Received'], ['wrapped', 'Wrapped']];
 const STALE_PRICE_DAYS = 14;
 
-export async function render({ root, store, sets, fx, demo }) {
+export async function render({ root, store, sets, demo }) {
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
   let keys, kids, picks = {}, wishlist = {}, claims = {}, shares = {}, overrides = {};
   let pendingImport = null;
@@ -14,7 +14,7 @@ export async function render({ root, store, sets, fx, demo }) {
   const filters = { q: '', theme: 'all', show: 'picked', sort: 'year', dir: -1 };
   const COLUMNS = [
     ['photo', ''], ['num', 'Set'], ['name', 'Name'], ['ageNum', 'Age'], ['parts', 'Pieces'], ['msrp', 'MSRP'],
-    ['lazada', 'Lazada'], ['shopee', 'Shopee'], ['amazonsg', 'Amazon SG'], ['amazonjp', 'Amazon JP'],
+    ['lazada', 'Lazada'], ['shopee', 'Shopee'], ['amazonsg', 'Amazon SG'],
     ['amount', 'Best'], ['off', 'Off MSRP'], ['each', 'Per piece'], ['checked', 'Checked'], ['visible', 'Boys see it'],
   ];
 
@@ -101,10 +101,8 @@ export async function render({ root, store, sets, fx, demo }) {
         return `<div class="shop-row">
           <div class="shop-name"><b>${esc(s.name)}</b>${s.search ? `<a href="${esc(s.search(num))}" target="_blank" rel="noopener">Search</a>` : ''}</div>
           ${s.custom ? field('other_seller', 'Shop name', e.seller, 'maxlength="40"') : ''}
-          ${s.yen
-            ? field(`${s.id}_price`, 'Price (¥)', e.price, 'type="number" step="1" min="0"')
-            : field(`${s.id}_price`, 'Price (S$)', e.price, money2)}
-          ${s.custom ? '' : field(`${s.id}_final`, s.yen ? 'Delivered (S$)' : 'After vouchers (S$)', e.final, money2)}
+          ${field(`${s.id}_price`, 'Price (S$)', e.price, money2)}
+          ${s.custom ? '' : field(`${s.id}_final`, 'After vouchers (S$)', e.final, money2)}
           ${field(`${s.id}_url`, 'Link to buy', e.url, 'type="url" placeholder="https://"')}
           <label>Stock <select name="${s.id}_stock">
             ${['', 'In stock', 'Out of stock', 'Not listed'].map(v => `<option value="${v}" ${v === (e.stock ?? '') ? 'selected' : ''}>${v || 'Not checked'}</option>`).join('')}
@@ -124,8 +122,8 @@ export async function render({ root, store, sets, fx, demo }) {
     const ages = kids.ages ?? {};
     const q = filters.q.trim().toLowerCase();
     const rows = sets.map(s => {
-      const price = priceFor(s.num, overrides, fx);
-      const offers = offersFor(s.num, overrides, fx);
+      const price = priceFor(s.num, overrides);
+      const offers = offersFor(s.num, overrides);
       const shopPrices = Object.fromEntries(SHOPS.map(shop => [shop.id, offers.find(o => o.id === shop.id)?.amount ?? null]));
       return {
         ...s,
@@ -174,13 +172,10 @@ export async function render({ root, store, sets, fx, demo }) {
     if (!o) return search;
     const url = safeUrl(o.url);
     let text = '';
-    if (o.yen && o.listed != null) text = yen(o.listed);
-    else if (o.listed != null || o.amount != null) text = money(o.listed ?? o.amount);
+    if (o.listed != null || o.amount != null) text = money(o.listed ?? o.amount);
     const main = url && text ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
     let note = '';
     if (o.afterVouchers) note = `${money(o.amount)} after vouchers`;
-    else if (o.delivered) note = `${money(o.amount)} delivered`;
-    else if (o.about) note = `About ${money(o.about)}`;
     const stock = o.available ? '' : `<span class="stale block">${esc(o.stock === 'Out of stock' ? 'Sold out' : o.stock)}</span>`;
     const seller = o.seller && !shop.custom ? `<span class="muted block">${esc(o.seller)}</span>` : '';
     return `<span class="${r.price?.id === id ? 'cheapest' : ''}">${main}</span>${note ? `<span class="muted block">${esc(note)}</span>` : ''}${seller}${stock}${search}`;
@@ -201,11 +196,11 @@ export async function render({ root, store, sets, fx, demo }) {
         return `<span class="${r.price?.id === 'lego' ? 'cheapest' : ''}">${label}</span>${flag}`;
       }
       case 'off': return esc(offLabel(r.msrp, r.amount));
-      case 'lazada': case 'shopee': case 'amazonsg': case 'amazonjp': return shopCell(key, r);
+      case 'lazada': case 'shopee': case 'amazonsg': return shopCell(key, r);
       case 'amount': {
         if (!r.price) return '<span class="muted">No price</span>';
         const url = safeUrl(r.price.url);
-        const text = `${r.price.yen && !r.price.delivered ? 'About ' : ''}${money(r.amount)}`;
+        const text = money(r.amount);
         return `<b>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${text}</a>` : text}</b><span class="muted block">${esc(r.seller)}</span>`;
       }
       case 'each': return r.each === null ? '' : money(r.each);
@@ -251,7 +246,7 @@ export async function render({ root, store, sets, fx, demo }) {
   // What each boy is getting, using today's best price for each gift.
   function balanceFor(child) {
     const mine = Object.values(claims).filter(c => c.child === child.id);
-    const gifts = mine.map(c => ({ c, amount: priceFor(c.num, overrides, fx)?.amount ?? null }));
+    const gifts = mine.map(c => ({ c, amount: priceFor(c.num, overrides)?.amount ?? null }));
     const sum = list => list.reduce((n, g) => n + (g.amount ?? 0), 0);
     const reserved = gifts.filter(g => g.c.status === 'reserved');
     const bought = gifts.filter(g => g.c.status !== 'reserved');
@@ -269,7 +264,7 @@ export async function render({ root, store, sets, fx, demo }) {
     return Object.entries(pickedSets()).flatMap(([num, who]) => Object.entries(who)
       .filter(([child, w]) => w.fav && !claims[`${num}_${child}`] && !excluded.includes(num)
         && !Object.values(shares).some(x => x.num === num && x.child === child))
-      .map(([child]) => ({ num, child, price: priceFor(num, overrides, fx) })));
+      .map(([child]) => ({ num, child, price: priceFor(num, overrides) })));
   }
 
   function balanceSection() {
@@ -317,7 +312,6 @@ export async function render({ root, store, sets, fx, demo }) {
         </div>
         <p>Use Search to find a set at each shop, then add the price with Edit prices. Choose which sets the boys can see here too. New sets are shown unless you hide them.</p>
         <p class="muted">MSRP, age, photos and stock were read from LEGO.com Singapore on 3 Nov 2026. LEGO.com counts as a shop for the best price when a set can be bought there.</p>
-        ${fx?.sgdPerJpy ? `<p class="muted">Amazon JP estimates use \u00a5100 = ${money(fx.sgdPerJpy * 100)} (${esc(fx.date ?? '')}). They leave out shipping and import charges, so they only count as the best price once you enter a delivered cost.</p>` : ''}
         <div class="db-tools">
           <label>Search <input class="db-search" type="search" value="${esc(filters.q)}" placeholder="Name, number or retailer"></label>
           <label>Theme <select data-filter="theme">
@@ -405,7 +399,7 @@ export async function render({ root, store, sets, fx, demo }) {
         </div>
         ${nums.length ? `<ul class="rows">${nums.map(num => {
           const set = byNum[num] ?? { num, name: `Set ${num}` };
-          const price = priceFor(num, overrides, fx);
+          const price = priceFor(num, overrides);
           const who = want[num] ?? wishlist[num]?.for ?? {};
           return `<li class="row">
             ${photo(set)}
@@ -443,7 +437,7 @@ export async function render({ root, store, sets, fx, demo }) {
         ${claimList.length ? `<p class="tracker-count">${STAGES.map(([v, l]) => `${l}: ${claimList.filter(([, c]) => c.status === v).length}`).join(', ')}</p>
         <ul class="rows">${claimList.map(([id, c]) => {
           const old = c.status === 'reserved' && daysSince(c.at) >= STALE_DAYS;
-          const price = priceFor(c.num, overrides, fx);
+          const price = priceFor(c.num, overrides);
           return `<li class="claim-row">
             <div><b>${esc(byNum[c.num]?.name ?? `Set ${c.num}`)}</b> for ${esc(nameOf(c.child))}
               <p class="set-meta">From ${esc(c.by)}${price ? `, ${money(price.amount)}` : ''}${old ? `, <span class="stale">not bought after ${daysSince(c.at)} days</span>` : ''}</p></div>

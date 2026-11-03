@@ -141,8 +141,11 @@ a { color: var(--blue); }
 .taken-group .family-list { margin-top: 10px; }
 .note-box { width: 100%; margin-top: 8px; padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: #fff; font: inherit; }
 .wish { display: grid; grid-template-columns: 190px 1fr; border-radius: 10px; background: #fff; overflow: hidden; }
-.wish .photo { aspect-ratio: auto; min-height: 150px; }
-.wish .photo img { position: absolute; inset: 0; }
+.wish-gallery { display: flex; flex-direction: column; min-width: 0; background: #fff; }
+.wish-gallery > .photo { flex: 1; aspect-ratio: auto; min-height: 170px; }
+.wish-gallery > .photo img { position: absolute; inset: 0; }
+.wish-thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 0 8px 8px; }
+.wish-thumbs .thumb { border-width: 2px; }
 .wish-body { padding: 14px 16px; min-width: 0; }
 .wish h2, .row h3 { font: 700 1.15rem/1.25 var(--body); }
 .price { margin-top: 8px; }
@@ -286,7 +289,7 @@ label input:not([type=checkbox]) { display: block; width: 100%; min-height: 46px
 }
 @media (max-width: 560px) {
   .wish { grid-template-columns: 1fr; }
-  .wish .photo { aspect-ratio: 16 / 10; min-height: 0; }
+  .wish-gallery > .photo { flex: none; aspect-ratio: 16 / 10; min-height: 0; }
   .share { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {

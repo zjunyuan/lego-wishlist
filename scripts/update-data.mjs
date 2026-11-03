@@ -1,5 +1,4 @@
-// Daily job: rebuilds the catalogue from Rebrickable's public CSV files and
-// fetches the yen to Singapore dollar rate.
+// Daily job: rebuilds the catalogue from Rebrickable's public CSV files.
 // Needs no API keys or packages.
 import { readFile, writeFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
@@ -8,7 +7,6 @@ import { fileURLToPath } from 'node:url';
 const SETS_CSV = 'https://cdn.rebrickable.com/media/downloads/sets.csv.gz';
 const THEMES_CSV = 'https://cdn.rebrickable.com/media/downloads/themes.csv.gz';
 const THEMES = ['City', 'Speed Champions'];
-const FX = 'https://api.frankfurter.dev/v1/latest?base=JPY&symbols=SGD';
 const MIN_PARTS = 30;
 
 export function parseCsv(text) {
@@ -73,19 +71,8 @@ async function fetchGz(url) {
   return gunzipSync(Buffer.from(await res.arrayBuffer())).toString('utf8');
 }
 
-async function updateFx(root) {
-  const res = await fetch(FX);
-  if (!res.ok) throw new Error(`Exchange rate returned ${res.status}`);
-  const body = await res.json();
-  const sgdPerJpy = body.rates?.SGD;
-  if (!(sgdPerJpy > 0)) throw new Error('Exchange rate missing');
-  await writeFile(new URL('fx.json', root), JSON.stringify({ sgdPerJpy, date: body.date }) + '\n');
-  console.log(`Exchange rate: 100 yen = S$${(sgdPerJpy * 100).toFixed(2)} on ${body.date}`);
-}
-
 async function main() {
   const root = new URL('../data/', import.meta.url);
-  await updateFx(root).catch(err => console.warn(err.message));
   const minYear = new Date().getFullYear() - 1;
 
   const themes = parseCsv(await fetchGz(THEMES_CSV));

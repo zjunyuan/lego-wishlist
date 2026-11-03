@@ -19,7 +19,6 @@ The links are created when the admin first signs in. Their keys are never stored
 - `data/removed.json`: sets taken off the list, plus the MSRP limit. Gift-with-purchase sets are removed too.
 - `data/details.json`: age, price, stock, pieces and photos read from LEGO.com Singapore on the date in the file. The daily job doesn't refresh it.
 - `data/shops.json`: marketplace prices copied from the price-check sheet. Prices set on the admin page win, shop by shop.
-- `data/fx.json`: the yen to Singapore dollar rate, for Amazon JP estimates.
 
 Prices, MSRP and age are entered on the admin page, or imported by pasting the Prices tab of the price-check sheet.
 
