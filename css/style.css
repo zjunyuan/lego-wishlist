@@ -134,6 +134,8 @@ label input:not([type=checkbox]) { display: block; width: 100%; min-height: 46px
 .share { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .share > div { padding: 14px; border-radius: 10px; background: #fff; }
 .share p { color: var(--muted); font-size: .94rem; }
+.share-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; margin-top: 6px; }
+.open { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; border-radius: 8px; background: var(--blue); color: #fff; font-weight: 700; text-decoration: none; }
 .publish { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
 .rows { display: grid; gap: 10px; }
 .row { display: grid; grid-template-columns: 110px 1fr; border-radius: 10px; background: #fff; overflow: hidden; }

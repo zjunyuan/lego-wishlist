@@ -106,9 +106,11 @@ export async function render({ root, store, sets, prices, demo }) {
         <h2>Share</h2>
         <div class="share">
           <div><b>For ${esc(kids.children.map(c => c.name).join(' and '))}</b><p>They choose sets here and can't see what's been bought.</p>
-            <button class="quiet" data-copy="${esc(link('kids'))}">Copy kids' link</button></div>
+            <div class="share-actions"><a class="open" href="${esc(link('kids'))}" target="_blank" rel="noopener">Open kids' page</a>
+              <button class="quiet" data-copy="${esc(link('kids'))}">Copy kids' link</button></div></div>
           <div><b>For the family</b><p>Relatives reserve gifts here, with no sign-in. Don't send this one to the boys.</p>
-            <button class="quiet" data-copy="${esc(link('family'))}">Copy family link</button></div>
+            <div class="share-actions"><a class="open" href="${esc(link('family'))}" target="_blank" rel="noopener">Open family page</a>
+              <button class="quiet" data-copy="${esc(link('family'))}">Copy family link</button></div></div>
         </div>
       </section>
 
