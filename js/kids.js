@@ -9,7 +9,9 @@ export function render({ root, store, sets, key, space }) {
   let picks = {};
   let child = null;
   let onlyPicks = false;
+  let theme = null;
   let search = '';
+  const themes = [...new Set(sets.map(s => s.theme).filter(Boolean))];
 
   const mine = () => picks[child?.id]?.sets ?? {};
   const count = id => Object.keys(picks[id]?.sets ?? {}).length;
@@ -44,6 +46,7 @@ export function render({ root, store, sets, key, space }) {
     const list = sets
       .filter(s => !owned.includes(s.num))
       .filter(s => !onlyPicks || picked[s.num])
+      .filter(s => !theme || s.theme === theme)
       .filter(s => !q || s.name.toLowerCase().includes(q) || s.num.includes(q));
 
     if (!list.length) {
@@ -72,7 +75,8 @@ export function render({ root, store, sets, key, space }) {
       </div>
       <main class="kid-page">
         <div class="kid-tools">
-          <button class="tab" data-only="0" aria-pressed="${!onlyPicks}">All sets</button>
+          <button class="tab" data-only="0" aria-pressed="${!onlyPicks && !theme}">All sets</button>
+          ${themes.map(t => `<button class="tab" data-theme="${esc(t)}" aria-pressed="${t === theme}">${esc(t)}</button>`).join('')}
           <button class="tab" data-only="1" aria-pressed="${onlyPicks}">My picks</button>
           <input class="search" type="search" placeholder="Search" aria-label="Search sets" value="${esc(search)}">
         </div>
@@ -104,6 +108,7 @@ export function render({ root, store, sets, key, space }) {
     if (el.dataset.child) {
       child = children.find(c => c.id === el.dataset.child);
       onlyPicks = false;
+      theme = null;
       search = '';
       scrollTo(0, 0);
       draw();
@@ -112,6 +117,11 @@ export function render({ root, store, sets, key, space }) {
       draw();
     } else if (el.dataset.only) {
       onlyPicks = el.dataset.only === '1';
+      theme = null;
+      draw();
+    } else if (el.dataset.theme) {
+      theme = el.dataset.theme;
+      onlyPicks = false;
       draw();
     } else if (el.dataset.set) {
       const next = { ...mine() };

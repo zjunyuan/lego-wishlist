@@ -44,6 +44,8 @@ const [kidsUrl, famUrl] = links.map(l => l.replace(base, ''));
 ok(kidsUrl.includes('kids=') && famUrl.includes('family='), 'setup makes two different secret links');
 ok(new URL(kidsUrl, base).searchParams.get('kids') !== new URL(famUrl, base).searchParams.get('family'), 'kid and family keys differ');
 
+ok(/^Version \d+\.\d+\.\d+$/.test(await admin.textContent('#version')), 'the version shows on the page');
+
 // Kids
 const kids = await open(kidsUrl);
 await kids.waitForSelector('.brick');
@@ -67,6 +69,13 @@ await kids.click('.brick-1');
 await kids.waitForSelector('.set-tap');
 await kids.click('[data-set="60414"]');
 await kids.click('[data-set="90006"]');
+
+// Theme filter
+await kids.click('[data-theme="Speed Champions"]');
+await kids.waitForSelector('[data-set="90005"]');
+ok((await kids.$$('.set-tap')).length === 2, 'the theme filter shows only that theme');
+await kids.click('[data-only="0"]');
+await kids.waitForSelector('[data-set="60414"]');
 
 // Publish
 await admin.waitForSelector('text=/\\d+ changes? to send/');

@@ -1,6 +1,6 @@
 # Christmas LEGO list
 
-A private wishlist for LEGO City sets. Children pick sets from photos, a parent publishes the list, and relatives reserve gifts from a shared link so nothing gets bought twice.
+A private wishlist for LEGO City and Speed Champions sets. Children pick sets from photos, a parent publishes the list, and relatives reserve gifts from a shared link so nothing gets bought twice.
 
 ## Pages
 
@@ -15,7 +15,7 @@ The links are created when the admin first signs in. Their keys are never stored
 
 `.github/workflows/update-and-deploy.yml` runs daily and on every push:
 
-- `data/sets.json`: recent City sets from Rebrickable's public downloads.
+- `data/sets.json`: recent sets in those themes from Rebrickable's public downloads.
 - `data/prices.json`: Singapore prices from BuyWhere. Only SGD listings from Singapore that contain the exact set number count, and trusted sellers come first. Any other seller is flagged on the page.
 
 A price typed into the admin page always overrides the daily one.

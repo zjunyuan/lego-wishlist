@@ -1,4 +1,4 @@
-// Daily job: rebuilds the City catalogue from Rebrickable's public CSV files,
+// Daily job: rebuilds the catalogue from Rebrickable's public CSV files,
 // then looks up Singapore prices on BuyWhere. Needs no API keys or packages.
 import { readFile, writeFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 const SETS_CSV = 'https://cdn.rebrickable.com/media/downloads/sets.csv.gz';
 const THEMES_CSV = 'https://cdn.rebrickable.com/media/downloads/themes.csv.gz';
 const SEARCH = 'https://api.buywhere.ai/v1/products/search';
+const THEMES = ['City', 'Speed Champions'];
 const MIN_PARTS = 30;
 const DELAY_MS = 1200;
 
@@ -42,20 +43,27 @@ export function parseCsv(text) {
   return body.map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ''])));
 }
 
-export function selectCitySets(themes, sets, minYear) {
-  const cityIds = new Set(themes.filter(t => t.name === 'City' && !t.parent_id).map(t => t.id));
+// Maps each wanted theme and its subthemes to the top-level theme name.
+function themeLabels(themes) {
+  const labels = new Map(themes.filter(t => THEMES.includes(t.name) && !t.parent_id).map(t => [t.id, t.name]));
   for (let grew = true; grew;) {
     grew = false;
     for (const t of themes) {
-      if (cityIds.has(t.parent_id) && !cityIds.has(t.id)) { cityIds.add(t.id); grew = true; }
+      if (labels.has(t.parent_id) && !labels.has(t.id)) { labels.set(t.id, labels.get(t.parent_id)); grew = true; }
     }
   }
+  return labels;
+}
+
+export function selectSets(themes, sets, minYear) {
+  const labels = themeLabels(themes);
   return sets
-    .filter(s => cityIds.has(s.theme_id) && Number(s.year) >= minYear && Number(s.num_parts) >= MIN_PARTS)
+    .filter(s => labels.has(s.theme_id) && Number(s.year) >= minYear && Number(s.num_parts) >= MIN_PARTS)
     .filter(s => /^\d{4,6}-1$/.test(s.set_num) && s.img_url)
     .map(s => ({
       num: s.set_num.replace(/-1$/, ''),
       name: s.name,
+      theme: labels.get(s.theme_id),
       year: Number(s.year),
       parts: Number(s.num_parts),
       img: s.img_url,
@@ -118,15 +126,16 @@ async function main() {
 
   const themes = parseCsv(await fetchGz(THEMES_CSV));
   const sets = parseCsv(await fetchGz(SETS_CSV));
-  const city = selectCitySets(themes, sets, minYear);
-  if (city.length < 20) throw new Error(`Only ${city.length} City sets found, keeping the old catalogue`);
-  await writeFile(new URL('sets.json', root), JSON.stringify(city, null, 1) + '\n');
-  console.log(`Catalogue: ${city.length} City sets from ${minYear} onwards`);
+  const catalogue = selectSets(themes, sets, minYear);
+  if (catalogue.length < 20) throw new Error(`Only ${catalogue.length} sets found, keeping the old catalogue`);
+  await writeFile(new URL('sets.json', root), JSON.stringify(catalogue, null, 1) + '\n');
+  const count = name => catalogue.filter(s => s.theme === name).length;
+  console.log(`Catalogue: ${THEMES.map(t => `${count(t)} ${t}`).join(', ')} from ${minYear} onwards`);
 
   const old = JSON.parse(await readFile(new URL('prices.json', root), 'utf8'));
   const prices = {};
   let failed = 0, found = 0;
-  for (const set of city) {
+  for (const set of catalogue) {
     try {
       const best = pickPrice(await search(set.num), set.num);
       if (best) { prices[set.num] = best; found++; }
@@ -138,7 +147,7 @@ async function main() {
     }
     await new Promise(r => setTimeout(r, DELAY_MS));
   }
-  if (failed > city.length / 2) throw new Error(`${failed} price lookups failed, keeping the old prices`);
+  if (failed > catalogue.length / 2) throw new Error(`${failed} price lookups failed, keeping the old prices`);
   await writeFile(new URL('prices.json', root), JSON.stringify({ generatedAt: new Date().toISOString(), prices }, null, 1) + '\n');
   console.log(`Prices: ${found} found today, ${Object.keys(prices).length} kept, ${failed} failed`);
 }

@@ -1,4 +1,7 @@
 import { esc, loadJson } from './util.js';
+import { VERSION } from './version.js';
+
+document.getElementById('version').textContent = `Version ${VERSION}`;
 
 const params = new URLSearchParams(location.search);
 const demo = params.has('demo');
