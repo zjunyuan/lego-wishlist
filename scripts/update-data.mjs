@@ -1,7 +1,7 @@
 // Daily job: rebuilds the catalogue from Rebrickable's public CSV files and
 // fetches the yen to Singapore dollar rate.
 // Needs no API keys or packages.
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
@@ -58,6 +58,13 @@ export function selectSets(themes, sets, minYear) {
     .sort((a, b) => b.year - a.year || b.parts - a.parts);
 }
 
+// Sets taken off the list: named ones, gift-with-purchase sets and any above the MSRP limit.
+export function keepSet(num, removed, details) {
+  if (removed.sets.includes(num)) return false;
+  const [, price, stock] = details[num] ?? [];
+  return stock !== 'Gift with purchase' && !(price > removed.maxMsrp);
+}
+
 async function fetchGz(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url} returned ${res.status}`);
@@ -81,7 +88,9 @@ async function main() {
 
   const themes = parseCsv(await fetchGz(THEMES_CSV));
   const sets = parseCsv(await fetchGz(SETS_CSV));
-  const catalogue = selectSets(themes, sets, minYear);
+  const removed = JSON.parse(await readFile(new URL('removed.json', root), 'utf8'));
+  const details = JSON.parse(await readFile(new URL('details.json', root), 'utf8')).sets;
+  const catalogue = selectSets(themes, sets, minYear).filter(s => keepSet(s.num, removed, details));
   if (catalogue.length < 20) throw new Error(`Only ${catalogue.length} sets found, keeping the old catalogue`);
   await writeFile(new URL('sets.json', root), JSON.stringify(catalogue, null, 1) + '\n');
   const count = name => catalogue.filter(s => s.theme === name).length;

@@ -1,6 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCsv, selectSets } from './update-data.mjs';
+import { keepSet, parseCsv, selectSets } from './update-data.mjs';
+
+test('removes named, gift-with-purchase and over-limit sets', () => {
+  const removed = { maxMsrp: 200, sets: ['60473'] };
+  const details = { 30719: ['5+', 5.9, 'Gift with purchase'], 60508: ['7+', 299.9, 'Available now'], 60500: ['6+', 45.9, 'Available now'], 60999: ['6+', 200, 'Available now'] };
+  assert.equal(keepSet('60473', removed, details), false);
+  assert.equal(keepSet('30719', removed, details), false);
+  assert.equal(keepSet('60508', removed, details), false);
+  assert.equal(keepSet('60500', removed, details), true);
+  assert.equal(keepSet('60999', removed, details), true);
+  assert.equal(keepSet('77777', removed, details), true);
+});
 
 test('parses quoted CSV values', () => {
   const rows = parseCsv('set_num,name\n60500-1,"Van, ""LEGO"""\n');
