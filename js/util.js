@@ -79,7 +79,16 @@ export const legoFor = num => {
 
 export const ageFor = (num, ages) => ages?.[num] ?? legoFor(num)?.age ?? null;
 export const msrpFor = (num, overrides) => overrides[num]?.msrp ?? legoFor(num)?.price ?? null;
-export const imagesFor = (num, images) => images?.[num] ?? legoFor(num)?.images ?? [];
+// Photos added by hand come first, then LEGO's own, without repeating one.
+export const imagesFor = (num, images) => {
+  const seen = new Set();
+  return [...(images?.[num] ?? []), ...(legoFor(num)?.images ?? [])].filter(url => {
+    const path = url.split('?')[0];
+    if (seen.has(path)) return false;
+    seen.add(path);
+    return true;
+  });
+};
 export const partsFor = set => legoFor(set.num)?.parts ?? set.parts;
 
 export const SHOPS = [
