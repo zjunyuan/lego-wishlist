@@ -15,7 +15,8 @@ The links are created when the admin first signs in. Their keys are never stored
 
 `.github/workflows/update-and-deploy.yml` runs daily and on every push:
 
-- `data/sets.json`: recent sets in those themes from Rebrickable's public downloads.
+- `data/sets.json`: recent sets in those themes from Rebrickable, plus older sets listed in `data/details.json`'s public downloads.
+- `data/removed.json`: sets taken off the list, plus the MSRP limit. Gift-with-purchase sets are removed too.
 - `data/details.json`: age, price, stock, pieces and photos read from LEGO.com Singapore on the date in the file. The daily job doesn't refresh it.
 - `data/fx.json`: the yen to Singapore dollar rate, for Amazon JP estimates.
 

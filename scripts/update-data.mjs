@@ -42,10 +42,12 @@ function themeLabels(themes) {
   return labels;
 }
 
-export function selectSets(themes, sets, minYear) {
+// Older sets stay on the list if they're in the LEGO.com details, because they're still on sale.
+export function selectSets(themes, sets, minYear, stillOnSale = []) {
   const labels = themeLabels(themes);
   return sets
-    .filter(s => labels.has(s.theme_id) && Number(s.year) >= minYear && Number(s.num_parts) >= MIN_PARTS)
+    .filter(s => labels.has(s.theme_id) && Number(s.num_parts) >= MIN_PARTS)
+    .filter(s => Number(s.year) >= minYear || stillOnSale.includes(s.set_num.replace(/-1$/, '')))
     .filter(s => /^\d{4,6}-1$/.test(s.set_num) && s.img_url)
     .map(s => ({
       num: s.set_num.replace(/-1$/, ''),
@@ -90,7 +92,7 @@ async function main() {
   const sets = parseCsv(await fetchGz(SETS_CSV));
   const removed = JSON.parse(await readFile(new URL('removed.json', root), 'utf8'));
   const details = JSON.parse(await readFile(new URL('details.json', root), 'utf8')).sets;
-  const catalogue = selectSets(themes, sets, minYear).filter(s => keepSet(s.num, removed, details));
+  const catalogue = selectSets(themes, sets, minYear, Object.keys(details)).filter(s => keepSet(s.num, removed, details));
   if (catalogue.length < 20) throw new Error(`Only ${catalogue.length} sets found, keeping the old catalogue`);
   await writeFile(new URL('sets.json', root), JSON.stringify(catalogue, null, 1) + '\n');
   const count = name => catalogue.filter(s => s.theme === name).length;

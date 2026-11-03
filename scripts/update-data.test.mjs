@@ -13,6 +13,13 @@ test('removes named, gift-with-purchase and over-limit sets', () => {
   assert.equal(keepSet('77777', removed, details), true);
 });
 
+test('keeps an older set that is still on sale', () => {
+  const themes = [{ id: '52', name: 'City', parent_id: '' }];
+  const row = (set_num, year) => ({ set_num, name: set_num, year, theme_id: '52', num_parts: '100', img_url: 'https://x/y.jpg' });
+  const out = selectSets(themes, [row('60414-1', '2024'), row('60300-1', '2024'), row('60500-1', '2026')], 2025, ['60414']);
+  assert.deepEqual(out.map(s => s.num), ['60500', '60414']);
+});
+
 test('parses quoted CSV values', () => {
   const rows = parseCsv('set_num,name\n60500-1,"Van, ""LEGO"""\n');
   assert.deepEqual(rows, [{ set_num: '60500-1', name: 'Van, "LEGO"' }]);
