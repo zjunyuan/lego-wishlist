@@ -1,35 +1,51 @@
 {
- "generatedAt": "2026-11-03T00:05:14.932Z",
+ "generatedAt": "2026-11-03T01:35:36.251Z",
  "prices": {
   "60444": {
    "amount": 116.9,
    "currency": "SGD",
-   "seller": "fairprice_sg",
-   "trusted": false,
+   "seller": "FairPrice",
+   "trusted": true,
    "url": "https://www.fairprice.com.sg/product/lego-60444-city-f1-garage-n-mercedes-amg-n-alpine-cars",
    "lastSeen": "2026-04-27T14:33:13.675Z"
   },
-  "60452": {
-   "amount": 27.99,
+  "60447": {
+   "amount": 27.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10057108",
-   "lastSeen": "2026-05-06T21:19:09.415Z"
+   "url": "https://metro.com.sg/products/lego-off-road-4x4-mountain-truck-60447",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "60451": {
+   "amount": 27.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-emergency-ambulance-60451",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "60452": {
+   "amount": 27.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-donut-truck-60452",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60453": {
    "amount": 34.9,
    "currency": "SGD",
-   "seller": "Metro.com.sg",
-   "trusted": false,
+   "seller": "Metro",
+   "trusted": true,
    "url": "https://metro.com.sg/products/lego-lifeguard-beach-rescue-truck-60453",
    "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60454": {
    "amount": 47.9,
    "currency": "SGD",
-   "seller": "Metro.com.sg",
-   "trusted": false,
+   "seller": "Metro",
+   "trusted": true,
    "url": "https://metro.com.sg/products/lego-holiday-adventure-camper-van-60454",
    "lastSeen": "2026-05-05T23:19:25.952Z"
   },
@@ -42,12 +58,12 @@
    "lastSeen": "2026-05-06T21:18:59.879Z"
   },
   "60456": {
-   "amount": 45.99,
+   "amount": 41.3,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10057461",
-   "lastSeen": "2026-05-06T21:19:08.351Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60456-city-police-boat-chase",
+   "lastSeen": "2026-04-27T14:33:14.044Z"
   },
   "60459": {
    "amount": 9.95,
@@ -57,101 +73,133 @@
    "url": "https://aztoyhobby.com/products/lego-airplane-vs-hospital-bed-race-car-pack-60459-city",
    "lastSeen": "2026-08-27T11:41:41.108Z"
   },
+  "60463": {
+   "amount": 27.99,
+   "currency": "SGD",
+   "seller": "Toys\"R\"Us",
+   "trusted": true,
+   "url": "https://www.toysrus.com.sg/10057116.html",
+   "lastSeen": "2026-05-04T15:30:12.178Z"
+  },
   "60465": {
    "amount": 71.9,
    "currency": "SGD",
-   "seller": "fairprice_sg",
-   "trusted": false,
+   "seller": "FairPrice",
+   "trusted": true,
    "url": "https://www.fairprice.com.sg/product/lego-60465-city-emergency-air-ambulance-plane",
    "lastSeen": "2026-04-27T14:33:13.697Z"
   },
   "60466": {
-   "amount": 89.99,
+   "amount": 80.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10057463",
-   "lastSeen": "2026-05-06T21:19:09.415Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60466-city-yellow-bulldozer",
+   "lastSeen": "2026-04-27T14:33:13.978Z"
   },
   "60469": {
-   "amount": 134.99,
+   "amount": 121.4,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10057464",
-   "lastSeen": "2026-05-06T21:19:00.931Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60469-city-central-train-station",
+   "lastSeen": "2026-04-27T14:33:13.965Z"
   },
   "60470": {
    "amount": 269.9,
    "currency": "SGD",
-   "seller": "fairprice_sg",
-   "trusted": false,
+   "seller": "FairPrice",
+   "trusted": true,
    "url": "https://www.fairprice.com.sg/product/lego-60470-city-explorers-arctic-polar-express-train",
    "lastSeen": "2026-04-27T14:33:13.953Z"
   },
   "60472": {
    "amount": 124.9,
    "currency": "SGD",
-   "seller": "Metro.com.sg",
-   "trusted": false,
+   "seller": "Metro",
+   "trusted": true,
    "url": "https://metro.com.sg/products/lego-scrapyard-with-cars-60472",
    "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60474": {
    "amount": 43.1,
    "currency": "SGD",
-   "seller": "fairprice_sg",
-   "trusted": false,
+   "seller": "FairPrice",
+   "trusted": true,
    "url": "https://www.fairprice.com.sg/product/lego-60474-city-f1-grid-with-vcarb-and-sauber-race-cars",
    "lastSeen": "2026-04-27T14:33:14.039Z"
   },
   "60478": {
-   "amount": 59.99,
+   "amount": 59.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10119870",
-   "lastSeen": "2026-05-06T21:19:00.931Z"
+   "url": "https://metro.com.sg/products/lego-cement-mixer",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60479": {
    "amount": 29.9,
    "currency": "SGD",
-   "seller": "Metro.com.sg",
-   "trusted": false,
+   "seller": "Metro",
+   "trusted": true,
    "url": "https://metro.com.sg/products/lego-police-prisoner-transport-van",
    "lastSeen": "2026-05-05T23:19:25.952Z"
   },
-  "60485": {
-   "amount": 14.99,
+  "60482": {
+   "amount": 14.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120716",
-   "lastSeen": "2026-05-06T21:19:00.931Z"
+   "url": "https://metro.com.sg/products/lego-rides-fire-truck",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "60483": {
+   "amount": 14.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-rides-construction-loader",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "60484": {
+   "amount": 14.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-rides-gaming-race-car",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
+  },
+  "60485": {
+   "amount": 14.9,
+   "currency": "SGD",
+   "seller": "Metro",
+   "trusted": true,
+   "url": "https://metro.com.sg/products/lego-hot-rod",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60486": {
-   "amount": 14.99,
+   "amount": 14.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120710",
-   "lastSeen": "2026-05-06T21:19:10.477Z"
+   "url": "https://metro.com.sg/products/lego-ev-supercar",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60487": {
-   "amount": 21.99,
+   "amount": 21.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120591",
-   "lastSeen": "2026-05-06T21:18:59.879Z"
+   "url": "https://metro.com.sg/products/lego-yellow-taxi",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60488": {
-   "amount": 29.99,
+   "amount": 29.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120671",
-   "lastSeen": "2026-05-06T21:19:10.477Z"
+   "url": "https://metro.com.sg/products/lego-fries-food-truck",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60489": {
    "amount": 45.99,
@@ -162,26 +210,26 @@
    "lastSeen": "2026-05-06T21:19:01.982Z"
   },
   "60490": {
-   "amount": 34.99,
+   "amount": 31.4,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120700",
-   "lastSeen": "2026-05-06T21:19:10.477Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60490-city-snowplow",
+   "lastSeen": "2026-04-27T14:33:14.058Z"
   },
   "60491": {
-   "amount": 29.99,
+   "amount": 26.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120672",
-   "lastSeen": "2026-05-06T21:19:08.351Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60491-city-motorcycle-transporter",
+   "lastSeen": "2026-04-27T14:33:14.066Z"
   },
   "60492": {
    "amount": 45.9,
    "currency": "SGD",
    "seller": "OG",
-   "trusted": false,
+   "trusted": true,
    "url": "https://og.com.sg/products/40938035",
    "lastSeen": "2026-09-01T04:15:11.932Z"
   },
@@ -196,58 +244,66 @@
   "60498": {
    "amount": 29.9,
    "currency": "SGD",
-   "seller": "Metro.com.sg",
-   "trusted": false,
+   "seller": "Metro",
+   "trusted": true,
    "url": "https://metro.com.sg/products/lego-tractor",
    "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60499": {
-   "amount": 99.99,
+   "amount": 89.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120554",
-   "lastSeen": "2026-05-06T21:19:01.982Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60499-city-airport-fire-truck",
+   "lastSeen": "2026-04-27T14:33:14.084Z"
   },
   "60500": {
-   "amount": 45.99,
+   "amount": 45.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120697",
-   "lastSeen": "2026-05-06T21:19:00.931Z"
+   "url": "https://metro.com.sg/products/lego-the-lego-r-van",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   },
   "60502": {
-   "amount": 149.99,
+   "amount": 134.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120568",
-   "lastSeen": "2026-05-06T21:19:01.982Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60502-city-airport-with-airplane",
+   "lastSeen": "2026-04-16T14:42:40.303Z"
   },
   "60503": {
-   "amount": 89.99,
+   "amount": 80.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "FairPrice",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120565",
-   "lastSeen": "2026-05-06T21:19:08.351Z"
+   "url": "https://www.fairprice.com.sg/product/lego-60503-city-coast-guard-helicopter",
+   "lastSeen": "2026-04-16T14:42:40.303Z"
+  },
+  "60504": {
+   "amount": 152.9,
+   "currency": "SGD",
+   "seller": "FairPrice",
+   "trusted": true,
+   "url": "https://www.fairprice.com.sg/product/lego-60504-city-coast-guard-rescue-boat-n-helicopter",
+   "lastSeen": "2026-04-14T00:37:51.760Z"
   },
   "60505": {
    "amount": 89.9,
    "currency": "SGD",
-   "seller": "fairprice_sg",
-   "trusted": false,
+   "seller": "FairPrice",
+   "trusted": true,
    "url": "https://www.fairprice.com.sg/product/lego-60505-city-airplane-service-truck-and-hovercraft-remix",
    "lastSeen": "2026-04-27T14:33:13.974Z"
   },
   "60508": {
-   "amount": 299.99,
+   "amount": 299.9,
    "currency": "SGD",
-   "seller": "Toys\"R\"Us",
+   "seller": "Metro",
    "trusted": true,
-   "url": "https://www.toysrus.com.sg/product/10120970",
-   "lastSeen": "2026-05-06T21:19:01.982Z"
+   "url": "https://metro.com.sg/products/police-train-heist",
+   "lastSeen": "2026-05-05T23:19:25.952Z"
   }
  }
 }
