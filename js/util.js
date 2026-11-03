@@ -54,7 +54,7 @@ export const legoFor = num => {
   return {
     age, price, stock, parts,
     url: `https://www.lego.com/en-sg/product/${slug}`,
-    images: images.map(f => ASSETS + f),
+    images: images.map(f => `${ASSETS}${f}?fit=bounds&quality=75&width=900`),
     available: stock === 'Available now' || stock.startsWith('Will be shipped'),
   };
 };
