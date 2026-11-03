@@ -1,4 +1,4 @@
-import { esc, loadJson } from './util.js';
+import { esc, loadJson, setDetails } from './util.js';
 import { VERSION } from './version.js';
 
 document.getElementById('version').textContent = `Version ${VERSION}`;
@@ -20,6 +20,8 @@ async function start() {
 
   const sets = await loadJson(demo ? 'data/demo-sets.json' : 'data/sets.json', []);
   const fx = await loadJson(demo ? 'data/demo-fx.json' : 'data/fx.json', {});
+  const details = await loadJson(demo ? 'data/demo-details.json' : 'data/details.json', {});
+  setDetails(details.sets);
   const context = { root, store, sets, fx, demo };
 
   if (params.has('admin')) {

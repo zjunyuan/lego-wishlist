@@ -42,6 +42,28 @@ export async function loadJson(path, fallback) {
 
 const query = num => encodeURIComponent(`LEGO ${num}`);
 
+// LEGO.com Singapore details: [age, price, availability, pieces, page, photos].
+let details = {};
+export function setDetails(sets) { details = sets ?? {}; }
+const ASSETS = 'https://www.lego.com/cdn/cs/set/assets/';
+
+export const legoFor = num => {
+  const d = details[num];
+  if (!d) return null;
+  const [age, price, stock, parts, slug, images] = d;
+  return {
+    age, price, stock, parts,
+    url: `https://www.lego.com/en-sg/product/${slug}`,
+    images: images.map(f => ASSETS + f),
+    available: stock === 'Available now' || stock.startsWith('Will be shipped'),
+  };
+};
+
+export const ageFor = (num, ages) => ages?.[num] ?? legoFor(num)?.age ?? null;
+export const msrpFor = (num, overrides) => overrides[num]?.msrp ?? legoFor(num)?.price ?? null;
+export const imagesFor = (num, images) => images?.[num] ?? legoFor(num)?.images ?? [];
+export const partsFor = set => legoFor(set.num)?.parts ?? set.parts;
+
 export const SHOPS = [
   { id: 'lazada', name: 'Lazada', search: num => `https://www.lazada.sg/catalog/?q=${query(num)}` },
   { id: 'shopee', name: 'Shopee', search: num => `https://shopee.sg/search?keyword=${query(num)}` },
@@ -63,7 +85,12 @@ export function shopsFor(entry) {
 // entered, because yen list prices leave out shipping and import charges.
 export function offersFor(num, overrides, fx) {
   const shops = shopsFor(overrides[num]);
-  return SHOPS.filter(s => shops[s.id]).map(s => {
+  const lego = legoFor(num);
+  const fromLego = lego ? [{
+    id: 'lego', name: 'LEGO.com', url: lego.url, listed: lego.price, amount: lego.price,
+    stock: lego.stock, available: lego.available, counts: lego.available, afterVouchers: false,
+  }] : [];
+  return [...fromLego, ...SHOPS.filter(s => shops[s.id]).map(s => {
     const e = shops[s.id];
     const name = s.custom ? e.seller || s.name : s.name;
     const stock = e.stock ?? null;
@@ -79,7 +106,7 @@ export function offersFor(num, overrides, fx) {
       id: s.id, name, url: e.url, listed: e.price ?? null, stock, available, seller: e.seller, voucher: e.voucher,
       amount: e.final ?? e.price ?? null, counts: available && (e.final ?? e.price) != null, afterVouchers: e.final != null,
     };
-  }).filter(o => o.amount != null || o.listed != null || o.stock);
+  })].filter(o => o.amount != null || o.listed != null || o.stock);
 }
 
 export function priceFor(num, overrides, fx) {

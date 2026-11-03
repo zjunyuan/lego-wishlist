@@ -16,9 +16,10 @@ The links are created when the admin first signs in. Their keys are never stored
 `.github/workflows/update-and-deploy.yml` runs daily and on every push:
 
 - `data/sets.json`: recent sets in those themes from Rebrickable's public downloads.
+- `data/details.json`: age, price, stock, pieces and photos read from LEGO.com Singapore on the date in the file. The daily job doesn't refresh it.
 - `data/fx.json`: the yen to Singapore dollar rate, for Amazon JP estimates.
 
-Prices, MSRP and age are entered on the admin page, or imported by pasting the Prices tab of the price-check sheet. Ages and extra photos come from there too, because the catalogue has neither.
+Prices, MSRP and age are entered on the admin page, or imported by pasting the Prices tab of the price-check sheet.
 
 ## Set-up
 

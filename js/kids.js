@@ -1,4 +1,4 @@
-import { esc, photo, safeUrl, toast } from './util.js';
+import { ageFor, esc, imagesFor, partsFor, photo, safeUrl, toast } from './util.js';
 
 const MAX_PICKS = 10;
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.3 6.7L12 17.5l-6 3.3 1.3-6.7-5-4.6 6.8-.8z"/></svg>';
@@ -64,7 +64,7 @@ export function render({ root, store, sets, key, space }) {
           <button class="set-tap" data-set="${esc(s.num)}" aria-haspopup="dialog" aria-label="See ${esc(s.name)}">
             ${photo(s)}
             <span class="set-name">${esc(s.name)}</span>
-            <span class="set-meta">Set ${esc(s.num)}, ${esc(s.parts)} pieces${ages[s.num] ? `, ages ${esc(ages[s.num])}` : ''}</span>
+            <span class="set-meta">Set ${esc(s.num)}, ${esc(partsFor(s))} pieces${ageFor(s.num, ages) ? `, ages ${esc(ageFor(s.num, ages))}` : ''}</span>
           </button>
           ${p ? `<button class="fav ${p.fav ? 'on' : ''}" data-fav="${esc(s.num)}" aria-pressed="${Boolean(p.fav)}" aria-label="Favourite ${esc(s.name)}">${STAR}</button>` : ''}
         </article>`;
@@ -111,7 +111,7 @@ export function render({ root, store, sets, key, space }) {
   pop.className = 'set-pop';
   document.body.append(pop);
 
-  const pictures = set => [set.img, ...(images[set.num] ?? [])].filter(safeUrl);
+  const pictures = set => [set.img, ...imagesFor(set.num, images)].filter(safeUrl);
 
   function drawPop(message = '') {
     if (!shown) return;
@@ -130,8 +130,8 @@ export function render({ root, store, sets, key, space }) {
         <h2>${esc(set.name)}</h2>
         <dl>
           <dt>Set number</dt><dd>${esc(set.num)}</dd>
-          <dt>Pieces</dt><dd>${esc(set.parts)}</dd>
-          ${ages[set.num] ? `<dt>Age</dt><dd>${esc(ages[set.num])}</dd>` : ''}
+          <dt>Pieces</dt><dd>${esc(partsFor(set))}</dd>
+          ${ageFor(set.num, ages) ? `<dt>Age</dt><dd>${esc(ageFor(set.num, ages))}</dd>` : ''}
           ${set.theme ? `<dt>Theme</dt><dd>${esc(set.theme)}</dd>` : ''}
         </dl>
         <p class="pop-msg" role="status">${esc(message)}</p>

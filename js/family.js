@@ -1,4 +1,4 @@
-import { esc, money, msrpHtml, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
+import { ageFor, esc, money, msrpFor, msrpHtml, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
 
 const NAME_KEY = 'lego-wishlist-name';
 const BANDS = [
@@ -89,9 +89,9 @@ export function render({ root, store, sets, fx, key, space }) {
               ${photo(e.set)}
               <div class="wish-body">
                 <h2>${esc(e.set.name)}</h2>
-                <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(e.set.parts)} pieces` : ''}${ages[e.num] ? `, ages ${esc(ages[e.num])}` : ''}</p>
+                <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
                 ${priceHtml(e.price)}
-                ${msrpHtml(overrides[e.num]?.msrp, e.price)}
+                ${msrpHtml(msrpFor(e.num, overrides), e.price)}
                 <ul class="gifts">${Object.entries(e.for).map(([c, w]) => giftRow(e.num, c, w, e.price)).join('')}</ul>
               </div>
             </article>`).join('')}

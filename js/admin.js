@@ -1,4 +1,4 @@
-import { esc, daysSince, money, msrpHtml, offersFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shortDate, SHOPS, toast, yen } from './util.js';
+import { ageFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shortDate, SHOPS, toast, yen } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -91,8 +91,8 @@ export async function render({ root, store, sets, fx, demo }) {
     return `<form class="override" data-num="${esc(num)}">
       <div class="shop-row">
         <div class="shop-name"><b>Set details</b><a href="https://www.lego.com/en-sg/search?q=${esc(num)}" target="_blank" rel="noopener">LEGO.com</a></div>
-        ${field('age', 'Age', (kids.ages ?? {})[num], 'maxlength="6" placeholder="6+"')}
-        ${field('msrp', 'MSRP (S$)', overrides[num]?.msrp, money2)}
+        ${field('age', 'Age', ageFor(num, kids.ages), 'maxlength="6" placeholder="6+"')}
+        ${field('msrp', 'MSRP (S$)', msrpFor(num, overrides), money2)}
       </div>
       ${SHOPS.map(s => {
         const e = shops[s.id] ?? {};
@@ -134,10 +134,12 @@ export async function render({ root, store, sets, fx, demo }) {
         each: price && s.parts ? price.amount / s.parts : null,
         seller: price?.seller ?? null,
         checked: overrides[s.num]?.updatedAt ?? null,
-        msrp: overrides[s.num]?.msrp ?? null,
-        off: overrides[s.num]?.msrp && price ? 1 - price.amount / overrides[s.num].msrp : null,
-        age: ages[s.num] ?? null,
-        ageNum: parseInt(ages[s.num], 10) || null,
+        msrp: msrpFor(s.num, overrides),
+        off: msrpFor(s.num, overrides) && price ? 1 - price.amount / msrpFor(s.num, overrides) : null,
+        age: ageFor(s.num, ages),
+        ageNum: parseInt(ageFor(s.num, ages), 10) || null,
+        parts: partsFor(s),
+        lego: legoFor(s.num),
         visible: !hidden.includes(s.num),
         picked: Boolean(wanted[s.num]),
       };
@@ -147,6 +149,8 @@ export async function render({ root, store, sets, fx, demo }) {
       && (filters.show === 'all'
         || (filters.show === 'noprice' && !r.price)
         || (filters.show === 'picked' && r.picked)
+        || (filters.show === 'nolego' && !r.lego)
+        || (filters.show === 'legoout' && r.lego && !r.lego.available)
         || (filters.show === 'old' && r.checked && daysSince(r.checked) > STALE_PRICE_DAYS)
         || (filters.show === 'hidden' && !r.visible)
         || (filters.show === 'visible' && r.visible))
@@ -187,7 +191,13 @@ export async function render({ root, store, sets, fx, demo }) {
       case 'name': return `${esc(r.name)}<span class="muted block">${esc(r.theme ?? '')}</span>`;
       case 'ageNum': return r.age ? esc(r.age) : '<span class="muted">Not set</span>';
       case 'parts': return esc(r.parts);
-      case 'msrp': return r.msrp === null ? '<span class="muted">Not set</span>' : money(r.msrp);
+      case 'msrp': {
+        if (r.msrp === null) return '<span class="muted">Not on LEGO.com SG</span>';
+        const url = safeUrl(r.lego?.url);
+        const label = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${money(r.msrp)}</a>` : money(r.msrp);
+        const flag = r.lego && r.lego.stock !== 'Available now' ? `<span class="${r.lego.available ? 'muted' : 'stale'} block">${esc(r.lego.stock)}</span>` : '';
+        return `<span class="${r.price?.id === 'lego' ? 'cheapest' : ''}">${label}</span>${flag}`;
+      }
       case 'off': return esc(offLabel(r.msrp, r.amount));
       case 'lazada': case 'shopee': case 'amazonsg': case 'amazonjp': return shopCell(key, r);
       case 'amount': {
@@ -243,6 +253,7 @@ export async function render({ root, store, sets, fx, demo }) {
       <section>
         <h2>All sets</h2>
         <p>Use Search to find a set at each shop, then add the price with Edit prices. Choose which sets the boys can see here too. New sets are shown unless you hide them.</p>
+        <p class="muted">MSRP, age, photos and stock were read from LEGO.com Singapore on 3 Nov 2026. LEGO.com counts as a shop for the best price when a set can be bought there.</p>
         ${fx?.sgdPerJpy ? `<p class="muted">Amazon JP estimates use \u00a5100 = ${money(fx.sgdPerJpy * 100)} (${esc(fx.date ?? '')}). They leave out shipping and import charges, so they only count as the best price once you enter a delivered cost.</p>` : ''}
         <div class="db-tools">
           <label>Search <input class="db-search" type="search" value="${esc(filters.q)}" placeholder="Name, number or retailer"></label>
@@ -250,7 +261,7 @@ export async function render({ root, store, sets, fx, demo }) {
             ${option('all', 'All themes', filters.theme)}${themes.map(t => option(t, t, filters.theme)).join('')}
           </select></label>
           <label>Show <select data-filter="show">
-            ${[['all', 'All sets'], ['picked', 'Picked by the boys'], ['visible', 'Shown to the boys'], ['hidden', 'Hidden from the boys'], ['noprice', 'No price'], ['old', `Not checked for ${STALE_PRICE_DAYS} days`]]
+            ${[['all', 'All sets'], ['picked', 'Picked by the boys'], ['visible', 'Shown to the boys'], ['hidden', 'Hidden from the boys'], ['nolego', 'Not on LEGO.com SG'], ['legoout', 'Not buyable on LEGO.com SG'], ['noprice', 'No price'], ['old', `Not checked for ${STALE_PRICE_DAYS} days`]]
               .map(([v, l]) => option(v, l, filters.show)).join('')}
           </select></label>
           <label class="db-sort">Sort <select data-filter="sort">
@@ -318,7 +329,7 @@ export async function render({ root, store, sets, fx, demo }) {
               <p class="set-meta">Set ${esc(num)}</p>
               <p class="who">${Object.entries(who).map(([c, w]) => esc(nameOf(c)) + (w.fav ? ' (favourite)' : '')).join(', ')}</p>
               ${priceHtml(price)}
-              ${msrpHtml(overrides[num]?.msrp, price)}
+              ${msrpHtml(msrpFor(num, overrides), price)}
               <div class="row-actions">
                 <label class="check"><input type="checkbox" data-exclude="${esc(num)}" ${excluded.includes(num) ? 'checked' : ''}> Leave off the family list</label>
                 <button class="quiet" data-edit="pick:${esc(num)}">Edit prices</button>
@@ -395,10 +406,11 @@ export async function render({ root, store, sets, fx, demo }) {
       if (entry.final === null) delete entry.final;
       if (entry.price !== undefined || entry.final !== undefined || entry.stock) shops[shop.id] = entry;
     }
-    const msrp = number('msrp');
+    const typedMsrp = number('msrp');
+    const msrp = typedMsrp === legoFor(num)?.price ? null : typedMsrp;
     const age = f.get('age').trim();
     const ages = { ...kids.ages };
-    if (age) ages[num] = age; else delete ages[num];
+    if (age && age !== legoFor(num)?.age) ages[num] = age; else delete ages[num];
     const next = Object.keys(shops).length || msrp !== null ? { shops, updatedAt: Date.now() } : null;
     if (next && msrp !== null) next.msrp = msrp;
     editing = null;
