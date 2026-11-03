@@ -48,7 +48,7 @@ export function priceFor(num, prices, overrides) {
 }
 
 export function priceHtml(p) {
-  if (!p) return '<p class="price none">No Singapore price found yet</p>';
+  if (!p) return '<p class="price none">Price to be confirmed</p>';
   const url = safeUrl(p.url);
   const seller = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(p.seller)}</a>` : esc(p.seller);
   const notes = [];
