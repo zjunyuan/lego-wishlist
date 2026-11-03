@@ -16,7 +16,9 @@ The links are created when the admin first signs in. Their keys are never stored
 `.github/workflows/update-and-deploy.yml` runs daily and on every push:
 
 - `data/sets.json`: recent sets in those themes from Rebrickable's public downloads.
-Prices are entered on the admin page. `data/prices.json` is empty and kept only as the slot for any future automatic prices.
+- `data/fx.json`: the yen to Singapore dollar rate, for Amazon JP estimates.
+
+Prices are entered on the admin page for Lazada, Shopee, Amazon SG, Amazon JP and one other shop. Each has a search link for the exact set number.
 
 ## Set-up
 

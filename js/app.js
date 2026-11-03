@@ -19,8 +19,8 @@ async function start() {
   }
 
   const sets = await loadJson(demo ? 'data/demo-sets.json' : 'data/sets.json', []);
-  const { prices = {} } = await loadJson(demo ? 'data/demo-prices.json' : 'data/prices.json', {});
-  const context = { root, store, sets, prices, demo };
+  const fx = await loadJson(demo ? 'data/demo-fx.json' : 'data/fx.json', {});
+  const context = { root, store, sets, fx, demo };
 
   if (params.has('admin')) {
     (await import('./admin.js')).render(context);

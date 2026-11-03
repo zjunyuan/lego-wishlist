@@ -40,26 +40,81 @@ export async function loadJson(path, fallback) {
   }
 }
 
-// A manual price from the admin beats the daily one.
-export function priceFor(num, prices, overrides) {
-  const o = overrides[num];
-  if (o) return { ...o, manual: true, trusted: true };
-  return prices[num] ?? null;
+const query = num => encodeURIComponent(`LEGO ${num}`);
+
+export const SHOPS = [
+  { id: 'lazada', name: 'Lazada', search: num => `https://www.lazada.sg/catalog/?q=${query(num)}` },
+  { id: 'shopee', name: 'Shopee', search: num => `https://shopee.sg/search?keyword=${query(num)}` },
+  { id: 'amazonsg', name: 'Amazon SG', search: num => `https://www.amazon.sg/s?k=${query(num)}` },
+  { id: 'amazonjp', name: 'Amazon JP', yen: true, search: num => `https://www.amazon.co.jp/s?k=${query(num)}` },
+  { id: 'other', name: 'Other shop', custom: true },
+];
+
+export const yen = amount => `¥${Math.round(amount).toLocaleString('en-SG')}`;
+
+// Prices saved by the first admin version were a single amount, seller and url.
+export function shopsFor(entry) {
+  if (!entry) return {};
+  if (entry.shops) return entry.shops;
+  return entry.amount ? { other: { price: entry.amount, seller: entry.seller, url: entry.url } } : {};
+}
+
+// Amazon JP only counts towards the best price once its delivered cost in S$ is
+// entered, because yen list prices leave out shipping and import charges.
+export function offersFor(num, overrides, fx) {
+  const shops = shopsFor(overrides[num]);
+  return SHOPS.filter(s => shops[s.id]).map(s => {
+    const e = shops[s.id];
+    const name = s.custom ? e.seller || s.name : s.name;
+    if (s.yen) {
+      const about = e.price && fx?.sgdPerJpy ? e.price * fx.sgdPerJpy : null;
+      return {
+        id: s.id, name, url: e.url, listed: e.price ?? null, about,
+        amount: e.final ?? about, counts: e.final != null, afterVouchers: false, delivered: e.final != null, yen: true,
+      };
+    }
+    return {
+      id: s.id, name, url: e.url, listed: e.price ?? null,
+      amount: e.final ?? e.price ?? null, counts: true, afterVouchers: e.final != null,
+    };
+  }).filter(o => o.amount != null || o.listed != null);
+}
+
+export function priceFor(num, overrides, fx) {
+  const offers = offersFor(num, overrides, fx);
+  const counted = offers.filter(o => o.counts).sort((a, b) => a.amount - b.amount);
+  const best = counted[0] ?? offers.filter(o => o.amount != null)[0];
+  if (!best) return null;
+  return {
+    ...best,
+    seller: best.name,
+    others: offers.filter(o => o !== best),
+    checked: overrides[num]?.updatedAt ?? null,
+  };
+}
+
+function offerText(o) {
+  if (!o.yen) return `${o.name} ${money(o.amount)}`;
+  const about = o.about ? ` (about ${money(o.about)})` : '';
+  return o.delivered ? `${o.name} ${money(o.amount)} delivered` : `${o.name} ${yen(o.listed)}${about}`;
+}
+
+function offerLink(o) {
+  const url = safeUrl(o.url);
+  return url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(offerText(o))}</a>` : esc(offerText(o));
 }
 
 export function priceHtml(p) {
   if (!p) return '<p class="price none">Price to be confirmed</p>';
   const url = safeUrl(p.url);
   const seller = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(p.seller)}</a>` : esc(p.seller);
-  const notes = [];
-  if (!p.manual && !p.trusted) notes.push('Check this seller before buying');
-  if (!p.manual && p.lastSeen) {
-    notes.push(daysSince(p.lastSeen) > 30
-      ? `Last seen ${shortDate(p.lastSeen)}, so it may have changed`
-      : `Seen ${shortDate(p.lastSeen)}`);
-  }
-  return `<p class="price"><b>${money(p.amount)}</b> at ${seller}</p>${
-    notes.length ? `<p class="price-note">${esc(notes.join('. '))}</p>` : ''}`;
+  let note = '';
+  if (p.afterVouchers) note = 'After vouchers, so yours may differ';
+  else if (p.delivered) note = 'Delivered';
+  else if (p.yen) note = `Approximate, from ${yen(p.listed)}, before shipping`;
+  return `<p class="price"><b>${p.yen && !p.delivered ? 'About ' : ''}${money(p.amount)}</b> at ${seller}</p>${
+    note ? `<p class="price-note">${esc(note)}</p>` : ''}${
+    p.others.length ? `<p class="also">Also: ${p.others.map(offerLink).join(', ')}</p>` : ''}`;
 }
 
 let toastTimer;

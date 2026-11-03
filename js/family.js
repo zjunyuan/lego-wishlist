@@ -15,7 +15,7 @@ function saveName(name) {
   try { localStorage.setItem(NAME_KEY, name); } catch { /* still works for this visit */ }
 }
 
-export function render({ root, store, sets, prices, key, space }) {
+export function render({ root, store, sets, fx, key, space }) {
   let wishlist = {};
   let claims = {};
   let overrides = {};
@@ -41,7 +41,7 @@ export function render({ root, store, sets, prices, key, space }) {
 
   function draw() {
     const entries = Object.values(wishlist)
-      .map(w => ({ ...w, set: byNum[w.num] ?? { num: w.num, name: `Set ${w.num}` }, price: priceFor(w.num, prices, overrides) }))
+      .map(w => ({ ...w, set: byNum[w.num] ?? { num: w.num, name: `Set ${w.num}` }, price: priceFor(w.num, overrides, fx) }))
       .sort((a, b) => (a.price?.amount ?? 1e9) - (b.price?.amount ?? 1e9));
     const test = BANDS.find(b => b.id === band).test;
     const shown = entries.filter(e => test(e.price));

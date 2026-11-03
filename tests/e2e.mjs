@@ -84,13 +84,31 @@ await admin.click('[data-publish]');
 await admin.waitForSelector('text=The family list is up to date');
 await shot(admin, '5-admin', true);
 
+// Prices
+await admin.evaluate(async () => {
+  const s = await import('/js/store-demo.js');
+  const { famKey } = await s.adminKeys();
+  const at = Date.now();
+  await s.setOverride(famKey, '60500', { updatedAt: at, shops: {
+    lazada: { price: 52, url: 'https://www.lazada.sg/x' },
+    shopee: { price: 48, final: 45.99, url: 'https://shopee.sg/x' },
+    amazonsg: { price: 55 },
+    amazonjp: { price: 4000 },
+  } });
+  await s.setOverride(famKey, '60414', { updatedAt: at, shops: { amazonsg: { price: 129.99 } } });
+  await s.setOverride(famKey, '90002', { amount: 75.5, seller: 'Old format shop', url: 'https://example.com/old' });
+});
+
 // Family
 const fam = await open(famUrl);
 await fam.waitForSelector('.wish');
 ok((await fam.$$('.wish')).length === 9, 'family sees published sets, without the left-off one');
 ok((await fam.$$('[data-claim="60414_riley"], [data-claim="60414_sam"]')).length === 2, 'a set picked by both boys is two gifts');
-ok((await fam.textContent('body')).includes('Last seen 7 May'), 'old prices are flagged');
-ok((await fam.textContent('body')).includes('Check this seller'), 'unknown sellers are flagged');
+const vanCard = await fam.textContent('article:has([data-claim="60500_riley"])');
+ok(vanCard.includes('S$45.99 at Shopee'), 'family sees the cheapest shop, using the after-vouchers price');
+ok(vanCard.includes('After vouchers'), 'an after-vouchers price is labelled');
+ok(vanCard.includes('Lazada S$52.00') && vanCard.includes('Amazon SG S$55.00'), 'family also sees the other shops');
+ok(vanCard.includes('Amazon JP \u00a54,000 (about S$34.80)'), 'Amazon JP shows yen and an estimate but is not called cheapest');
 await shot(fam, '3-family');
 await fam.click('[data-claim="60414_riley"]');
 await fam.fill('.sheet input', '<b>Aunty May</b>');
@@ -135,9 +153,9 @@ await fam.click('[data-band="low"]');
 ok((await fam.$$('.wish')).length === 1, 'price filter works');
 await fam.click('[data-band="all"]');
 await admin.click('[data-edit="pick:90001"]');
-await admin.fill('.override [name=amount]', '35');
-await admin.fill('.override [name=seller]', 'Bricks World');
-await admin.click('text=Save price');
+await admin.fill('.override [name=other_price]', '35');
+await admin.fill('.override [name=other_seller]', 'Bricks World');
+await admin.click('text=Save prices');
 await fam.waitForSelector('text=S$35.00');
 ok(true, 'a manual price reaches the family page');
 
@@ -165,7 +183,13 @@ ok(!(await fam.$('[data-claim="90004_riley"]')), 'an unclaimed gift goes when it
 await admin.waitForSelector('.db tbody tr');
 ok((await admin.$$('.db tbody tr')).length === 12, 'the database lists every set');
 const vanRow = await admin.textContent('tr:has([data-edit="db:60500"])');
-ok(vanRow.includes('276') && vanRow.includes('S$45.99') && vanRow.includes('S$0.17') && vanRow.includes('Toys"R"Us'), 'a row shows pieces, price, price per piece and retailer');
+ok(vanRow.includes('276') && vanRow.includes('S$52.00') && vanRow.includes('S$48.00') && vanRow.includes('S$55.00') && vanRow.includes('¥4,000'), 'a row shows all four shops');
+ok(vanRow.includes('S$45.99 after vouchers') && vanRow.includes('S$0.17'), 'a row shows the after-vouchers and per-piece prices');
+ok((await admin.textContent('tr:has([data-edit="db:60500"]) .cheapest')).includes('S$48.00'), 'the cheapest shop is highlighted');
+ok((await admin.getAttribute('tr:has([data-edit="db:60500"]) .c-shopee .find', 'href')) === 'https://shopee.sg/search?keyword=LEGO%2060500', 'search links use the exact set number');
+await admin.selectOption('[data-filter="show"]', 'picked');
+ok((await admin.$$('.db tbody tr')).length < 12, 'the database can show only picked sets');
+await admin.selectOption('[data-filter="show"]', 'all');
 await admin.selectOption('[data-filter="theme"]', 'Speed Champions');
 ok((await admin.$$('.db tbody tr')).length === 2, 'the database filters by theme');
 await admin.click('[data-bulk="hide"]');
@@ -187,14 +211,23 @@ await kids.waitForTimeout(150);
 ok(!(await kids.$('[data-set="90003"]')) || await kids.$('[data-set="90003"][aria-pressed="true"]'), 'an unticked set leaves the boys page unless already picked');
 await admin.check('[data-visible="90003"]');
 await admin.click('[data-edit="db:90009"]');
-await admin.fill('.db-edit [name=amount]', '19.9');
-await admin.fill('.db-edit [name=seller]', 'Metro');
-await admin.fill('.db-edit [name=url]', 'https://example.com/buy');
-await admin.click('.db-edit >> text=Save price');
-await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=Set by you');
-const camper = await admin.textContent('tr:has([data-edit="db:90009"])');
-ok(camper.includes('S$19.90') && camper.includes('Metro'), 'price and retailer can be set from the database');
-ok((await admin.getAttribute('tr:has([data-edit="db:90009"]) a', 'href')) === 'https://example.com/buy', 'the buy link is saved');
+await (await admin.$('.db-edit')).screenshot({ path: join(shots, '8-edit-prices.png') });
+await admin.fill('.db-edit [name=amazonsg_price]', '19.9');
+await admin.fill('.db-edit [name=amazonsg_url]', 'https://example.com/buy');
+await admin.fill('.db-edit [name=amazonjp_price]', '2000');
+await admin.fill('.db-edit [name=amazonjp_final]', '15.5');
+await admin.click('.db-edit >> text=Save prices');
+await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=S$19.90');
+const camper = await admin.textContent('tr:has([data-edit="db:90009"]) .c-amount');
+ok(camper.includes('S$15.50') && camper.includes('Amazon JP'), 'a delivered Amazon JP cost counts as the best price');
+ok((await admin.getAttribute('tr:has([data-edit="db:90009"]) .c-amazonsg a', 'href')) === 'https://example.com/buy', 'the buy link is saved');
+await admin.click('[data-edit="db:90009"]');
+ok((await admin.inputValue('.db-edit [name=amazonsg_price]')) === '19.9', 'saved prices fill the form');
+for (const f of ['amazonsg_price', 'amazonsg_url', 'amazonjp_price', 'amazonjp_final']) await admin.fill(`.db-edit [name=${f}]`, '');
+await admin.click('.db-edit >> text=Save prices');
+await admin.waitForSelector('tr:has([data-edit="db:90009"]) >> text=No price');
+ok(true, 'clearing every price removes them');
+ok(await admin.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'the database fits a laptop screen');
 await shot(admin, '7-admin-database', true);
 
 // Bad links and wide screens
