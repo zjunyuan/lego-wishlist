@@ -1,14 +1,107 @@
 [
- {"num": "60414", "name": "Fire Station with Fire Truck", "year": 2024, "parts": 843, "img": "https://cdn.rebrickable.com/media/sets/60414-1.jpg", "theme": "City"},
- {"num": "60500", "name": "The LEGO Van", "year": 2026, "parts": 276, "img": "https://cdn.rebrickable.com/media/sets/60500-1.jpg", "theme": "City"},
- {"num": "90001", "name": "Sample police chase", "year": 2026, "parts": 120, "img": "", "theme": "City"},
- {"num": "90002", "name": "Sample train set", "year": 2026, "parts": 640, "img": "", "theme": "City"},
- {"num": "90003", "name": "Sample rescue boat", "year": 2025, "parts": 310, "img": "", "theme": "City"},
- {"num": "90004", "name": "Sample road sweeper", "year": 2025, "parts": 95, "img": "", "theme": "City"},
- {"num": "90005", "name": "Sample space base", "year": 2025, "parts": 510, "img": "", "theme": "Speed Champions"},
- {"num": "90006", "name": "Sample pizza van", "year": 2025, "parts": 60, "img": "", "theme": "Speed Champions"},
- {"num": "90007", "name": "Sample garage", "year": 2025, "parts": 220, "img": "", "theme": "City"},
- {"num": "90008", "name": "Sample tow truck", "year": 2025, "parts": 180, "img": "", "theme": "City"},
- {"num": "90009", "name": "Sample camper", "year": 2025, "parts": 140, "img": "", "theme": "City"},
- {"num": "90010", "name": "Sample airport", "year": 2025, "parts": 900, "img": "", "theme": "City"}
+ {
+  "num": "60414",
+  "name": "Fire Station with Fire Truck",
+  "year": 2024,
+  "parts": 843,
+  "img": "https://cdn.rebrickable.com/media/sets/60414-1.jpg",
+  "theme": "City"
+ },
+ {
+  "num": "60500",
+  "name": "The LEGO Van",
+  "year": 2026,
+  "parts": 276,
+  "img": "https://cdn.rebrickable.com/media/sets/60500-1.jpg",
+  "theme": "City"
+ },
+ {
+  "num": "90001",
+  "name": "Sample police chase",
+  "year": 2026,
+  "parts": 120,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90002",
+  "name": "Sample train set",
+  "year": 2026,
+  "parts": 640,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90003",
+  "name": "Sample rescue boat",
+  "year": 2025,
+  "parts": 310,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90004",
+  "name": "Sample road sweeper",
+  "year": 2025,
+  "parts": 95,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90005",
+  "name": "Sample space base",
+  "year": 2025,
+  "parts": 510,
+  "img": "",
+  "theme": "Speed Champions"
+ },
+ {
+  "num": "90006",
+  "name": "Sample pizza van",
+  "year": 2025,
+  "parts": 60,
+  "img": "",
+  "theme": "Speed Champions"
+ },
+ {
+  "num": "90007",
+  "name": "Sample garage",
+  "year": 2025,
+  "parts": 220,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90008",
+  "name": "Sample tow truck",
+  "year": 2025,
+  "parts": 180,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90009",
+  "name": "Sample camper",
+  "year": 2025,
+  "parts": 140,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90010",
+  "name": "Sample airport",
+  "year": 2025,
+  "parts": 900,
+  "img": "",
+  "theme": "City"
+ },
+ {
+  "num": "90099",
+  "name": "Admin-only Racer",
+  "year": 2024,
+  "parts": 300,
+  "img": "https://cdn.rebrickable.com/media/sets/76934-1.jpg",
+  "theme": "Speed Champions",
+  "adminOnly": true
+ }
 ]

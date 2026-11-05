@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { keepSet, parseCsv, selectSets } from './update-data.mjs';
+import { keepSet, markAdminOnly, parseCsv, selectSets } from './update-data.mjs';
+
+test('marks admin-only sets and leaves the rest alone', () => {
+  const out = markAdminOnly([{ num: '76934' }, { num: '60500' }], ['76934']);
+  assert.deepEqual(out, [{ num: '76934', adminOnly: true }, { num: '60500' }]);
+  assert.deepEqual(markAdminOnly([{ num: '60500' }]), [{ num: '60500' }]);
+});
 
 test('removes named, gift-with-purchase and over-limit sets', () => {
   const removed = { maxMsrp: 200, sets: ['60473'] };

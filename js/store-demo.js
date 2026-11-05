@@ -108,7 +108,11 @@ export async function setPhotos(keys, photos) {
   save();
 }
 
-export async function setHidden(key, hidden) { state.spaces[key].hidden = hidden; save(); }
+export async function setHidden(key, hidden, adminOnlySeen) {
+  state.spaces[key].hidden = hidden;
+  if (adminOnlySeen) state.spaces[key].adminOnlySeen = adminOnlySeen;
+  save();
+}
 export async function setExcluded(excluded) { state.keys.excluded = excluded; save(); }
 
 export async function publishWishlist(key, entries, removeNums) {

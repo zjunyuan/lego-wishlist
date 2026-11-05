@@ -71,7 +71,7 @@ export const legoFor = num => {
   const [age, price, stock, parts, slug, images] = d;
   return {
     age, price, stock, parts,
-    url: `https://www.lego.com/en-sg/product/${slug}`,
+    url: slug ? `https://www.lego.com/en-sg/product/${slug}` : null,
     images: images.map(f => `${ASSETS}${f}?fit=bounds&quality=75&width=900`),
     available: stock === 'Available now' || stock.startsWith('Will be shipped'),
   };

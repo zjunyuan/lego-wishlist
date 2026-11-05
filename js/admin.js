@@ -730,6 +730,14 @@ export async function render({ root, store, sets, demo }) {
     alertTopic = await store.getAlerts();
     kids = await store.getSpace(keys.kidKey);
     familySpace = await store.getSpace(keys.famKey) ?? {};
+    // Sets added for the admin start hidden, once. After that the admin decides.
+    const seen = kids.adminOnlySeen ?? [];
+    const fresh = sets.filter(s => s.adminOnly && !seen.includes(s.num)).map(s => s.num);
+    if (fresh.length) {
+      kids.hidden = [...new Set([...(kids.hidden ?? []), ...fresh])];
+      kids.adminOnlySeen = [...seen, ...fresh];
+      await store.setHidden(keys.kidKey, kids.hidden, kids.adminOnlySeen);
+    }
     draw();
     store.watchSpace(keys.kidKey, s => { if (s) { kids = s; draw(); } });
     store.watchPicks(keys.kidKey, p => { picks = p; draw(); });

@@ -141,7 +141,7 @@ export function setPhotos(keys, photos) {
   return batch.commit();
 }
 
-export const setHidden = (kidKey, hidden) => updateDoc(doc(db, 'spaces', kidKey), { hidden });
+export const setHidden = (kidKey, hidden, adminOnlySeen) => updateDoc(doc(db, 'spaces', kidKey), adminOnlySeen ? { hidden, adminOnlySeen } : { hidden });
 export const setExcluded = excluded => updateDoc(doc(db, 'admin', 'keys'), { excluded });
 
 export async function publishWishlist(famKey, entries, removeNums) {
