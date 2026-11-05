@@ -408,6 +408,87 @@
   "img": "https://cdn.rebrickable.com/media/sets/60423-1.jpg"
  },
  {
+  "num": "76924",
+  "name": "Mercedes-AMG G 63 & Mercedes-AMG SL 63",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 811,
+  "img": "https://cdn.rebrickable.com/media/sets/76924-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76922",
+  "name": "BMW M4 GT3 & BMW M Hybrid V8 Race Cars",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 676,
+  "img": "https://cdn.rebrickable.com/media/sets/76922-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76925",
+  "name": "Aston Martin Vantage Safety Car & AMR23",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 567,
+  "img": "https://cdn.rebrickable.com/media/sets/76925-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76920",
+  "name": "Ford Mustang Dark Horse Sports Car",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 347,
+  "img": "https://cdn.rebrickable.com/media/sets/76920-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76935",
+  "name": "NASCAR Next Gen Chevrolet Camaro ZL1",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 328,
+  "img": "https://cdn.rebrickable.com/media/sets/76935-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76934",
+  "name": "Ferrari F40 Supercar",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 325,
+  "img": "https://cdn.rebrickable.com/media/sets/76934-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76921",
+  "name": "Audi S1 e-tron quattro Race Car",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 274,
+  "img": "https://cdn.rebrickable.com/media/sets/76921-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76919",
+  "name": "2023 McLaren Formula 1 Car",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 245,
+  "img": "https://cdn.rebrickable.com/media/sets/76919-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "76923",
+  "name": "Lamborghini Lambo V12 Vision GT Super Car",
+  "theme": "Speed Champions",
+  "year": 2024,
+  "parts": 230,
+  "img": "https://cdn.rebrickable.com/media/sets/76923-1.jpg",
+  "adminOnly": true
+ },
+ {
   "num": "60415",
   "name": "Police Car and Muscle Car Chase",
   "theme": "City",
