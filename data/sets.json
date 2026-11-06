@@ -312,6 +312,15 @@
   "img": "https://cdn.rebrickable.com/media/sets/60466-1.jpg"
  },
  {
+  "num": "77238",
+  "name": "Lamborghini Revuelto & Huracán STO",
+  "theme": "Speed Champions",
+  "year": 2025,
+  "parts": 614,
+  "img": "https://cdn.rebrickable.com/media/sets/77238-1.jpg",
+  "adminOnly": true
+ },
+ {
   "num": "60465",
   "name": "Emergency Air Ambulance Airplane",
   "theme": "City",
@@ -503,5 +512,14 @@
   "year": 2024,
   "parts": 87,
   "img": "https://cdn.rebrickable.com/media/sets/60411-1.jpg"
+ },
+ {
+  "num": "76917",
+  "name": "2 Fast 2 Furious Nissan Skyline GT-R (R34)",
+  "theme": "Speed Champions",
+  "year": 2023,
+  "parts": 319,
+  "img": "https://cdn.rebrickable.com/media/sets/76917-1.jpg",
+  "adminOnly": true
  }
 ]
