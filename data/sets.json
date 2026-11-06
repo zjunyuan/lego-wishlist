@@ -521,5 +521,41 @@
   "parts": 319,
   "img": "https://cdn.rebrickable.com/media/sets/76917-1.jpg",
   "adminOnly": true
+ },
+ {
+  "num": "76895",
+  "name": "Ferrari F8 Tributo",
+  "theme": "Speed Champions",
+  "year": 2020,
+  "parts": 278,
+  "img": "https://cdn.rebrickable.com/media/sets/76895-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "75892",
+  "name": "McLaren Senna",
+  "theme": "Speed Champions",
+  "year": 2019,
+  "parts": 222,
+  "img": "https://cdn.rebrickable.com/media/sets/75892-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "75890",
+  "name": "Ferrari F40 Competizione",
+  "theme": "Speed Champions",
+  "year": 2019,
+  "parts": 200,
+  "img": "https://cdn.rebrickable.com/media/sets/75890-1.jpg",
+  "adminOnly": true
+ },
+ {
+  "num": "75891",
+  "name": "Chevrolet Camaro ZL1 Race Car",
+  "theme": "Speed Champions",
+  "year": 2019,
+  "parts": 198,
+  "img": "https://cdn.rebrickable.com/media/sets/75891-1.jpg",
+  "adminOnly": true
  }
 ]
