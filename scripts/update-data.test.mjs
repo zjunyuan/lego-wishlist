@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { keepSet, markAdminOnly, parseCsv, selectSets } from './update-data.mjs';
+import { keepSet, markAdminOnly, markNew, parseCsv, selectSets } from './update-data.mjs';
+
+test('marks new sets and leaves the rest alone', () => {
+  assert.deepEqual(markNew([{ num: '76934' }, { num: '60500' }], ['76934']), [{ num: '76934', isNew: true }, { num: '60500' }]);
+  assert.deepEqual(markNew([{ num: '60500' }]), [{ num: '60500' }]);
+});
 
 test('marks admin-only sets and leaves the rest alone', () => {
   const out = markAdminOnly([{ num: '76934' }, { num: '60500' }], ['76934']);

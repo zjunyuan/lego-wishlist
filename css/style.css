@@ -84,7 +84,9 @@ a { color: var(--blue); }
 .set.picked .set-tap { border-color: var(--yellow); box-shadow: 0 5px 0 #d9a900; }
 .set-name { display: block; padding: 8px 10px 0; font-weight: 700; font-size: 1.02rem; line-height: 1.25; }
 .set-tap { position: relative; }
-.age-tag { position: absolute; top: 8px; left: 8px; padding: 2px 8px; border-radius: 6px; background: var(--ink); color: #fff; font-size: .85rem; font-weight: 700; }
+.set-tags { position: absolute; top: 8px; left: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+.age-tag { padding: 2px 8px; border-radius: 6px; background: var(--ink); color: #fff; font-size: .85rem; font-weight: 700; }
+.new-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; background: #d01012; color: #fff; font-size: .85rem; font-weight: 700; vertical-align: middle; }
 .finish-slot:not(:empty) { margin-bottom: 12px; }
 .finish { width: 100%; min-height: 54px; border: 0; border-radius: 10px; background: var(--yellow); box-shadow: 0 4px 0 #d9a900; font-size: 1.1rem; font-weight: 700; }
 .finished-note { padding: 12px 14px; border-radius: 10px; background: #fff; font-weight: 700; }

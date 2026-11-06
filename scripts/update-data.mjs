@@ -68,6 +68,9 @@ export function keepSet(num, removed, details) {
 // Listed sets stay on the admin page only until the admin shows them to the boys.
 export const markAdminOnly = (sets, adminOnly = []) => sets.map(s => (adminOnly.includes(s.num) ? { ...s, adminOnly: true } : s));
 
+// Sets added recently, tagged New on the boys' page until they drop off this list.
+export const markNew = (sets, newSets = []) => sets.map(s => (newSets.includes(s.num) ? { ...s, isNew: true } : s));
+
 async function fetchGz(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url} returned ${res.status}`);
@@ -82,7 +85,8 @@ async function main() {
   const sets = parseCsv(await fetchGz(SETS_CSV));
   const removed = JSON.parse(await readFile(new URL('removed.json', root), 'utf8'));
   const details = JSON.parse(await readFile(new URL('details.json', root), 'utf8')).sets;
-  const catalogue = markAdminOnly(selectSets(themes, sets, minYear, Object.keys(details)).filter(s => keepSet(s.num, removed, details)), removed.adminOnly);
+  const kept = selectSets(themes, sets, minYear, Object.keys(details)).filter(s => keepSet(s.num, removed, details));
+  const catalogue = markNew(markAdminOnly(kept, removed.adminOnly), removed.newSets);
   if (catalogue.length < 20) throw new Error(`Only ${catalogue.length} sets found, keeping the old catalogue`);
   await writeFile(new URL('sets.json', root), JSON.stringify(catalogue, null, 1) + '\n');
   const count = name => catalogue.filter(s => s.theme === name).length;

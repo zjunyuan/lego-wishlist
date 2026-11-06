@@ -20,6 +20,8 @@ export function avatar(id, photos) {
 
 export const safeUrl = url => (/^https:\/\//i.test(url ?? '') ? url : null);
 
+export const newTag = set => (set.isNew ? '<span class="new-tag">New</span>' : '');
+
 export const money = amount => `S$${Number(amount).toFixed(2)}`;
 
 export const shortDate = when => new Date(when).toLocaleDateString('en-SG', { day: 'numeric', month: 'short' });

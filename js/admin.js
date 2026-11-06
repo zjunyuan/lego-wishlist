@@ -1,4 +1,4 @@
-import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
+import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, newTag, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -186,7 +186,7 @@ export async function render({ root, store, sets, demo }) {
     switch (key) {
       case 'photo': return photo(r);
       case 'num': return `<b>${esc(r.num)}</b>`;
-      case 'name': return `${esc(r.name)}<span class="muted block">${esc(r.theme ?? '')}</span>`;
+      case 'name': return `${esc(r.name)} ${newTag(r)}<span class="muted block">${esc(r.theme ?? '')}</span>`;
       case 'ageNum': return r.age ? esc(r.age) : '<span class="muted">Not set</span>';
       case 'parts': return esc(r.parts);
       case 'msrp': {

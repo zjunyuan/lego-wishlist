@@ -13,7 +13,8 @@
   "year": 2026,
   "parts": 276,
   "img": "https://cdn.rebrickable.com/media/sets/60500-1.jpg",
-  "theme": "City"
+  "theme": "City",
+  "isNew": true
  },
  {
   "num": "90001",

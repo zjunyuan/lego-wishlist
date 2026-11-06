@@ -257,7 +257,7 @@
  },
  {
   "num": "60481",
-  "name": "Rides – Police Truck",
+  "name": "Rides \u2013 Police Truck",
   "theme": "City",
   "year": 2026,
   "parts": 78,
@@ -265,7 +265,7 @@
  },
  {
   "num": "60482",
-  "name": "Rides – Fire Truck",
+  "name": "Rides \u2013 Fire Truck",
   "theme": "City",
   "year": 2026,
   "parts": 67,
@@ -273,7 +273,7 @@
  },
  {
   "num": "60484",
-  "name": "Rides – Gaming Race Car",
+  "name": "Rides \u2013 Gaming Race Car",
   "theme": "City",
   "year": 2026,
   "parts": 64,
@@ -281,7 +281,7 @@
  },
  {
   "num": "60483",
-  "name": "Rides – Construction Loader",
+  "name": "Rides \u2013 Construction Loader",
   "theme": "City",
   "year": 2026,
   "parts": 61,
@@ -313,12 +313,13 @@
  },
  {
   "num": "77238",
-  "name": "Lamborghini Revuelto & Huracán STO",
+  "name": "Lamborghini Revuelto & Hurac\u00e1n STO",
   "theme": "Speed Champions",
   "year": 2025,
   "parts": 614,
   "img": "https://cdn.rebrickable.com/media/sets/77238-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "60465",
@@ -423,7 +424,8 @@
   "year": 2024,
   "parts": 811,
   "img": "https://cdn.rebrickable.com/media/sets/76924-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76922",
@@ -432,7 +434,8 @@
   "year": 2024,
   "parts": 676,
   "img": "https://cdn.rebrickable.com/media/sets/76922-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76925",
@@ -441,7 +444,8 @@
   "year": 2024,
   "parts": 567,
   "img": "https://cdn.rebrickable.com/media/sets/76925-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76920",
@@ -450,7 +454,8 @@
   "year": 2024,
   "parts": 347,
   "img": "https://cdn.rebrickable.com/media/sets/76920-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76935",
@@ -459,7 +464,8 @@
   "year": 2024,
   "parts": 328,
   "img": "https://cdn.rebrickable.com/media/sets/76935-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76934",
@@ -468,7 +474,8 @@
   "year": 2024,
   "parts": 325,
   "img": "https://cdn.rebrickable.com/media/sets/76934-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76921",
@@ -477,7 +484,8 @@
   "year": 2024,
   "parts": 274,
   "img": "https://cdn.rebrickable.com/media/sets/76921-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76919",
@@ -486,7 +494,8 @@
   "year": 2024,
   "parts": 245,
   "img": "https://cdn.rebrickable.com/media/sets/76919-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76923",
@@ -495,7 +504,8 @@
   "year": 2024,
   "parts": 230,
   "img": "https://cdn.rebrickable.com/media/sets/76923-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "60415",
@@ -520,7 +530,8 @@
   "year": 2023,
   "parts": 319,
   "img": "https://cdn.rebrickable.com/media/sets/76917-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "76895",
@@ -529,7 +540,8 @@
   "year": 2020,
   "parts": 278,
   "img": "https://cdn.rebrickable.com/media/sets/76895-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "75892",
@@ -538,7 +550,8 @@
   "year": 2019,
   "parts": 222,
   "img": "https://cdn.rebrickable.com/media/sets/75892-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "75890",
@@ -547,7 +560,8 @@
   "year": 2019,
   "parts": 200,
   "img": "https://cdn.rebrickable.com/media/sets/75890-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  },
  {
   "num": "75891",
@@ -556,6 +570,7 @@
   "year": 2019,
   "parts": 198,
   "img": "https://cdn.rebrickable.com/media/sets/75891-1.jpg",
-  "adminOnly": true
+  "adminOnly": true,
+  "isNew": true
  }
 ]

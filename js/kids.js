@@ -1,4 +1,4 @@
-import { ageFor, avatar, esc, imagesFor, partsFor, photo, safeUrl, toast } from './util.js';
+import { ageFor, avatar, esc, imagesFor, newTag, partsFor, photo, safeUrl, toast } from './util.js';
 
 const MAX_PICKS = 10;
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.3 6.7L12 17.5l-6 3.3 1.3-6.7-5-4.6 6.8-.8z"/></svg>';
@@ -70,7 +70,8 @@ export function render({ root, store, sets, key, space }) {
       .filter(s => picked[s.num] || !(owned.includes(s.num) || hidden.includes(s.num) || (s.adminOnly && !adminOnlySeen.includes(s.num))))
       .filter(s => !onlyPicks || picked[s.num])
       .filter(s => !theme || s.theme === theme)
-      .filter(s => !q || s.name.toLowerCase().includes(q) || s.num.includes(q));
+      .filter(s => !q || s.name.toLowerCase().includes(q) || s.num.includes(q))
+      .sort((a, b) => Boolean(b.isNew) - Boolean(a.isNew));
 
     if (!list.length) {
       return `<p class="empty">${onlyPicks ? 'Nothing picked yet. Go back to all sets and tap one you like.' : 'No sets match that. Try another word.'}</p>`;
@@ -81,7 +82,10 @@ export function render({ root, store, sets, key, space }) {
         <article class="set ${p ? 'picked' : ''}">
           <button class="set-tap" data-set="${esc(s.num)}" aria-haspopup="dialog" aria-label="See ${esc(s.name)}">
             ${photo(s)}
-            ${ageFor(s.num, ages) ? `<span class="age-tag">Ages ${esc(ageFor(s.num, ages))}</span>` : ''}
+            <span class="set-tags">
+              ${newTag(s)}
+              ${ageFor(s.num, ages) ? `<span class="age-tag">Ages ${esc(ageFor(s.num, ages))}</span>` : ''}
+            </span>
             <span class="set-name">${esc(s.name)}</span>
           </button>
           ${favMark(s, p)}
@@ -179,7 +183,7 @@ export function render({ root, store, sets, key, space }) {
           <button class="thumb" data-image="${i}" aria-label="Picture ${i + 1}" aria-pressed="${i === shownImage}">${photo({ num: set.num, img: src })}</button>`).join('')}</div>` : ''}
       </div>
       <div class="pop-info">
-        <h2>${esc(set.name)}</h2>
+        <h2>${esc(set.name)} ${newTag(set)}</h2>
         <dl>
           <dt>Set number</dt><dd>${esc(set.num)}</dd>
           <dt>Pieces</dt><dd>${esc(partsFor(set))}</dd>
