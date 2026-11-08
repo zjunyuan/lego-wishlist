@@ -20,10 +20,11 @@ export function render({ root, store, sets, key, space }) {
   let theme = null;
   let search = '';
   let world = 'lego';
-  const hasTomica = sets.some(s => isTomica(s.num));
   const inWorld = (num, w = world) => (w === 'tomica') === isTomica(num);
   const limit = (w = world) => (w === 'tomica' ? MAX_CARS : MAX_PICKS);
   const themes = [...new Set(sets.filter(s => !isTomica(s.num)).map(s => s.theme).filter(Boolean))];
+  const visible = s => !(owned.includes(s.num) || hidden.includes(s.num) || (s.adminOnly && !adminOnlySeen.includes(s.num)));
+  const hasTomica = () => sets.some(s => isTomica(s.num) && (visible(s) || mine()[s.num] || picksOf(child?.id)[s.num]));
   const series = [...new Set(sets.filter(s => isTomica(s.num)).map(s => s.series).filter(Boolean))];
 
   // Sets removed from the catalogue no longer count as picks.
@@ -45,7 +46,7 @@ export function render({ root, store, sets, key, space }) {
                 ${avatar(c.id, photos)}
                 <span class="brick-name">${esc(c.name)}</span>
                 <span class="brick-count">${finished(c.id) ? 'List finished' : `${count(c.id, 'lego')} of ${MAX_PICKS} picked`}</span>
-                ${hasTomica && !finished(c.id) ? `<span class="brick-count">${count(c.id, 'tomica')} of ${MAX_CARS} Tomica</span>` : ''}
+                ${sets.some(s => isTomica(s.num) && visible(s)) && !finished(c.id) ? `<span class="brick-count">${count(c.id, 'tomica')} of ${MAX_CARS} Tomica</span>` : ''}
               </span>
             </button>`).join('')}
         </div>
@@ -115,7 +116,7 @@ export function render({ root, store, sets, key, space }) {
       </div>
       <main class="kid-page">
         <div class="finish-slot">${finishSlot()}</div>
-        ${hasTomica ? `<div class="worlds" role="group" aria-label="What to choose">
+        ${hasTomica() ? `<div class="worlds" role="group" aria-label="What to choose">
           <button class="world world-lego" data-world="lego" aria-pressed="${world === 'lego'}"><span>LEGO</span><small>${count(child.id, 'lego')} of ${MAX_PICKS}</small></button>
           <button class="world world-tomica" data-world="tomica" aria-pressed="${world === 'tomica'}"><span>Tomica</span><small>${count(child.id, 'tomica')} of ${MAX_CARS}</small></button>
         </div>` : ''}

@@ -7,6 +7,7 @@ test('Tomica cars join the catalogue with no pieces', () => {
   assert.equal(car.theme, 'Tomica');
   assert.equal(car.parts, null);
   assert.equal(car.series, 'Regular');
+  assert.equal(car.adminOnly, true);
 });
 
 test('the Tomica list is well formed', async () => {

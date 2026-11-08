@@ -72,7 +72,8 @@ export const markAdminOnly = (sets, adminOnly = []) => sets.map(s => (adminOnly.
 export const markNew = (sets, newSets = []) => sets.map(s => (newSets.includes(s.num) ? { ...s, isNew: true } : s));
 
 // Tomica cars aren't in Rebrickable, so they come from a hand-kept list.
-export const tomicaSets = list => list.map(t => ({ ...t, theme: 'Tomica', parts: null, year: null }));
+// They start hidden from the boys until the admin shows them.
+export const tomicaSets = list => list.map(t => ({ ...t, theme: 'Tomica', parts: null, year: null, adminOnly: true }));
 
 async function fetchGz(url) {
   const res = await fetch(url);
