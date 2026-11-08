@@ -1843,47 +1843,5 @@
   "parts": null,
   "year": null,
   "adminOnly": true
- },
- {
-  "num": "TGBUILD",
-  "code": "Tomica Town",
-  "name": "Construction Site Set",
-  "series": "Gift sets & specials",
-  "age": "3+",
-  "jpy": null,
-  "img": "https://down-sg.img.susercontent.com/file/sg-11134207-8260x-mlgkbf2nhnggba",
-  "search": "Tomica Tomica Town Construction Site Set",
-  "theme": "Tomica",
-  "parts": null,
-  "year": null,
-  "adminOnly": true
- },
- {
-  "num": "TGDEALER",
-  "code": "Tomica Town",
-  "name": "Car Dealer (with a car)",
-  "series": "Gift sets & specials",
-  "age": "3+",
-  "jpy": null,
-  "img": "https://down-sg.img.susercontent.com/file/sg-11134201-7rd6y-m6otdgh8w47o09",
-  "search": "Tomica Tomica Town Car Dealer (with a car)",
-  "theme": "Tomica",
-  "parts": null,
-  "year": null,
-  "adminOnly": true
- },
- {
-  "num": "TGDONUT",
-  "code": "Tomica Town",
-  "name": "Mister Donut",
-  "series": "Gift sets & specials",
-  "age": "3+",
-  "jpy": null,
-  "img": "https://down-sg.img.susercontent.com/file/sg-11134201-7rd4t-m6ot33j0nq5de4",
-  "search": "Tomica Tomica Town Mister Donut",
-  "theme": "Tomica",
-  "parts": null,
-  "year": null,
-  "adminOnly": true
  }
 ]
