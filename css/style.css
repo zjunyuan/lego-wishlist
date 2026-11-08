@@ -342,3 +342,11 @@ body.tomica-world { background: #eef1f5 repeating-linear-gradient(90deg, transpa
 .tomica-world .set-pop .pop-fav.on { background: var(--tomica-red); color: #fff; }
 .tomica-world .set-pop .pop-fav.on svg { fill: #fff; stroke: #fff; }
 
+/* Add a Tomica car */
+.car-form { display: grid; gap: 10px; max-width: 520px; }
+.car-form label { display: grid; gap: 4px; font-weight: 700; }
+.car-form input, .car-form select { min-height: 44px; padding: 8px 10px; border: 2px solid var(--line); border-radius: 8px; font: inherit; }
+.car-price { display: grid; gap: 8px; margin: 0; padding: 10px 12px; border: 2px solid var(--line); border-radius: 8px; }
+.car-price legend { padding: 0 4px; color: var(--muted); }
+.car-msg { min-height: 1.5em; font-weight: 700; }
+

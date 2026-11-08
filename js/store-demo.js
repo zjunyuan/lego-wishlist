@@ -104,6 +104,11 @@ export async function importDetails(keys, nextOverrides, ages, images) {
 }
 
 export async function setFamilyNote(key, note) { state.spaces[key].note = note; save(); }
+export async function setExtraCars(keys, extraCars) {
+  state.spaces[keys.kidKey].extraCars = extraCars;
+  state.spaces[keys.famKey].extraCars = extraCars;
+  save();
+}
 export async function setPhotos(keys, photos) {
   state.spaces[keys.kidKey].photos = photos;
   state.spaces[keys.famKey].photos = photos;

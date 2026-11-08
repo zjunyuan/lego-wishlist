@@ -58,6 +58,45 @@ export function setCatalogue(sets) { byNum = Object.fromEntries((sets ?? []).map
 
 export const isTomica = num => /^T/.test(num);
 
+// Cars added on the admin page are saved on both spaces and joined to the catalogue here.
+export function addExtraCars(sets, extras) {
+  const have = new Set(sets.map(s => s.num));
+  for (const car of extras ?? []) {
+    if (!have.has(car.num)) sets.push({ ...car, theme: 'Tomica', parts: null, year: null, added: true });
+  }
+  setCatalogue(sets);
+  return sets;
+}
+
+// "23", "No. 23", "P41", "Premium 41", "U11" or "Unlimited 11".
+export function parseTomicaNumber(text) {
+  const t = String(text ?? '').trim().replace(/\s+/g, ' ');
+  let m = t.match(/^(?:no\.? ?)?(\d{1,3})$/i);
+  if (m) {
+    const n = Number(m[1]);
+    if (n < 1 || n > 150) return null;
+    return { num: `T${n}`, code: n > 120 ? `No. ${n} (long)` : `No. ${n}`, series: 'Regular', age: '3+', jpy: n > 120 ? 1100 : 594, n };
+  }
+  m = t.match(/^(?:premium|p) ?(\d{1,2})$/i);
+  if (m) {
+    const n = m[1].padStart(2, '0');
+    return { num: `TP${n}`, code: `Premium ${n}`, series: 'Premium', age: '6+', jpy: 990 };
+  }
+  m = t.match(/^(?:premium unlimited|unlimited|u) ?(\d{1,2})$/i);
+  if (m) {
+    const n = m[1].padStart(2, '0');
+    return { num: `TU${n}`, code: `Premium Unlimited ${n}`, series: 'Premium', age: '6+', jpy: null };
+  }
+  return null;
+}
+
+// Takara Tomy names its regular-car photos in a few ways. These are the ones in use.
+export function regularPhotoGuesses(n) {
+  const p = String(n).padStart(3, '0');
+  const dir = 'https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/';
+  return [`${p}.jpg`, `pic_${p}_01.jpg`, `pic_${p}_01.webp`, `pic_${p}_02.webp`, `pic_${p}_02.jpg`, `pic_${p}_03.jpg`].map(f => dir + f);
+}
+
 // Each boy's Tomica picks are kept in a second document beside his LEGO picks.
 // That gives Tomica its own 10 without changing the database rules.
 export const TOMICA_DOC = '__tomica';

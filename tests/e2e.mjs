@@ -272,6 +272,37 @@ await admin.click('[data-alerts-off]');
 await admin.waitForSelector('[data-alerts-on]');
 ok(true, 'alerts can be turned off');
 
+// Adding a Tomica car on the admin page
+await admin.route('https://www.takaratomy.co.jp/**', r => r.request().url().endsWith('/023.jpg')
+  ? r.fulfill({ status: 200, contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="9"/>' })
+  : r.fulfill({ status: 404, body: '' }));
+await admin.fill('.car-form [name="code"]', 'No. 23');
+await admin.fill('.car-form [name="name"]', 'Nissan GT-R');
+await admin.fill('.car-form [name="price"]', '8.20');
+await admin.click('.car-form button');
+await admin.waitForSelector('[data-car-remove="T23"]');
+ok((await admin.textContent('.car-msg')).includes('Added No. 23 Nissan GT-R'), 'a typed number adds a car with Takara Tomy\'s photo');
+await (await admin.$('.car-form')).screenshot({ path: join(shots, '15-admin-add-car.png') });
+await admin.fill('.car-form [name="code"]', 'p41');
+await admin.fill('.car-form [name="name"]', 'Cybertruck');
+await admin.click('.car-form button');
+await admin.waitForFunction(() => document.querySelector('.car-msg').textContent.includes('Paste a photo link'));
+ok(true, 'a Premium car without a photo link is refused');
+await admin.fill('.car-form [name="code"]', '11');
+await admin.fill('.car-form [name="name"]', 'Duplicate');
+await admin.click('.car-form button');
+await admin.waitForFunction(() => document.querySelector('.car-msg').textContent.includes('already on the list'));
+ok(true, 'a car already on the list is refused');
+await kids.reload();
+await kids.click('.brick-0');
+await kids.click('[data-world="tomica"]');
+await kids.waitForSelector('[data-set="T23"]');
+ok(true, 'an added car shows on the boys page');
+await kids.click('[data-back]');
+await admin.click('[data-car-remove="T23"]');
+await admin.waitForFunction(() => !document.querySelector('[data-car-remove="T23"]'));
+ok(true, 'an added car can be removed');
+
 await admin.fill('.note-box', 'Please bring gifts by 20 Dec.');
 await admin.click('[data-save-note]');
 await fam.waitForSelector('text=Please bring gifts by 20 Dec.');

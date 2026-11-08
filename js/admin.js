@@ -1,4 +1,4 @@
-import { ageFor, avatar, codeFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, newTag, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
+import { addExtraCars, ageFor, avatar, codeFor, esc, parseTomicaNumber, regularPhotoGuesses, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, newTag, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -7,6 +7,11 @@ const STALE_PRICE_DAYS = 14;
 
 export async function render({ root, store, sets, demo }) {
   const byNum = Object.fromEntries(sets.map(s => [s.num, s]));
+  const joinCars = cars => {
+    addExtraCars(sets, cars);
+    for (const s of sets) byNum[s.num] ??= s;
+  };
+  let carMessage = '';
   let keys, kids, picks = {}, wishlist = {}, claims = {}, shares = {}, overrides = {};
   let pendingImport = null;
   let familySpace = {};
@@ -461,6 +466,8 @@ export async function render({ root, store, sets, demo }) {
         <div class="sheet-actions"><button class="claim" data-save-note>Save note</button></div>
       </section>
 
+      ${carSection()}
+
       <section>
         <h2>Sets they already have</h2>
         <p>These are hidden from the boys' list.</p>
@@ -497,6 +504,16 @@ export async function render({ root, store, sets, demo }) {
   }
 
   root.onsubmit = async e => {
+    if (e.target.matches('.car-form')) {
+      e.preventDefault();
+      try {
+        await addCar(e.target);
+      } catch (err) {
+        console.error(err);
+        toast('That didn\'t save. Check your connection and try again.');
+      }
+      return;
+    }
     if (!e.target.matches('.override')) return;
     e.preventDefault();
     const f = new FormData(e.target);
@@ -601,7 +618,16 @@ export async function render({ root, store, sets, demo }) {
     if (!el) return;
     const d = el.dataset;
     try {
-      if ('alertsOn' in d) {
+      if (d.carRemove) {
+        const cars = (kids.extraCars ?? []).filter(c => c.num !== d.carRemove);
+        await store.setExtraCars(keys, cars);
+        kids.extraCars = cars;
+        const i = sets.findIndex(x => x.num === d.carRemove && x.added);
+        if (i >= 0) sets.splice(i, 1);
+        delete byNum[d.carRemove];
+        carMessage = '';
+        draw();
+      } else if ('alertsOn' in d) {
         alertTopic = `lego-${newKey()}`;
         await store.setAlerts(alertTopic);
         draw();
@@ -716,6 +742,75 @@ export async function render({ root, store, sets, demo }) {
     </section>`;
   }
 
+  function carSection() {
+    const added = kids.extraCars ?? [];
+    return `<section>
+      <h2>Add a Tomica car</h2>
+      <p>Type the number from the box or the shop listing: 23 for a regular car, P41 for Premium, or U11 for Premium Unlimited. The boys see it straight away. Regular cars get Takara Tomy's photo; for Premium, paste a photo link.</p>
+      <form class="car-form">
+        <label>Tomica number <input name="code" required placeholder="23, P41 or U11" autocomplete="off"></label>
+        <label>Name in English <input name="name" required maxlength="80" autocomplete="off"></label>
+        <label>Photo link <input name="img" type="url" placeholder="Optional for regular cars"></label>
+        <fieldset class="car-price"><legend>Price, if you have one</legend>
+          <label>Shop <select name="shop">${SHOPS.filter(s => !s.custom).map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></label>
+          <label>Price (S$) <input name="price" type="number" step="0.01" min="0" inputmode="decimal"></label>
+          <label>Link <input name="url" type="url"></label>
+        </fieldset>
+        <button class="claim">Add car</button>
+        <p class="car-msg" role="status">${esc(carMessage)}</p>
+      </form>
+      ${added.length ? `<ul class="owned">${added.map(c => `<li>${esc(c.code)} ${esc(c.name)}
+        <button class="quiet" data-car-remove="${esc(c.num)}">Remove</button></li>`).join('')}</ul>` : ''}
+    </section>`;
+  }
+
+  // The first photo address that loads wins.
+  async function findPhoto(urls) {
+    for (const url of urls) {
+      const ok = await new Promise(done => {
+        const img = new Image();
+        const timer = setTimeout(() => done(false), 8000);
+        img.onload = () => { clearTimeout(timer); done(img.naturalWidth > 0); };
+        img.onerror = () => { clearTimeout(timer); done(false); };
+        img.src = url;
+      });
+      if (ok) return url;
+    }
+    return null;
+  }
+
+  async function addCar(form) {
+    const f = new FormData(form);
+    const parsed = parseTomicaNumber(f.get('code'));
+    const say = text => { carMessage = text; form.querySelector('.car-msg').textContent = text; };
+    if (!parsed) return say('That number doesn\'t look right. Try 23, P41 or U11.');
+    const { n, ...car } = parsed;
+    if (byNum[car.num]) return say(`${car.code} is already on the list.`);
+    car.name = f.get('name').trim();
+    car.search = `Tomica ${car.code.replace(' (long)', '')} ${car.name}`;
+    say('Looking for a photo…');
+    const typed = safeUrl(f.get('img'));
+    car.img = typed || (n ? await findPhoto(regularPhotoGuesses(n)) : null);
+    if (!car.img) {
+      return say(n ? 'Takara Tomy has no photo for that number. Paste a photo link.' : 'Paste a photo link for this car.');
+    }
+    const cars = [...(kids.extraCars ?? []), car];
+    await store.setExtraCars(keys, cars);
+    kids.extraCars = cars;
+    joinCars(cars);
+    const price = f.get('price') === '' ? null : Number(f.get('price'));
+    if (price !== null) {
+      const shop = f.get('shop');
+      const entry = { price, stock: 'In stock' };
+      const url = safeUrl(f.get('url'));
+      if (url) entry.url = url;
+      await store.setOverride(keys.famKey, car.num, { shops: { [shop]: entry }, updatedAt: Date.now() });
+    }
+    carMessage = `Added ${car.code} ${car.name}.`;
+    draw();
+    return undefined;
+  }
+
   async function begin() {
     const email = await store.currentAdmin() ?? (demo ? await store.signInAdmin() : null);
     if (!email) return signInScreen();
@@ -729,6 +824,7 @@ export async function render({ root, store, sets, demo }) {
 
     alertTopic = await store.getAlerts();
     kids = await store.getSpace(keys.kidKey);
+    joinCars(kids.extraCars);
     familySpace = await store.getSpace(keys.famKey) ?? {};
     // Sets added for the admin start hidden, once. After that the admin decides.
     const seen = kids.adminOnlySeen ?? [];
@@ -739,7 +835,7 @@ export async function render({ root, store, sets, demo }) {
       await store.setHidden(keys.kidKey, kids.hidden, kids.adminOnlySeen);
     }
     draw();
-    store.watchSpace(keys.kidKey, s => { if (s) { kids = s; draw(); } });
+    store.watchSpace(keys.kidKey, s => { if (s) { kids = s; joinCars(s.extraCars); draw(); } });
     store.watchPicks(keys.kidKey, p => { picks = p; draw(); });
     store.watchWishlist(keys.famKey, w => { wishlist = w; draw(); });
     store.watchClaims(keys.famKey, c => { claims = c; draw(); });

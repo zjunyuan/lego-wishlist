@@ -139,6 +139,12 @@ export async function importDetails(keys, nextOverrides, ages, images) {
 }
 
 export const setFamilyNote = (famKey, note) => updateDoc(doc(db, 'spaces', famKey), { note });
+export function setExtraCars(keys, extraCars) {
+  const batch = writeBatch(db);
+  batch.update(doc(db, 'spaces', keys.kidKey), { extraCars });
+  batch.update(doc(db, 'spaces', keys.famKey), { extraCars });
+  return batch.commit();
+}
 export function setPhotos(keys, photos) {
   const batch = writeBatch(db);
   batch.update(doc(db, 'spaces', keys.kidKey), { photos });

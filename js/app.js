@@ -1,4 +1,4 @@
-import { esc, loadJson, setCatalogue, setDetails, setShopData } from './util.js';
+import { addExtraCars, esc, loadJson, setCatalogue, setDetails, setShopData } from './util.js';
 import { VERSION } from './version.js';
 
 document.getElementById('version').textContent = `Version ${VERSION}`;
@@ -49,6 +49,7 @@ async function start() {
     return;
   }
 
+  addExtraCars(sets, space.extraCars);
   const view = await import(kidKey ? './kids.js' : './family.js');
   view.render({ ...context, key: kidKey ?? famKey, space });
 }

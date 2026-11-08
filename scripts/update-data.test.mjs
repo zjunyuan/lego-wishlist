@@ -21,6 +21,24 @@ test('the Tomica list is well formed', async () => {
   }
 });
 
+test('typed Tomica numbers become cars', async () => {
+  globalThis.document ??= { addEventListener() {} };
+  const { parseTomicaNumber, regularPhotoGuesses, addExtraCars } = await import('../js/util.js');
+  assert.deepEqual(parseTomicaNumber('No. 23'), { num: 'T23', code: 'No. 23', series: 'Regular', age: '3+', jpy: 594, n: 23 });
+  assert.equal(parseTomicaNumber('133').code, 'No. 133 (long)');
+  assert.equal(parseTomicaNumber('133').jpy, 1100);
+  assert.equal(parseTomicaNumber('p5').num, 'TP05');
+  assert.equal(parseTomicaNumber('Premium 41').code, 'Premium 41');
+  assert.equal(parseTomicaNumber('U11').num, 'TU11');
+  assert.equal(parseTomicaNumber('hello'), null);
+  assert.equal(parseTomicaNumber('999'), null);
+  assert.ok(regularPhotoGuesses(7)[0].endsWith('/007.jpg'));
+  const sets = [{ num: '60500' }, { num: 'T11' }];
+  addExtraCars(sets, [{ num: 'T11', name: 'dup' }, { num: 'T23', name: 'GT-R' }]);
+  assert.deepEqual(sets.map(s => s.num), ['60500', 'T11', 'T23']);
+  assert.equal(sets[2].theme, 'Tomica');
+});
+
 test('marks new sets and leaves the rest alone', () => {
   assert.deepEqual(markNew([{ num: '76934' }, { num: '60500' }], ['76934']), [{ num: '76934', isNew: true }, { num: '60500' }]);
   assert.deepEqual(markNew([{ num: '60500' }]), [{ num: '60500' }]);
