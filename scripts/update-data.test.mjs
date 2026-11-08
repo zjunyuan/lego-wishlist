@@ -12,11 +12,11 @@ test('Tomica cars join the catalogue with no pieces', () => {
 test('the Tomica list is well formed', async () => {
   const { readFile } = await import('node:fs/promises');
   const list = JSON.parse(await readFile(new URL('../data/tomica.json', import.meta.url), 'utf8'));
-  assert.ok(list.length >= 20 && list.length <= 30);
+  assert.ok(list.length >= 20 && list.length <= 150);
   assert.equal(new Set(list.map(t => t.num)).size, list.length);
   for (const t of list) {
-    assert.match(t.num, /^T[PU]?\d+$/);
-    assert.ok(['Regular', 'Premium'].includes(t.series), t.num);
+    assert.match(t.num, /^T[A-Z0-9]+$/);
+    assert.ok(['Regular', 'Premium', 'Older cars', 'Gift sets & specials'].includes(t.series), t.num);
     assert.match(t.img, /^https:\/\//);
   }
 });
