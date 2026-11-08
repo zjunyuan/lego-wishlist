@@ -191,7 +191,7 @@ export async function render({ root, store, sets, demo }) {
     switch (key) {
       case 'photo': return photo(r);
       case 'num': return `<b>${esc(codeFor(r))}</b>`;
-      case 'name': return `${esc(r.name)} ${newTag(r)}<span class="muted block">${esc([r.theme, r.series].filter(Boolean).join(' '))}${r.jpy ? `, ¥${r.jpy.toLocaleString('en-SG')} in Japan` : ''}</span>`;
+      case 'name': return `${esc(r.name)} ${newTag(r)}<span class="muted block">${esc([r.theme, r.series].filter(Boolean).join(' '))}${r.jpy ? `, ¥${r.jpy.toLocaleString('en-SG')} in Japan` : ''}${r.guideEst ? ', guide price estimated' : ''}</span>`;
       case 'ageNum': return r.age ? esc(r.age) : '<span class="muted">Not set</span>';
       case 'parts': return esc(r.parts);
       case 'msrp': {
@@ -417,7 +417,7 @@ export async function render({ root, store, sets, demo }) {
               ${byNum[num] ? '' : '<p class="stale">No longer on the list. Click Update family list to take it off.</p>'}
               <p class="who">${Object.entries(who).map(([c, w]) => esc(nameOf(c)) + (w.fav ? ' (favourite)' : '')).join(', ')}</p>
               ${priceHtml(price)}
-              ${msrpHtml(msrpFor(num, overrides), price)}
+              ${msrpHtml(msrpFor(num, overrides), price, num)}
               <div class="row-actions">
                 <label class="check"><input type="checkbox" data-exclude="${esc(num)}" ${excluded.includes(num) ? 'checked' : ''}> Leave off the family list</label>
                 <button class="quiet" data-edit="pick:${esc(num)}">Edit prices</button>
@@ -538,7 +538,7 @@ export async function render({ root, store, sets, demo }) {
       if (entry.price !== undefined || entry.final !== undefined || entry.stock) shops[shop.id] = entry;
     }
     const typedMsrp = number('msrp');
-    const msrp = typedMsrp === legoFor(num)?.price ? null : typedMsrp;
+    const msrp = typedMsrp === (legoFor(num)?.price ?? byNum[num]?.guide) ? null : typedMsrp;
     const age = f.get('age').trim();
     const ages = { ...kids.ages };
     if (age && age !== legoFor(num)?.age) ages[num] = age; else delete ages[num];

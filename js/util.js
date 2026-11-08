@@ -161,7 +161,7 @@ export const legoFor = num => {
 };
 
 export const ageFor = (num, ages) => ages?.[num] ?? legoFor(num)?.age ?? byNum[num]?.age ?? null;
-export const msrpFor = (num, overrides) => overrides[num]?.msrp ?? legoFor(num)?.price ?? null;
+export const msrpFor = (num, overrides) => overrides[num]?.msrp ?? legoFor(num)?.price ?? byNum[num]?.guide ?? null;
 // Photos added by hand come first, then LEGO's own, without repeating one.
 export const imagesFor = (num, images) => {
   const seen = new Set();
@@ -250,10 +250,12 @@ export function amazonCheckHtml(num, overrides) {
   return `<p class="also"><a href="${esc(url)}" target="_blank" rel="noopener">Check Amazon SG</a></p>`;
 }
 
-export function msrpHtml(msrp, price) {
+// Tomica has no Singapore MSRP, so it carries a guide price instead.
+export function msrpHtml(msrp, price, num) {
   if (msrp == null) return '';
   const off = offLabel(msrp, price?.amount);
-  return `<p class="price-note">MSRP ${money(msrp)}${off ? `, ${off}` : ''}</p>`;
+  const label = num && isTomica(num) ? 'Guide price' : 'MSRP';
+  return `<p class="price-note">${label} ${money(msrp)}${off ? `, ${off}` : ''}</p>`;
 }
 
 export function offLabel(msrp, amount) {

@@ -107,7 +107,7 @@ export function render({ root, store, sets, key, space }) {
           <p class="set-meta">${isTomica(e.num) ? `Tomica ${esc(codeFor(e.set))}` : `Set ${esc(e.num)}`}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
           ${priceHtml(e.price)}
           ${amazonCheckHtml(e.num, overrides)}
-          ${msrpHtml(msrpFor(e.num, overrides), e.price) || japanPriceHtml(e.set)}
+          ${msrpHtml(msrpFor(e.num, overrides), e.price, e.num)}${japanPriceHtml(e.set)}
           <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
         </div>
       </article>`;
@@ -220,7 +220,7 @@ export function render({ root, store, sets, key, space }) {
         <div class="pop-price">
           ${priceHtml(e.price)}
           ${amazonCheckHtml(e.num, overrides)}
-          ${msrpHtml(msrpFor(e.num, overrides), e.price) || japanPriceHtml(e.set)}
+          ${msrpHtml(msrpFor(e.num, overrides), e.price, e.num)}${japanPriceHtml(e.set)}
         </div>
         <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
       </div>`;
