@@ -582,11 +582,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/011.jpg",
   "search": "Tomica No. 11 Lamborghini Huracan STO",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T34",
@@ -597,11 +597,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_034_01.webp",
   "search": "Tomica No. 34 F80",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T37",
@@ -612,11 +612,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/037.jpg",
   "search": "Tomica No. 37 Bugatti Chiron",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T118",
@@ -627,11 +627,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/118.jpg",
   "search": "Tomica No. 118 Lamborghini Veneno",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T28",
@@ -642,11 +642,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_028_01.jpg",
   "search": "Tomica No. 28 Tesla Model Y",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T33",
@@ -657,11 +657,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_033_03.jpg",
   "search": "Tomica No. 33 Nissan Skyline Patrol Car",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T41",
@@ -672,11 +672,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/041.jpg",
   "search": "Tomica No. 41 Morita Pump Fire Truck",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T108",
@@ -687,11 +687,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/108.jpg",
   "search": "Tomica No. 108 Hino Fire Truck Ladder",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T119",
@@ -702,11 +702,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/119.jpg",
   "search": "Tomica No. 119 Morita Multi-Purpose Fire Pump",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T79",
@@ -717,11 +717,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/079.jpg",
   "search": "Tomica No. 79 Toyota Himedic Ambulance",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T116",
@@ -732,11 +732,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/116.jpg",
   "search": "Tomica No. 116 Super Ambulance",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T56",
@@ -747,11 +747,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/056.jpg",
   "search": "Tomica No. 56 Komatsu Bulldozer",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T101",
@@ -762,11 +762,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/101.jpg",
   "search": "Tomica No. 101 Isuzu Giga Dump Truck",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T130",
@@ -777,12 +777,11 @@
   "jpy": 1100,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/130.jpg",
   "search": "Tomica No. 130 Kobelco SK3500D",
-  "guide": 13,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 14.99
  },
  {
   "num": "T132",
@@ -793,12 +792,12 @@
   "jpy": 1100,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_132_01.webp",
   "search": "Tomica Long No. 132 Morita Red Ladybug",
-  "guide": 13,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 14.99,
+  "guideEst": true
  },
  {
   "num": "T143",
@@ -809,12 +808,12 @@
   "jpy": 1100,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/143.jpg",
   "search": "Tomica Long No. 143 Hitachi Excavator",
-  "guide": 13,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 14.99,
+  "guideEst": true
  },
  {
   "num": "T145",
@@ -825,12 +824,12 @@
   "jpy": 1100,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/145.jpg",
   "search": "Tomica Long No. 145 Nagoya Fire",
-  "guide": 13,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 14.99,
+  "guideEst": true
  },
  {
   "num": "TP07",
@@ -844,12 +843,12 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-07-202212/img/img-02.png"
   ],
   "search": "Tomica Premium 07 Lamborghini Essenza SCV12",
-  "guide": 10.9,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 13.1,
+  "guideEst": true
  },
  {
   "num": "TP09",
@@ -865,11 +864,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-09/img/img-04.jpg"
   ],
   "search": "Tomica Premium 09 Nissan Fairlady Z",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP13",
@@ -883,11 +882,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-13-202609N/img/img-02.png"
   ],
   "search": "Tomica Premium 13 Toyota Corolla Levin AE92",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP20",
@@ -898,11 +897,11 @@
   "jpy": 990,
   "img": "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-20-202404N/img/img-01.png",
   "search": "Tomica Premium 20 Enzo Ferrari",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP21",
@@ -916,11 +915,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-21-202605N/img/img-02.png"
   ],
   "search": "Tomica Premium 21 Mercedes-Benz 190E",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP32",
@@ -934,11 +933,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-32-202301/img/img-02.png"
   ],
   "search": "Tomica Premium 32 Honda NSX Type S",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP36",
@@ -949,11 +948,11 @@
   "jpy": 990,
   "img": "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-36-202501N/img/img-01.png",
   "search": "Tomica Premium 36 Toyota GR Supra",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP38",
@@ -964,11 +963,11 @@
   "jpy": 990,
   "img": "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-38-202504N/img/thumb.jpg",
   "search": "Tomica Premium 38 LaFerrari",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TU11",
@@ -982,12 +981,12 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/unlimited/unlimited-11-202508/img/pic_img_02.png"
   ],
   "search": "Tomica Premium Unlimited 11 Back to the Future",
-  "guide": 14.5,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 17.3,
+  "guideEst": true
  },
  {
   "num": "T8",
@@ -998,11 +997,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_008_02.webp",
   "search": "Tomica No. 8 Ferrari Purosangue",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T19",
@@ -1013,11 +1012,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_019_01.webp",
   "search": "Tomica No. 19 Honda Super-ONE",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T24",
@@ -1028,11 +1027,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_024_01.webp",
   "search": "Tomica No. 24 Camping Car",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T43",
@@ -1043,11 +1042,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_043_01.webp",
   "search": "Tomica No. 43 Lamborghini Temerario",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T52",
@@ -1058,11 +1057,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_052_01.webp",
   "search": "Tomica No. 52 Mini Cooper SE Countryman",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T59",
@@ -1073,11 +1072,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_059_01.webp",
   "search": "Tomica No. 59 Mitsubishi Fuso Super Great Truck",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T70",
@@ -1088,11 +1087,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/070.jpg",
   "search": "Tomica No. 70 Lamborghini Aventador SVJ",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T74",
@@ -1103,11 +1102,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_074_01.jpg",
   "search": "Tomica No. 74 Lamborghini Countach LPI 800-4",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T75",
@@ -1118,11 +1117,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_075_01.webp",
   "search": "Tomica No. 75 Honda NSX Police Car",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T76",
@@ -1133,11 +1132,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_076_01.webp",
   "search": "Tomica No. 76 Nissan X-Trail Police Car",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T84",
@@ -1148,11 +1147,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_084_01.webp",
   "search": "Tomica No. 84 Calpis Bottle Car",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T7",
@@ -1163,11 +1162,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/007.jpg",
   "search": "Tomica No. 7 Mercedes-AMG GT R",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T13",
@@ -1178,11 +1177,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_013_01.jpg",
   "search": "Tomica No. 13 Nissan Fairlady Z NISMO GT500",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T57",
@@ -1193,11 +1192,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_057_01.webp",
   "search": "Tomica No. 57 Fossil Transporter",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T98",
@@ -1208,11 +1207,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_098_01.jpg",
   "search": "Tomica No. 98 Tesla Model 3",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T107",
@@ -1223,11 +1222,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_107_01.jpg",
   "search": "Tomica No. 107 Lamborghini Revuelto",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T109",
@@ -1238,11 +1237,11 @@
   "jpy": 594,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_109_01.webp",
   "search": "Tomica No. 109 Honda Vezel",
-  "guide": 7,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99
  },
  {
   "num": "T138",
@@ -1253,12 +1252,12 @@
   "jpy": 1100,
   "img": "https://www.takaratomy.co.jp/products/tomica/lineup/regular/images/pic_138_01.webp",
   "search": "Tomica No. 138 HondaJet Elite II",
-  "guide": 13,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 14.99,
+  "guideEst": true
  },
  {
   "num": "TP05",
@@ -1272,11 +1271,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-05-202607N/img/img-02.png"
   ],
   "search": "Tomica Premium 05 Lamborghini Miura P400S",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP27",
@@ -1287,11 +1286,11 @@
   "jpy": 990,
   "img": "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-27-202503N/img/img-01.png",
   "search": "Tomica Premium 27 Subaru Sambar",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP41",
@@ -1305,12 +1304,12 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-41-202506N/img/img-02.png"
   ],
   "search": "Tomica Premium 41 Tesla Cybertruck",
-  "guide": 10.9,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 13.1,
+  "guideEst": true
  },
  {
   "num": "TP43",
@@ -1324,11 +1323,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-43-202508N/img/img-02.png"
   ],
   "search": "Tomica Premium 43 Toyota Alphard",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP49",
@@ -1342,11 +1341,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-49-202602N/img/img-02.png"
   ],
   "search": "Tomica Premium 49 Nissan GT-R (2025)",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP31",
@@ -1361,11 +1360,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-31/img/img-03.jpg"
   ],
   "search": "Tomica Premium 31 Ferrari F40",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP08",
@@ -1376,11 +1375,11 @@
   "jpy": 990,
   "img": "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-08-202604N/img/img-01.png",
   "search": "Tomica Premium 08 Ferrari 512 TR",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP11",
@@ -1391,11 +1390,11 @@
   "jpy": 990,
   "img": "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-11/img/img-01.jpg",
   "search": "Tomica Premium 11 Nissan Skyline GT-R V-Spec II Nür",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TP37",
@@ -1409,11 +1408,11 @@
    "https://www.takaratomy.co.jp/products/tomica/tomicabrand/premium/premium-37-202302N/img/img-02.png"
   ],
   "search": "Tomica Premium 37 Honda Civic Type R (FD2)",
-  "guide": 10,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99
  },
  {
   "num": "TO488",
@@ -1424,12 +1423,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-7qul0-ljgvtct87l5b05",
   "search": "Tomica Older No. 64 Ferrari 488 GTB",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOLAF",
@@ -1440,12 +1439,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/455c7ef1dc7697c7cc7e7ab59edb7d56",
   "search": "Tomica Older No. 62 LaFerrari",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOROMA",
@@ -1456,12 +1455,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/42f0df7ce29db0a022d8c4106e6907a2",
   "search": "Tomica Older No. 17 Ferrari Roma",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TO720S",
@@ -1472,12 +1471,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-7quky-lipmh6kc8gktd0",
   "search": "Tomica Older No. 57 McLaren 720S",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOGTR20",
@@ -1488,12 +1487,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/f8d4528cc26b563baa659e539130e79b",
   "search": "Tomica Older No. 78 Nissan GT-R NISMO 2020",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOR8",
@@ -1504,12 +1503,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-81ztq-mq7be8leqbrg49",
   "search": "Tomica Older No. 38 Audi R8 Coupé",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOBRZ",
@@ -1520,12 +1519,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-7qul9-lgm8p965tsj488",
   "search": "Tomica Older Subaru BRZ",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOMOVE",
@@ -1536,12 +1535,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/cf2a06a3b5821b0c0ea4673727f45443",
   "search": "Tomica Older No. 32 Daihatsu Move",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOCORV",
@@ -1552,12 +1551,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-7qvg3-lguqfev7benu7c",
   "search": "Tomica Older No. 91 Chevrolet Corvette",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOWRX",
@@ -1568,12 +1567,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/99a5558cdbdff657f5eda0bca5e7aa2f",
   "search": "Tomica Older No. 76 Subaru WRX S4 STI Sport R",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TODBX",
@@ -1584,12 +1583,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/fc03bbea3d9c6abadb83fe950b954726",
   "search": "Tomica Older No. 75 Aston Martin DBX",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOEQS",
@@ -1600,12 +1599,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-7qvcw-ljfh7h3zsgvnde",
   "search": "Tomica Older No. 47 Mercedes-EQ EQS",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOC40",
@@ -1616,12 +1615,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/dd567053148594e384bbd70949991fa5",
   "search": "Tomica Older No. 22 Volvo C40 Recharge",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOIS350",
@@ -1632,12 +1631,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-7rasb-m4orvgqyjyx6ce",
   "search": "Tomica Older No. 100 Lexus IS 350 F Sport",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOMEGANE",
@@ -1648,12 +1647,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134201-23010-rtlci1x4wemvd9",
   "search": "Tomica Older No. 44 Renault Mégane RS",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOCRZ",
@@ -1664,12 +1663,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/91d230670d9d8452a6dff8d71f8f4db8",
   "search": "Tomica Older No. 81 Honda CR-Z",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOVELOSTER",
@@ -1680,12 +1679,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-81ztk-ms58rg9wejupba",
   "search": "Tomica Older (Korea) Hyundai Veloster Turbo",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TOCITY",
@@ -1696,12 +1695,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/4ee27e69d8eb1159e5c2fe5e372f8e1f",
   "search": "Tomica Older Premium 35 Honda City Turbo II",
-  "guide": 10,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 11.99,
+  "guideEst": true
  },
  {
   "num": "TSREBORN",
@@ -1712,12 +1711,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-8259j-mr9bx3xql62oad",
   "search": "Tomica Special Tomica Reborn Toyota Supra",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TSTH08",
@@ -1728,12 +1727,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/vn-11134207-7ras8-m44wxd1g35o00f",
   "search": "Tomica Special Nissan GT-R R35 (TH08)",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TSMIKU",
@@ -1744,12 +1743,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-82592-mtnlre5pd9ts0d",
   "search": "Tomica Premium Racing Hatsune Miku AMG 2025",
-  "guide": 20,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 24.0,
+  "guideEst": true
  },
  {
   "num": "TS787B",
@@ -1760,12 +1759,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-8259w-mthza5mvj56t68",
   "search": "Tomica Premium Racing Mazda 787B",
-  "guide": 20,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 24.0,
+  "guideEst": true
  },
  {
   "num": "TSEVENT13",
@@ -1776,12 +1775,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/id-11134207-7qul7-lipmh6kc71x777",
   "search": "Tomica Event model 13 Nissan GT-R R35 (gold)",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TSDREAM",
@@ -1792,12 +1791,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/vn-11134207-7ras8-m44xe1umwumfc6",
   "search": "Tomica Dream Tomica Nissan GT-R Shinkalion",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TSMATER",
@@ -1808,12 +1807,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-8259m-mq4ybwlbtbt78d",
   "search": "Tomica Cars C-14 Mater (20th anniversary)",
-  "guide": 7,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 7.99,
+  "guideEst": true
  },
  {
   "num": "TSTEM2",
@@ -1824,12 +1823,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-820n7-mnrwcl669z444a",
   "search": "Tomica Special 2-car set Lamborghini Temerario",
-  "guide": 14,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 15.98,
+  "guideEst": true
  },
  {
   "num": "TSS13",
@@ -1840,11 +1839,11 @@
   "jpy": 1430,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-82620-mjvncfevki6f3d",
   "search": "Tomica Premium Unlimited Initial D Nissan Silvia S13",
-  "guide": 14.5,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 17.3
  },
  {
   "num": "TSFF",
@@ -1855,12 +1854,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134201-8258l-mtpj5k3rao7718",
   "search": "Tomica Premium Unlimited Fast & Furious Nissan Skyline GT-R",
-  "guide": 14.5,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 17.3,
+  "guideEst": true
  },
  {
   "num": "TGCOUNTACH",
@@ -1885,11 +1884,11 @@
   "jpy": 2860,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-825af-mq6wpnknfjlsd3",
   "search": "Tomica Premium Transporter Nissan GT-R NISMO Transporter",
-  "guide": 29,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 34.6
  },
  {
   "num": "TGS15",
@@ -1900,12 +1899,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-7rbm9-m5q57d1sv7pmb7",
   "search": "Tomica Premium Transporter Nissan Silvia S15 Transporter",
-  "guide": 29,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 34.6,
+  "guideEst": true
  },
  {
   "num": "TGLAMBO3",
@@ -1916,12 +1915,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/6567a4e7320478578e61532c86e70094",
   "search": "Tomica Premium gift set Lamborghini 3 Models",
-  "guide": 35.6,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 42.6,
+  "guideEst": true
  },
  {
   "num": "TGLAMBOSET",
@@ -1932,12 +1931,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-7rccr-m6ds1tnrsf3f8c",
   "search": "Tomica Gift set Lamborghini Collection",
-  "guide": 22.3,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 26.6,
+  "guideEst": true
  },
  {
   "num": "TGTOYOTA3",
@@ -1948,12 +1947,12 @@
   "jpy": null,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134207-824ha-mezw1wnvalu4e6",
   "search": "Tomica Premium gift set Toyota Sports Cars 3 Models",
-  "guide": 35.6,
-  "guideEst": true,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 42.6,
+  "guideEst": true
  },
  {
   "num": "TG86",
@@ -1964,10 +1963,10 @@
   "jpy": 2200,
   "img": "https://down-sg.img.susercontent.com/file/sg-11134201-22110-y95862w2anjv24",
   "search": "Tomica Gift set Toyota 86 / GR86 10th Anniversary",
-  "guide": 22.3,
   "theme": "Tomica",
   "parts": null,
   "year": null,
-  "adminOnly": true
+  "adminOnly": true,
+  "guide": 26.6
  }
 ]
