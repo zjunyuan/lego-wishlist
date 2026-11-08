@@ -1,4 +1,4 @@
-import { ageFor, amazonCheckHtml, avatar, esc, imagesFor, money, msrpFor, msrpHtml, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
+import { ageFor, amazonCheckHtml, avatar, codeFor, esc, imagesFor, isTomica, japanPriceHtml, money, msrpFor, msrpHtml, numberLabel, partsFor, photo, priceFor, priceHtml, toast, TakenError } from './util.js';
 
 const NAME_KEY = 'lego-wishlist-name';
 const BANDS = [
@@ -104,10 +104,10 @@ export function render({ root, store, sets, key, space }) {
         </button>
         <div class="wish-body">
           <h2><button class="wish-title" data-open="${esc(e.num)}">${esc(e.set.name)}</button></h2>
-          <p class="set-meta">Set ${esc(e.num)}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
+          <p class="set-meta">${isTomica(e.num) ? `Tomica ${esc(codeFor(e.set))}` : `Set ${esc(e.num)}`}${e.set.parts ? `, ${esc(partsFor(e.set))} pieces` : ''}${ageFor(e.num, ages) ? `, ages ${esc(ageFor(e.num, ages))}` : ''}</p>
           ${priceHtml(e.price)}
           ${amazonCheckHtml(e.num, overrides)}
-          ${msrpHtml(msrpFor(e.num, overrides), e.price)}
+          ${msrpHtml(msrpFor(e.num, overrides), e.price) || japanPriceHtml(e.set)}
           <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
         </div>
       </article>`;
@@ -213,14 +213,14 @@ export function render({ root, store, sets, key, space }) {
       <div class="pop-info">
         <h2>${esc(e.set.name)}</h2>
         <dl>
-          <dt>Set number</dt><dd>${esc(e.num)}</dd>
+          <dt>${numberLabel(e.num)}</dt><dd>${esc(codeFor(e.set))}</dd>
           ${e.set.parts ? `<dt>Pieces</dt><dd>${esc(partsFor(e.set))}</dd>` : ''}
           ${ageFor(e.num, ages) ? `<dt>Age</dt><dd>${esc(ageFor(e.num, ages))}</dd>` : ''}
         </dl>
         <div class="pop-price">
           ${priceHtml(e.price)}
           ${amazonCheckHtml(e.num, overrides)}
-          ${msrpHtml(msrpFor(e.num, overrides), e.price)}
+          ${msrpHtml(msrpFor(e.num, overrides), e.price) || japanPriceHtml(e.set)}
         </div>
         <ul class="gifts">${inView(e).map(c => giftRow(e.num, c, e.for[c], e.price)).join('')}</ul>
       </div>`;

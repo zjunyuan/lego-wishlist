@@ -1,4 +1,4 @@
-import { ageFor, avatar, esc, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, newTag, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
+import { ageFor, avatar, codeFor, esc, daysSince, legoFor, money, msrpFor, msrpHtml, newKey, newTag, offersFor, partsFor, offLabel, photo, priceFor, priceHtml, safeUrl, shopsFor, shopsForSet, checkedFor, shortDate, SHOPS, toast } from './util.js';
 import { mergeImport, parseSheet } from './import.js';
 
 const STALE_DAYS = 7;
@@ -185,8 +185,8 @@ export async function render({ root, store, sets, demo }) {
   function dbCell(key, r) {
     switch (key) {
       case 'photo': return photo(r);
-      case 'num': return `<b>${esc(r.num)}</b>`;
-      case 'name': return `${esc(r.name)} ${newTag(r)}<span class="muted block">${esc(r.theme ?? '')}</span>`;
+      case 'num': return `<b>${esc(codeFor(r))}</b>`;
+      case 'name': return `${esc(r.name)} ${newTag(r)}<span class="muted block">${esc([r.theme, r.series].filter(Boolean).join(' '))}${r.jpy ? `, ¥${r.jpy.toLocaleString('en-SG')} in Japan` : ''}</span>`;
       case 'ageNum': return r.age ? esc(r.age) : '<span class="muted">Not set</span>';
       case 'parts': return esc(r.parts);
       case 'msrp': {

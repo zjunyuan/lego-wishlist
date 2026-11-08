@@ -306,3 +306,39 @@ label input:not([type=checkbox]) { display: block; width: 100%; min-height: 46px
 
 .alert-steps { margin: 0 0 12px; padding-left: 20px; }
 .alert-topic { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+
+/* LEGO or Tomica switch on the boys' page */
+.worlds { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.world { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 64px; padding: 8px; border-radius: 10px; font-weight: 700; }
+.world span { font: 400 1.5rem/1.1 var(--display); }
+.world small { font-size: .85rem; }
+.world-lego { border: 3px solid var(--yellow); background: #fff; color: var(--ink); }
+.world-lego[aria-pressed="true"] { background: var(--yellow); box-shadow: 0 4px 0 #d9a900; }
+.world-tomica { border: 3px solid var(--tomica-red); background: #fff; color: var(--tomica-red); }
+.world-tomica span { font: italic 900 1.6rem/1.1 var(--body); letter-spacing: -.02em; }
+.world-tomica[aria-pressed="true"] { background: var(--tomica-red); color: #fff; box-shadow: 0 4px 0 #9e000c; }
+
+/* The Tomica world */
+:root { --tomica-red: #e60012; --tomica-blue: #0b3a8c; --road: #3b4048; }
+body.tomica-world { background: #eef1f5 repeating-linear-gradient(90deg, transparent 0 40px, #dfe4ea 40px 42px); }
+.tomica-world .kid-bar { background: var(--tomica-blue); box-shadow: 0 4px 0 var(--tomica-red); }
+.tomica-world .kid-bar h1 { font-style: italic; }
+.tomica-world .meter { position: relative; background: var(--road); padding: 9px 8px 13px; }
+.tomica-world .meter::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 5px; border-top: 2px dashed #ffffffaa; }
+.tomica-world .meter i { aspect-ratio: 1.7; border-radius: 9px 12px 4px 4px; background: #5b616b; box-shadow: none; }
+.tomica-world .meter i.on { background: var(--tomica-red); box-shadow: inset 0 -4px 0 #9e000c; }
+.tomica-world .tab { border-color: var(--tomica-blue); color: var(--tomica-blue); }
+.tomica-world .tab[aria-pressed="true"] { background: var(--tomica-blue); color: #fff; }
+.tomica-world .set .photo { aspect-ratio: 16 / 10; background: #fff; }
+.tomica-world .set-tap { border-radius: 4px; border-top: 8px solid var(--tomica-red); }
+.tomica-world .set-name { font-style: italic; }
+.tomica-world .set.picked .set-tap { border-color: var(--tomica-blue); border-top-color: var(--tomica-red); box-shadow: 0 5px 0 var(--tomica-blue); }
+.tomica-world .fav.on { background: var(--tomica-red); }
+.tomica-world .fav.on svg { fill: #fff; stroke: #fff; }
+.tomica-world .finish { background: var(--tomica-red); color: #fff; box-shadow: 0 4px 0 #9e000c; }
+.tomica-world .set-pop .pop-toggle { background: var(--tomica-blue); }
+.tomica-world .set-pop .pop-toggle.remove { background: #fff; color: var(--tomica-red); }
+.tomica-world .set-pop .thumb[aria-pressed="true"] { border-color: var(--tomica-red); }
+.tomica-world .set-pop .pop-fav.on { background: var(--tomica-red); color: #fff; }
+.tomica-world .set-pop .pop-fav.on svg { fill: #fff; stroke: #fff; }
+

@@ -1,6 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { keepSet, markAdminOnly, markNew, parseCsv, selectSets } from './update-data.mjs';
+import { keepSet, markAdminOnly, markNew, parseCsv, selectSets, tomicaSets } from './update-data.mjs';
+
+test('Tomica cars join the catalogue with no pieces', () => {
+  const [car] = tomicaSets([{ num: 'T11', name: 'Huracán', series: 'Regular' }]);
+  assert.equal(car.theme, 'Tomica');
+  assert.equal(car.parts, null);
+  assert.equal(car.series, 'Regular');
+});
+
+test('the Tomica list is well formed', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const list = JSON.parse(await readFile(new URL('../data/tomica.json', import.meta.url), 'utf8'));
+  assert.ok(list.length >= 20 && list.length <= 30);
+  assert.equal(new Set(list.map(t => t.num)).size, list.length);
+  for (const t of list) {
+    assert.match(t.num, /^T[PU]?\d+$/);
+    assert.ok(['Regular', 'Premium'].includes(t.series), t.num);
+    assert.match(t.img, /^https:\/\//);
+  }
+});
 
 test('marks new sets and leaves the rest alone', () => {
   assert.deepEqual(markNew([{ num: '76934' }, { num: '60500' }], ['76934']), [{ num: '76934', isNew: true }, { num: '60500' }]);

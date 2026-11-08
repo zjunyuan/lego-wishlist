@@ -1,4 +1,4 @@
-import { esc, loadJson, setDetails, setShopData } from './util.js';
+import { esc, loadJson, setCatalogue, setDetails, setShopData } from './util.js';
 import { VERSION } from './version.js';
 
 document.getElementById('version').textContent = `Version ${VERSION}`;
@@ -23,6 +23,7 @@ async function start() {
     message('The list didn\'t load', 'Refresh the page to try again.');
     return;
   }
+  setCatalogue(sets);
   const details = await loadJson(demo ? 'data/demo-details.json' : 'data/details.json', {});
   setDetails(details.sets);
   setShopData(await loadJson(demo ? 'data/demo-shops.json' : 'data/shops.json', {}));

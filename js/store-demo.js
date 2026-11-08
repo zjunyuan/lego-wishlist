@@ -1,6 +1,6 @@
 // In-browser stand-in for Firestore, used by ?demo for previews and tests.
 // Nothing leaves the browser. Open with ?demo&uid=someone to act as another relative.
-import { newKey, slug, TakenError } from './util.js';
+import { mergePicks, newKey, slug, splitPicks, TakenError, TOMICA_DOC } from './util.js';
 
 const NAME = 'lego-wishlist-demo';
 const params = new URLSearchParams(location.search);
@@ -31,14 +31,16 @@ export const currentAdmin = async () => (params.has('signedin') ? 'demo@example.
 export const signInAdmin = async () => 'demo@example.com';
 export const getSpace = async key => state.spaces[key] ?? null;
 export const watchSpace = (key, cb) => watch(() => state.spaces[key] ?? null, cb);
-export const watchPicks = (key, cb) => watch(() => state.picks, cb);
+export const watchPicks = (key, cb) => watch(() => mergePicks(state.picks), cb);
 export const watchWishlist = (key, cb) => watch(() => state.wishlist, cb);
 export const watchClaims = (key, cb) => watch(() => state.claims, cb);
 export const watchShares = (key, cb) => watch(() => state.shares, cb);
 export const watchOverrides = (key, cb) => watch(() => state.overrides, cb);
 
 export async function setPicks(key, child, sets, finished = false) {
-  state.picks[child] = { sets, finished, updatedAt: Date.now() };
+  const { lego, tomica } = splitPicks(sets);
+  state.picks[child] = { sets: lego, finished, updatedAt: Date.now() };
+  state.picks[child + TOMICA_DOC] = { sets: tomica, updatedAt: Date.now() };
   save();
 }
 

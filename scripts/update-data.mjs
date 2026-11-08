@@ -71,6 +71,9 @@ export const markAdminOnly = (sets, adminOnly = []) => sets.map(s => (adminOnly.
 // Sets added recently, tagged New on the boys' page until they drop off this list.
 export const markNew = (sets, newSets = []) => sets.map(s => (newSets.includes(s.num) ? { ...s, isNew: true } : s));
 
+// Tomica cars aren't in Rebrickable, so they come from a hand-kept list.
+export const tomicaSets = list => list.map(t => ({ ...t, theme: 'Tomica', parts: null, year: null }));
+
 async function fetchGz(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url} returned ${res.status}`);
@@ -88,9 +91,10 @@ async function main() {
   const kept = selectSets(themes, sets, minYear, Object.keys(details)).filter(s => keepSet(s.num, removed, details));
   const catalogue = markNew(markAdminOnly(kept, removed.adminOnly), removed.newSets);
   if (catalogue.length < 20) throw new Error(`Only ${catalogue.length} sets found, keeping the old catalogue`);
-  await writeFile(new URL('sets.json', root), JSON.stringify(catalogue, null, 1) + '\n');
+  const tomica = tomicaSets(JSON.parse(await readFile(new URL('tomica.json', root), 'utf8')));
+  await writeFile(new URL('sets.json', root), JSON.stringify([...catalogue, ...tomica], null, 1) + '\n');
   const count = name => catalogue.filter(s => s.theme === name).length;
-  console.log(`Catalogue: ${THEMES.map(t => `${count(t)} ${t}`).join(', ')} from ${minYear} onwards`);
+  console.log(`Catalogue: ${THEMES.map(t => `${count(t)} ${t}`).join(', ')} from ${minYear} onwards, plus ${tomica.length} Tomica`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

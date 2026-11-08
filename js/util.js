@@ -52,7 +52,49 @@ export async function loadJson(path, fallback) {
   return fallback;
 }
 
-const query = num => encodeURIComponent(`LEGO ${num}`);
+// The whole catalogue by number, for details that only some items carry (Tomica ages and photos).
+let byNum = {};
+export function setCatalogue(sets) { byNum = Object.fromEntries((sets ?? []).map(s => [s.num, s])); }
+
+export const isTomica = num => /^T/.test(num);
+
+// Each boy's Tomica picks are kept in a second document beside his LEGO picks.
+// That gives Tomica its own 10 without changing the database rules.
+export const TOMICA_DOC = '__tomica';
+export function splitPicks(sets) {
+  const lego = {};
+  const tomica = {};
+  for (const [num, p] of Object.entries(sets ?? {})) (isTomica(num) ? tomica : lego)[num] = p;
+  return { lego, tomica };
+}
+export function mergePicks(docs) {
+  const out = {};
+  for (const [id, d] of Object.entries(docs ?? {})) {
+    if (!id.endsWith(TOMICA_DOC)) out[id] = { ...d, sets: { ...out[id]?.sets, ...d.sets } };
+  }
+  for (const [id, d] of Object.entries(docs ?? {})) {
+    if (!id.endsWith(TOMICA_DOC)) continue;
+    const child = id.slice(0, -TOMICA_DOC.length);
+    out[child] = { ...out[child], sets: { ...out[child]?.sets, ...d.sets } };
+  }
+  return out;
+}
+export const numberLabel = num => (isTomica(num) ? 'Tomica' : 'Set number');
+export const codeFor = set => set.code ?? set.num;
+
+// Rough Japan-to-Singapore conversion for Takara Tomy's own prices (rate on 8 Nov 2026).
+const JPY_TO_SGD = 0.0081;
+export function japanPriceHtml(set) {
+  if (!set?.jpy) return '';
+  return `<p class="price-note">Japan price ¥${set.jpy.toLocaleString('en-SG')}, about S$${(set.jpy * JPY_TO_SGD).toFixed(2)}</p>`;
+}
+
+function searchText(num) {
+  const set = byNum[num];
+  if (set?.search) return set.search;
+  return isTomica(num) && set ? `Tomica ${set.code ?? ''} ${set.name}`.replace(/\s+/g, ' ') : `LEGO ${num}`;
+}
+const query = num => encodeURIComponent(searchText(num));
 
 // LEGO.com Singapore details: [age, price, availability, pieces, page, photos].
 let details = {};
@@ -79,12 +121,12 @@ export const legoFor = num => {
   };
 };
 
-export const ageFor = (num, ages) => ages?.[num] ?? legoFor(num)?.age ?? null;
+export const ageFor = (num, ages) => ages?.[num] ?? legoFor(num)?.age ?? byNum[num]?.age ?? null;
 export const msrpFor = (num, overrides) => overrides[num]?.msrp ?? legoFor(num)?.price ?? null;
 // Photos added by hand come first, then LEGO's own, without repeating one.
 export const imagesFor = (num, images) => {
   const seen = new Set();
-  return [...(images?.[num] ?? []), ...(legoFor(num)?.images ?? [])].filter(url => {
+  return [...(images?.[num] ?? []), ...(legoFor(num)?.images ?? []), ...(byNum[num]?.images ?? [])].filter(url => {
     const path = url.split('?')[0];
     if (seen.has(path)) return false;
     seen.add(path);

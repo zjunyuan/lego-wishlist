@@ -1,1 +1,21 @@
-{"checked":"2026-11-03","sets":{"90007":{"shopee":{"price":120,"seller":"Sample Store","official":"Yes","stock":"In stock","url":"https://shopee.sg/sample"}}}}
+{
+ "checked": "2026-11-03",
+ "sets": {
+  "90007": {
+   "shopee": {
+    "price": 120,
+    "seller": "Sample Store",
+    "official": "Yes",
+    "stock": "In stock",
+    "url": "https://shopee.sg/sample"
+   }
+  },
+  "T11": {
+   "amazonsg": {
+    "price": 7.57,
+    "stock": "In stock",
+    "url": "https://www.amazon.sg/dp/B09T3GXM7P"
+   }
+  }
+ }
+}

@@ -104,5 +104,32 @@
   "img": "https://cdn.rebrickable.com/media/sets/76934-1.jpg",
   "theme": "Speed Champions",
   "adminOnly": true
+ },
+ {
+  "num": "T11",
+  "code": "No. 11",
+  "name": "Sample sports car",
+  "series": "Regular",
+  "age": "3+",
+  "jpy": 594,
+  "img": "https://cdn.rebrickable.com/media/sets/76934-1.jpg",
+  "theme": "Tomica",
+  "parts": null,
+  "year": null
+ },
+ {
+  "num": "TP20",
+  "code": "Premium 20",
+  "name": "Sample premium car",
+  "series": "Premium",
+  "age": "6+",
+  "jpy": 990,
+  "img": "https://cdn.rebrickable.com/media/sets/76934-1.jpg",
+  "images": [
+   "https://cdn.rebrickable.com/media/sets/76934-1.jpg?two"
+  ],
+  "theme": "Tomica",
+  "parts": null,
+  "year": null
  }
 ]

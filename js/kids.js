@@ -1,6 +1,7 @@
-import { ageFor, avatar, esc, imagesFor, newTag, partsFor, photo, safeUrl, toast } from './util.js';
+import { ageFor, avatar, codeFor, esc, imagesFor, isTomica, newTag, partsFor, photo, safeUrl, toast } from './util.js';
 
 const MAX_PICKS = 10;
+const MAX_CARS = 10;
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.3 6.7L12 17.5l-6 3.3 1.3-6.7-5-4.6 6.8-.8z"/></svg>';
 
 export function render({ root, store, sets, key, space }) {
@@ -18,13 +19,18 @@ export function render({ root, store, sets, key, space }) {
   let onlyPicks = false;
   let theme = null;
   let search = '';
-  const themes = [...new Set(sets.map(s => s.theme).filter(Boolean))];
+  let world = 'lego';
+  const hasTomica = sets.some(s => isTomica(s.num));
+  const inWorld = (num, w = world) => (w === 'tomica') === isTomica(num);
+  const limit = (w = world) => (w === 'tomica' ? MAX_CARS : MAX_PICKS);
+  const themes = [...new Set(sets.filter(s => !isTomica(s.num)).map(s => s.theme).filter(Boolean))];
+  const series = [...new Set(sets.filter(s => isTomica(s.num)).map(s => s.series).filter(Boolean))];
 
   // Sets removed from the catalogue no longer count as picks.
   const known = new Set(sets.map(s => s.num));
   const picksOf = id => Object.fromEntries(Object.entries(picks[id]?.sets ?? {}).filter(([num]) => known.has(num)));
   const mine = () => picksOf(child?.id);
-  const count = id => Object.keys(picksOf(id)).length;
+  const count = (id, w) => Object.keys(picksOf(id)).filter(num => !w || inWorld(num, w)).length;
   const finished = id => Boolean(picks[id]?.finished);
 
   function chooser() {
@@ -38,7 +44,8 @@ export function render({ root, store, sets, key, space }) {
               <span class="brick-face">
                 ${avatar(c.id, photos)}
                 <span class="brick-name">${esc(c.name)}</span>
-                <span class="brick-count">${finished(c.id) ? 'List finished' : `${count(c.id)} of ${MAX_PICKS} picked`}</span>
+                <span class="brick-count">${finished(c.id) ? 'List finished' : `${count(c.id, 'lego')} of ${MAX_PICKS} picked`}</span>
+                ${hasTomica && !finished(c.id) ? `<span class="brick-count">${count(c.id, 'tomica')} of ${MAX_CARS} Tomica</span>` : ''}
               </span>
             </button>`).join('')}
         </div>
@@ -46,9 +53,11 @@ export function render({ root, store, sets, key, space }) {
   }
 
   function meter() {
-    const n = Object.keys(mine()).length;
-    return `<div class="meter" role="img" aria-label="${n} of ${MAX_PICKS} picked">
-      ${Array.from({ length: MAX_PICKS }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}
+    const n = count(child.id, world);
+    const max = limit();
+    const what = world === 'tomica' ? 'Tomica cars' : 'LEGO sets';
+    return `<div class="meter" role="img" aria-label="${n} of ${max} ${what} picked">
+      ${Array.from({ length: max }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}
     </div>`;
   }
 
@@ -67,14 +76,16 @@ export function render({ root, store, sets, key, space }) {
     const picked = mine();
     const q = search.trim().toLowerCase();
     const list = sets
+      .filter(s => inWorld(s.num))
       .filter(s => picked[s.num] || !(owned.includes(s.num) || hidden.includes(s.num) || (s.adminOnly && !adminOnlySeen.includes(s.num))))
       .filter(s => !onlyPicks || picked[s.num])
-      .filter(s => !theme || s.theme === theme)
+      .filter(s => !theme || (world === 'tomica' ? s.series === theme : s.theme === theme))
       .filter(s => !q || s.name.toLowerCase().includes(q) || s.num.includes(q))
       .sort((a, b) => Boolean(b.isNew) - Boolean(a.isNew));
 
     if (!list.length) {
-      return `<p class="empty">${onlyPicks ? 'Nothing picked yet. Go back to all sets and tap one you like.' : 'No sets match that. Try another word.'}</p>`;
+      const things = world === 'tomica' ? 'cars' : 'sets';
+      return `<p class="empty">${onlyPicks ? `Nothing picked yet. Go back to all ${things} and tap one you like.` : `No ${things} match that. Try another word.`}</p>`;
     }
     return list.map(s => {
       const p = picked[s.num];
@@ -87,6 +98,7 @@ export function render({ root, store, sets, key, space }) {
               ${ageFor(s.num, ages) ? `<span class="age-tag">Ages ${esc(ageFor(s.num, ages))}</span>` : ''}
             </span>
             <span class="set-name">${esc(s.name)}</span>
+            ${isTomica(s.num) ? `<span class="set-meta">${esc(codeFor(s))}</span>` : ''}
           </button>
           ${favMark(s, p)}
         </article>`;
@@ -94,30 +106,43 @@ export function render({ root, store, sets, key, space }) {
   }
 
   function grid() {
+    document.body.classList.toggle('tomica-world', world === 'tomica');
     root.innerHTML = `
       <div class="kid-bar">
         <button class="back" data-back>Change name</button>
-        <h1>${avatar(child.id, photos)}${esc(child.name)}'s picks</h1>
+        <h1>${avatar(child.id, photos)}${esc(child.name)}'s ${world === 'tomica' ? 'cars' : 'picks'}</h1>
         <div class="meter-slot">${meter()}</div>
       </div>
       <main class="kid-page">
         <div class="finish-slot">${finishSlot()}</div>
+        ${hasTomica ? `<div class="worlds" role="group" aria-label="What to choose">
+          <button class="world world-lego" data-world="lego" aria-pressed="${world === 'lego'}"><span>LEGO</span><small>${count(child.id, 'lego')} of ${MAX_PICKS}</small></button>
+          <button class="world world-tomica" data-world="tomica" aria-pressed="${world === 'tomica'}"><span>Tomica</span><small>${count(child.id, 'tomica')} of ${MAX_CARS}</small></button>
+        </div>` : ''}
         <div class="kid-tools">
-          <button class="tab" data-only="0" aria-pressed="${!onlyPicks && !theme}">All sets</button>
-          ${themes.map(t => `<button class="tab" data-theme="${esc(t)}" aria-pressed="${t === theme}">${esc(t)}</button>`).join('')}
+          <button class="tab" data-only="0" aria-pressed="${!onlyPicks && !theme}">${world === 'tomica' ? 'All cars' : 'All sets'}</button>
+          ${(world === 'tomica' ? series : themes).map(t => `<button class="tab" data-theme="${esc(t)}" aria-pressed="${t === theme}">${esc(t)}</button>`).join('')}
           <button class="tab" data-only="1" aria-pressed="${onlyPicks}">My picks</button>
-          <input class="search" type="search" placeholder="Search" aria-label="Search sets" value="${esc(search)}">
+          <input class="search" type="search" placeholder="Search" aria-label="${world === 'tomica' ? 'Search cars' : 'Search sets'}" value="${esc(search)}">
         </div>
         <div class="set-grid">${sets.length ? cards() : '<p class="empty">The sets are still being loaded. Come back soon.</p>'}</div>
       </main>`;
   }
 
-  const draw = () => (child ? grid() : chooser());
+  const draw = () => {
+    if (child) return grid();
+    document.body.classList.remove('tomica-world');
+    return chooser();
+  };
 
   function refreshGrid() {
     root.querySelector('.set-grid').innerHTML = cards();
     root.querySelector('.meter-slot').innerHTML = meter();
     root.querySelector('.finish-slot').innerHTML = finishSlot();
+    for (const w of ['lego', 'tomica']) {
+      const small = root.querySelector(`[data-world="${w}"] small`);
+      if (small) small.textContent = `${count(child.id, w)} of ${limit(w)}`;
+    }
   }
 
   async function save(next) {
@@ -185,10 +210,14 @@ export function render({ root, store, sets, key, space }) {
       <div class="pop-info">
         <h2>${esc(set.name)} ${newTag(set)}</h2>
         <dl>
+          ${isTomica(set.num) ? `
+          <dt>Tomica</dt><dd>${esc(codeFor(set))}</dd>
+          ${ageFor(set.num, ages) ? `<dt>Age</dt><dd>${esc(ageFor(set.num, ages))}</dd>` : ''}
+          ${set.series ? `<dt>Range</dt><dd>${esc(set.series)}</dd>` : ''}` : `
           <dt>Set number</dt><dd>${esc(set.num)}</dd>
           <dt>Pieces</dt><dd>${esc(partsFor(set))}</dd>
           ${ageFor(set.num, ages) ? `<dt>Age</dt><dd>${esc(ageFor(set.num, ages))}</dd>` : ''}
-          ${set.theme ? `<dt>Theme</dt><dd>${esc(set.theme)}</dd>` : ''}
+          ${set.theme ? `<dt>Theme</dt><dd>${esc(set.theme)}</dd>` : ''}`}
         </dl>
         <p class="pop-msg" role="status">${esc(message)}</p>
         ${finished(child.id) ? '' : `
@@ -216,12 +245,15 @@ export function render({ root, store, sets, key, space }) {
     }
     if (finished(child.id)) return undefined;
     const next = { ...mine() };
+    const w = isTomica(num) ? 'tomica' : 'lego';
+    const full = Object.keys(next).filter(n => inWorld(n, w)).length >= limit(w);
+    const fullMsg = `That's ${limit(w)}${w === 'tomica' ? ' cars' : ''}! Take one off to pick another.`;
     if ('toggle' in el.dataset) {
       if (next[num]) delete next[num];
-      else if (Object.keys(next).length >= MAX_PICKS) return drawPop(`That's ${MAX_PICKS}! Take one off to pick another.`);
+      else if (full) return drawPop(fullMsg);
       else next[num] = { fav: false };
     } else if ('popfav' in el.dataset) {
-      if (!next[num] && Object.keys(next).length >= MAX_PICKS) return drawPop(`That's ${MAX_PICKS}! Take one off to pick another.`);
+      if (!next[num] && full) return drawPop(fullMsg);
       next[num] = { fav: !next[num]?.fav };
     }
     save(next);
@@ -236,10 +268,19 @@ export function render({ root, store, sets, key, space }) {
       onlyPicks = finished(child.id);
       theme = null;
       search = '';
+      world = 'lego';
       scrollTo(0, 0);
       draw();
     } else if (el.hasAttribute('data-back')) {
       child = null;
+      world = 'lego';
+      draw();
+    } else if (el.dataset.world) {
+      world = el.dataset.world;
+      theme = null;
+      search = '';
+      onlyPicks = finished(child.id);
+      scrollTo(0, 0);
       draw();
     } else if (el.dataset.only) {
       onlyPicks = el.dataset.only === '1';
